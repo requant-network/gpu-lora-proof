@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.so
+*.o
+build/
+venv/
+*.log
+results/proofs/
+i128test*
+wmmatest*
+.DS_Store

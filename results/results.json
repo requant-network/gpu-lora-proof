@@ -1,0 +1,4546 @@
+{
+ "study": "gpu-lora-proof",
+ "title": "Verifiable LoRA fine-tuning step: exact integer forward+backward with Freivalds/Fiat-Shamir certificates and an independent CPU verifier",
+ "environment": {
+  "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+  "compute_cap": "12.0",
+  "cuda_driver_version_api": 13030,
+  "cuda_runtime_version_api": 13030,
+  "nvidia_smi_gpu0": "610.43.03, NVIDIA GeForce RTX 5060 Ti",
+  "nvcc": "Build cuda_13.3.r13.3/compiler.38244171_0",
+  "hostname": "me4me",
+  "python": "3.12.3",
+  "cuda_visible_devices": "0",
+  "utc_timestamp": "2026-11-19T16:06:28Z"
+ },
+ "source_sha256": {
+  "contract.py": "3b8af2b46c6eac3d4e53b7ae916b3c3d26a888f0afbd74bb960c77b28458aec5",
+  "prover.py": "1fc457888d2a580d498bf1e768b9af18421a0a224b44278c92b4d1a450c8873e",
+  "verifier.py": "72fc81f77742bcd1e1f9c53177ee2c6108159e8f32367e8452376a59b2789559",
+  "oracle.py": "2579cb30f8555d4ca5348c9caeec06c37eababbc3e262fe3f08dd98aeef2ccb7",
+  "tamper.py": "faa6f0cf8312dc386a0f43eeea0d23349ce56ffae77b880d4a40ba0531ec586f",
+  "run.py": "dbcff3a79e032da5a840ab22cf65dbf5c533b3b15ba2430848a1cab217a11237",
+  "cuda/lora_kernels.cu": "21f95df32493924122faab228cb282619e9d4fd3c9088156751608cc9affc3f7"
+ },
+ "lib_sha256": "63bc6730e35621b96f1b5723c7e580914ce838349d32a2304ec4e7723f0af4b2",
+ "timing_protocol": {
+  "warmup": 2,
+  "measured_reps": 5,
+  "statistic": "median with min/max range"
+ },
+ "summary": {
+  "configs_run": 24,
+  "honest_accepted": 24,
+  "oracle_exact": 24,
+  "oracle_elements_checked": 12434208,
+  "negative_controls_total": 276,
+  "negative_controls_rejected": 276,
+  "total_verifier_checks_honest": 3312,
+  "failures": [],
+  "soundness_bound": "9/p^2 with p=2^61-1 => < 2^-118 (target <= 2^-63)"
+ },
+ "runs": [
+  {
+   "config": {
+    "d": 256,
+    "r": 8,
+    "b": 1,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d256_r8_b1_seed20261119",
+   "proof_file": "results/proofs/proof_d256_r8_b1_seed20261119.json",
+   "proof_bytes": 1599303,
+   "proof_sha256": "2ad518bac9f11a3525eeff707c087c7bfd52b1fc0b7f82a46e3fae83078eac34",
+   "expected_sha256": "db35d08b52e4203efb599ebfd54c3e41e809252efec5df332ead83e9b4d4b4d5",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 4608,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 60.46334100392414
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 75280
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 5.844703999173362,
+     "min": 5.465871996420901,
+     "max": 6.315099002677016,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07001599669456482,
+     "min": 0.06431999802589417,
+     "max": 0.07452800124883652,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 4.113146002055146,
+     "min": 4.050076997373253,
+     "max": 4.243264003889635,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 4.018787993118167,
+     "min": 3.7473769989446737,
+     "max": 4.62530799995875,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.6258879899978638,
+     "min": 0.6236479878425598,
+     "max": 0.6404479742050171,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 14.188472996465862,
+     "min": 13.92069299618015,
+     "max": 14.223812999262009,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.23521426299703307,
+   "leaf_hashes": {
+    "W": "76f1d5556372f50f3f1a12fc7c79820b57f1d9a01be279b061ad8c5ef2c36562",
+    "A": "6f8b5aa9757ed704cf9946c5e3d60d82ef241a4046e323350ecf3926cc7d6e3b",
+    "B": "9f1aaddb1443f8f7e39a29958fbe1e340babe3a25ef894dc316f029853ad6128",
+    "x": "09b8b369eebdb03734abdddf5d55ad74652bc887d2ca1b4ea9d8530d47082f47",
+    "g": "682e615913c72e04a144291ab71a71db636ac3b9a3872d1ee06fd29573fd0167",
+    "H": "19437d8bd0821d584b828bc3677efe093a7b745aaf11b31e383d81eec9f0e342",
+    "U": "2f3b863ba9ec556fc66cce36961c884e9fd2e73226278f96aed544042ab22631",
+    "V": "475e0fdf9c1252fc178eeac40cb19112312c06f973a9facde009d416002188b2",
+    "y": "a21a46bc84f24162f6f3c2a987f17e45d18963ed40be4ffc876e6547a77db0a8",
+    "P": "c018ff819b0af90655242aa85b127f37d16e8775190d86764fcc32d8a3711325",
+    "Q": "21d00ac333d0a2a8e9964ddac4c93dd976f0ca14a678b62a8648f2dcf35df8ac",
+    "R": "42540115fb36bf5a14506045924d2032a22022ab416188c81c61be4e06241b97",
+    "T8": "bfa728d90396a2888084cd11e526c319d691ceea78c7786d5d66482be6e8a174",
+    "T9": "da3c6bfb57afec7c61549412edd82356c2df61130762547cb95c10772c847b8c",
+    "dX": "00d7d2d27c38d39e327554c40231a687a10c5de596f7984b2b1268723f457bc8",
+    "dW": "7bf1322b55891b866f3c0b61978eee9aff4b04c1108d2e814957844886d2df50",
+    "dA": "16a3a9c7887db15819d1d6bf693d7918c18e5320656aa58a3d57e22fef29771c",
+    "dB": "215a783e38121d72202286b105e5ef5987f131e02642afa52f794da05b546f45"
+   },
+   "expected_file": "results/proofs/expected_d256_r8_b1_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 256,
+    "r": 8,
+    "b": 1,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d256_r8_b1_seed987654321",
+   "proof_file": "results/proofs/proof_d256_r8_b1_seed987654321.json",
+   "proof_bytes": 1599302,
+   "proof_sha256": "3bc88da366d30baf97ffd157f725ff29a14733a4e409718e4aec2971a16cfe11",
+   "expected_sha256": "0d517d99bed37f6fc4687b8031f68efd8020ac8d5daede432c6e7c8b38f56e89",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 4608,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 57.589706004364416
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 75280
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 6.751480003003962,
+     "min": 6.126171996584162,
+     "max": 7.3097380009130575,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07222399860620499,
+     "min": 0.0681919977068901,
+     "max": 0.08195199817419052,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 4.676853001001291,
+     "min": 4.287545001716353,
+     "max": 5.121335998410359,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 4.4640390042332,
+     "min": 3.8194549997569993,
+     "max": 4.877790997852571,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.6398400068283081,
+     "min": 0.625823974609375,
+     "max": 0.6455039978027344,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 15.945941006066278,
+     "min": 14.260550000471994,
+     "max": 16.7938390004565,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.13903755800129147,
+   "leaf_hashes": {
+    "W": "0eeafc64b0d591c2a2ec6792db8aee01c33e99a999cafd08fc34d26724a39641",
+    "A": "38243202311b4d45c4f59b32a0d7af7add4b12abea0ea1ca3cecee6f9f3bbe02",
+    "B": "e564f698e1bb7e247fbbeee1a7966f40a4f7e7e7561f72bff7f23077408df6d6",
+    "x": "f11e560eba62a255bdbfa986f4ee7fb349bad0a211203880718ebc84c57ad050",
+    "g": "2d4a0f0fa5bb51eaf8d235856247d16d9071f6bf3b93e6e6cb857c71fbe11b2d",
+    "H": "86642f10f70c28c3676d56e8cd519b2b7063c15e9a6262c0ee4a25c171f93c43",
+    "U": "8a5572b647314132ea98ed9287a54e212789f592ef081161ee004a0098c6199c",
+    "V": "74cd031a26634ba6ba1990e7d04690fb10cab89167986e0809dbd5f0aa48aca6",
+    "y": "3d6ebee1d138785f84e678401650a594a34c216508a11fb1e11a04acf7d16d73",
+    "P": "18cdbfe08121013af4a99a6ebe92c0b3cf106be4063719fb02f14b7757f0343a",
+    "Q": "df4c6f51ef394b5870c2cfb8980e3f839b0b06f5383e4a9da0653fb851c81ca2",
+    "R": "ff93af5ddc32429ef136ffc3b30143afb3baa00e1cb47e8e8ed38507a39ad6fd",
+    "T8": "17bef8b737a7b10869f72274bcf08b01b45d9b1953ef431366ae5f5d7718152c",
+    "T9": "c6afd20bc3126528000aef9fcdb4836b2e1609c57fafb07db48ff09b47e0e511",
+    "dX": "4a80085b994e64ed796f799dc0772b4457f077e886d932ccf9d6a750f1fa8da8",
+    "dW": "8673b05982c773ecc4c9cb11512402922babc1b477aa2e16eb6366c826d77b49",
+    "dA": "bdeee86d885ee6abe7ab8c9493c7f931eb13cc63f4b324d8d9baa0a079a6b781",
+    "dB": "b22c62c20cc1b3f72167f8182c46414dc0026006e074cc6924aae85a3158616c"
+   },
+   "expected_file": "results/proofs/expected_d256_r8_b1_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 256,
+    "r": 8,
+    "b": 16,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d256_r8_b16_seed20261119",
+   "proof_file": "results/proofs/proof_d256_r8_b16_seed20261119.json",
+   "proof_bytes": 1934355,
+   "proof_sha256": "3509c2f73ea254acf628d74911b22eb846025457f42fb090d63485beec3d7503",
+   "expected_sha256": "6245b0eb0d96ae3a5e78bd85d83cbb5a9d1e2c35256b7be2b7cd476fcf050128",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 12288,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 68.98437199561158
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 98560
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 7.773148005071562,
+     "min": 7.071292006003205,
+     "max": 8.308428004966117,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07503999769687653,
+     "min": 0.06764800101518631,
+     "max": 0.08153600245714188,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 5.594035996182356,
+     "min": 5.443383000965696,
+     "max": 5.757468999945559,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 5.234691001533065,
+     "min": 5.148574004124384,
+     "max": 5.469644995173439,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.6613119840621948,
+     "min": 0.6595839858055115,
+     "max": 0.6644480228424072,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 18.54844500485342,
+     "min": 17.813902006309945,
+     "max": 19.535542000085115,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.16116589499870315,
+   "leaf_hashes": {
+    "W": "e82eaf5166d1b9548c8dd84b71bb32fbbef42c351863b14271640b00e4f2a417",
+    "A": "f8c6cacb7d90e1e1c33e2ac60daea6534464cfc387b9b3421f6b2618583a2929",
+    "B": "049ac9ee83b8979e841b13a9aeeab628ce5baa54d1eec8e33c311415d342569d",
+    "x": "95ee39a8a981996a0511e430224e5cd8d344e27bbde3d7849241c6ad7f1e1898",
+    "g": "af0faa97875db033514760e8faf7483f0ec7e9c5ad352ab19ec7208e2c4369fd",
+    "H": "6e5317e4b4e0923b4b432475e2a3cff8faf7792f23e29f49fcf66bf988785e76",
+    "U": "72fada026b4f090141cb02d2e7eca47514ee05cc6590ea6e827a3817edb83beb",
+    "V": "3e6cb7cb0b3e803d1b8c8eedc35186d592f38ee5013c79862e57019ab49ce501",
+    "y": "c9a0478d91e699c4152421db0197cf7e968b7e5b2c54fb7e893d5ad2a0f38f5c",
+    "P": "9dbd0504260689a2652023cbfb5c00c3f422266abd6760257d16649b77aa6c1c",
+    "Q": "f9686e1ecfd0b6f3f9129461c9128beae2868eab1d243f624c596ccc83b40e02",
+    "R": "d32247a62b5391034238638edef1ef50051bd7d405a8e66b22fce6ad1e4b1718",
+    "T8": "acd1f01aa3ac93852f890c838deba78158eefb82fdd96b7b3d09894bb176c3f1",
+    "T9": "95a231ed8a0418a8371e28bd74e6ba9c3f65b49c09332741bf9c85d4d09322b0",
+    "dX": "ab9b14eac4e1e5ffac7865bbc1b4bb49b9698da46322639fa832b36003fe5b6e",
+    "dW": "b13abc29186fc8831be553d2ef4978a21ed240341d907d40001773618097fa14",
+    "dA": "a083235a0249a81b49ffa0f75c890a867985d08bd2ca3eb14b71d0167886dcb4",
+    "dB": "c04bf9fb331af4884cc125c8be41e8db65f36f8aa7c75bb71c8d51a9be2afe02"
+   },
+   "expected_file": "results/proofs/expected_d256_r8_b16_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 256,
+    "r": 8,
+    "b": 16,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d256_r8_b16_seed987654321",
+   "proof_file": "results/proofs/proof_d256_r8_b16_seed987654321.json",
+   "proof_bytes": 1934357,
+   "proof_sha256": "5451de75e203e6927701e22e11d4b2e44db30390d8d3ee866270ad82468693e2",
+   "expected_sha256": "408ec0e1f084e497f8cc6323f23275eb43dd514eb5223622173a8a8fd7fb89ac",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 12288,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 75.02826899872161
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 98560
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 8.18871700175805,
+     "min": 7.568159002403263,
+     "max": 9.544516004098114,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07132799923419952,
+     "min": 0.06332799792289734,
+     "max": 0.08640000224113464,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 5.389813995861914,
+     "min": 5.227217996434774,
+     "max": 6.447801002650522,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 5.2502670005196705,
+     "min": 4.6351560013135895,
+     "max": 5.98138700297568,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.6605119705200195,
+     "min": 0.6488959789276123,
+     "max": 0.6635839939117432,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 18.57435699639609,
+     "min": 17.756002001988236,
+     "max": 21.564492002653424,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.16958474500279408,
+   "leaf_hashes": {
+    "W": "17208bbac5e7923f2340663c88c2db30d1c4378535e67ca0909484c2003340b4",
+    "A": "052253058bc8ab79b4c28057a4030e6f3c6291e5095cc889cc8358031fa0b9c7",
+    "B": "1753e9dffb4ddb751feec3f58eae1e9dcefb24fdfab5fce586c6f43d8e74d2d4",
+    "x": "e74506dd86c4e001ec8046317599a7259ae62fd8fefa5e54c2a90698ecf48df4",
+    "g": "4b9048219e1458fbd033bdbd8ad5b299557d954c7d92b7cd97b72e6e537e022c",
+    "H": "3b047a4186239b4c679b81acd6bfe510981de62f54e3977a457e5d98c28a42de",
+    "U": "d9f2dcde857c75a539dcf620caf211d1c75631c37cd0c808434ae6aca1eeef74",
+    "V": "16a70b90542a4cbac34f1c41c83188a297532c19f4fca8b4b1c137e34d14befa",
+    "y": "7ad1c984bf3678284540c908e24d6be0137a4e5cbfe0273b68d0a82ce51f4df6",
+    "P": "56a3a65cc82fa787185e80c0cd84869834a21521fda07b2949b95adf46ad3bcf",
+    "Q": "3a850659f1ae868c15e50c967afea77845dd0ef67462982df22a57d63bd7ea4c",
+    "R": "ee8690e8e0a13461a840d84836dc1ad446fcf85f4ddcc7a89e3221200ea008a6",
+    "T8": "4d2018444ba5f449bd9fce59cb46010b9d36ac5ac6b7483ce7db7ba2fa777b65",
+    "T9": "07f33daaf0e0f25777a60e61bec46adb1ac81197797868b5a0125aabbd26b14d",
+    "dX": "79bad9505bfa158030b3f954d7c9c366794b0ee90225b770d2d0c18b5c3cfeba",
+    "dW": "f01c8f9366c4b27bd53eeaef87370a700048f5b53c24d91e4d4c7537c69a7914",
+    "dA": "9b475752424ed443f2214fd52df54334e9cd88b608a2087ccf49366a3761a9e4",
+    "dB": "d2e14eebcbc6edcb606cdaa6d47c328f0759c0a0c8f83fc6e0c5168e12cd92cd"
+   },
+   "expected_file": "results/proofs/expected_d256_r8_b16_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 256,
+    "r": 16,
+    "b": 1,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d256_r16_b1_seed20261119",
+   "proof_file": "results/proofs/proof_d256_r16_b1_seed20261119.json",
+   "proof_bytes": 1731223,
+   "proof_sha256": "222cf3e0aa646b053cba0345c7fe7bb99fa60c6b9878eaf3718386ce848c5d9b",
+   "expected_sha256": "9e756b6c428f0148ad56808d6314eca5d4ff2bcbf307201d914b69cd3c9797f9",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 8704,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 64.48841399833327
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 83488
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 7.736131999990903,
+     "min": 6.903807996422984,
+     "max": 8.778194998740219,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07862400263547897,
+     "min": 0.06886400282382965,
+     "max": 0.09110400080680847,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 5.486476999067236,
+     "min": 5.064832002972253,
+     "max": 5.823750005220063,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 5.208010996284429,
+     "min": 4.482616997847799,
+     "max": 5.676032000337727,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.6550719738006592,
+     "min": 0.654367983341217,
+     "max": 0.6588799953460693,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 18.68149700021604,
+     "min": 16.451256997243036,
+     "max": 20.27797700429801,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.15759159000299405,
+   "leaf_hashes": {
+    "W": "c11438803bd509d5d9f15a9392ee5fde342439eaca7d229ff9ccaa20d06b7680",
+    "A": "f7e5e801af4d1bd0e08545a8a52d13bd8c9925ba6d6d153a8d43e64d08b99623",
+    "B": "e30f7ebe15c045f1a3dbe4726d0d3f0336390fae95bd7393e8636fbe548c1b1e",
+    "x": "24576484d407ec572aba6317179861eb9c533c5eaca66532778dba9c909ef201",
+    "g": "57bd3c03758044cf25efa0ccc8210088675057cd89aae02c42c997e57008d1eb",
+    "H": "34465c36f6eb5985419f0674e38c5cd64f1c1e4d55f22de6f981d7369dd6f0bd",
+    "U": "714ba2f7aeca4d40cb88252410a82f79c13529d5fe9bdf241988fb1f302156c5",
+    "V": "9a3a08c79b165f1a81e2276eac4adbb804b218929e1e47b83e4e22f8a3763c1b",
+    "y": "0c8cfc33783d1e38c60814f485633d5bb1bbc2e47771afd93f6f308fdbca9685",
+    "P": "8821a81c802c7675f8be2588cfd6aad83ae81d752956ef1fbd9c3ea6abec0c05",
+    "Q": "1b61bc94521a63000ca53cb948227dcb1970602d2575459d44ead41654847907",
+    "R": "cb6218a48cdd9e44edde6a2314761afb20c548de0ea4135485af5544a2ac486a",
+    "T8": "c42066a8f15cc2ff9db06c40d04b4ae24752a39f9ce7c90851b3ef44623238db",
+    "T9": "3582100c822a316c6551884cc04d5a068f608205bfcebfc7d72202574bdd6388",
+    "dX": "8cd65f8093be812383166db17d8043d5fbfeacdc9e33731c0cf5b135421d885a",
+    "dW": "7b4a13e62d0a80b282de446ed13771e385c9069ae0edd4d37e4f1454ade979f3",
+    "dA": "cc56109b0cb6beae60efc15d552eecfee599eb9cbc91a791093258594e1e88a2",
+    "dB": "fb6b16131b256f89eb2d97288aa51357661752b9c96be8b7d664e8bab9db3690"
+   },
+   "expected_file": "results/proofs/expected_d256_r16_b1_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 256,
+    "r": 16,
+    "b": 1,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d256_r16_b1_seed987654321",
+   "proof_file": "results/proofs/proof_d256_r16_b1_seed987654321.json",
+   "proof_bytes": 1731228,
+   "proof_sha256": "c6b2b44cd218aee091fba794247e277c0e4419a01c7fc9276e4689a8e1a602bb",
+   "expected_sha256": "472ef720812f504c2c4a505722a60321b2e440fdd1468d9497e16e23cdcf2062",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 8704,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 68.28342399967369
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 83488
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 7.590159002575092,
+     "min": 6.446473998948932,
+     "max": 8.159871002135333,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.08297599852085114,
+     "min": 0.06806399673223495,
+     "max": 0.08745600283145905,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 5.6345449993386865,
+     "min": 4.794537999259774,
+     "max": 5.791622003016528,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 5.311168999469373,
+     "min": 4.509926002356224,
+     "max": 5.768923001596704,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.6601600050926208,
+     "min": 0.654528021812439,
+     "max": 0.6615679860115051,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 18.535873001383152,
+     "min": 15.830001000722405,
+     "max": 19.600984000135213,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.15727212600177154,
+   "leaf_hashes": {
+    "W": "1f5c0cabf055be40303b931ef7c5911163088fc33087a9eaf124ae217ebfc712",
+    "A": "2bba67f77e5aad3542b26b34aac46cf955f6d3a560bb809192c35769a77815c4",
+    "B": "a1bf75122c5f7976543e494e2dd2570cecca97c9acaa2cf372656c6c3d5f3eff",
+    "x": "c8862c5267a62d0fc2f724de01908545302ddf5bceb35fd3925ee68ef6249c3e",
+    "g": "c652c333d6642ba0b49dcb0f9cf2c4d246522e953c6add88b0fbfd29bf14d951",
+    "H": "af37945075d5ad8fd3931cb479bc33d0c2da43d87ca359cc130be9829d7d487d",
+    "U": "8ad8d4d3774a771b65804aab3b8c4feadee3f9447d412fd026aaebea35981e43",
+    "V": "13b4ee9bfa02dd4b67c0feab4c163bf5420df734b7abae96fd6a8e1451b3a093",
+    "y": "47ce89b942592c5bbaecd19e7cb6dd8f38010fb8cc848e47ffffba7550141200",
+    "P": "f114cb13d57f6e39eae989ff6ba6bb1b9dd2e12d3fc49ae6337ef0ed584063cd",
+    "Q": "2982d391cce573187b5ada71642b876c12e5a28dc20d3012569363a8a602975d",
+    "R": "a0b22e3c6c5c727a6884b5749c0873196e8cd40b0b3241befed7388970fde5b5",
+    "T8": "7ff8f6e0f71883604298c0e32f1cf12dd64ad468764430866cc967e18faa95d1",
+    "T9": "62b22d2d954bf1ac76b88e37060ffbfc668e5884bd6cd9e06a49bd645324eb0e",
+    "dX": "c7f157619708892a5dbda4fe4bb5f2c17e24376fbd0ebe6fc2d8f9d35a05beee",
+    "dW": "1957f76325b9019450314b8d1fcb71310eba31343330514dfafc4f43674f6469",
+    "dA": "960c759939828ee8068ea8f277ad66e9d9acf28da0e496dbbadd46ca4a88d560",
+    "dB": "a4a0dc1a15ff3443eb2d6fc7d7faf6fd35213d281d4e503b13aa567305143dd9"
+   },
+   "expected_file": "results/proofs/expected_d256_r16_b1_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 256,
+    "r": 16,
+    "b": 16,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d256_r16_b16_seed20261119",
+   "proof_file": "results/proofs/proof_d256_r16_b16_seed20261119.json",
+   "proof_bytes": 2068839,
+   "proof_sha256": "5c595385b6b595d7d78c84481d44f9a7a16367fbf166a62c351db4498a4371ba",
+   "expected_sha256": "3d53d75d5786218317fac7495827e400857fd577933519cdf38e6b36d951770c",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 16384,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 73.53829900239361
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 107008
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 8.238305999839213,
+     "min": 7.5504880005610175,
+     "max": 8.87178500124719,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07161600142717361,
+     "min": 0.060896001756191254,
+     "max": 0.08636800199747086,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 5.835133997607045,
+     "min": 5.220582999754697,
+     "max": 6.3003620016388595,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 5.387998004152905,
+     "min": 4.644932996598072,
+     "max": 5.995774001348764,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.677344024181366,
+     "min": 0.6639999747276306,
+     "max": 0.6785920262336731,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 19.426865001150873,
+     "min": 17.416003996913787,
+     "max": 21.167921004234813,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.1707942909997655,
+   "leaf_hashes": {
+    "W": "dc7b726da195c4b01838b6375165be5fcb3f6782ca69d26112847c901544e544",
+    "A": "10ac05f72e6f1fc713c912be8e8aa5dd52521ef03f79f3644831effb8885397a",
+    "B": "1505380454c0824bd6c8d548ce6946a91d5daea08e9159f934774e0f07f567b2",
+    "x": "46623fd27f02d3e6b5233ca30f4772ba95004fa2084815223e7a89cf5e6a6e5c",
+    "g": "227596553bc15dd7ff87f9cfb14ddeeed276d493aa66703bc41c9e1daca877e6",
+    "H": "c16578df8c466571fc55479b9a83b2198ae8f03c87fadbca65545d6fd2f1ffd1",
+    "U": "486c83a7c416218e3619b9f3c71cfcb343ee7381e1b8c8a4dcea9b0f9d4ac638",
+    "V": "7df559a72b0b70e803a2b1ffc95009313110b85deb74c130fd1c384ee10ab45b",
+    "y": "456fcc8cb7b70fcc87089ce7224f0136d90cefa7e21e94f9e78f920fa5cf3ffa",
+    "P": "d70030e58ea7b0dc1c592618683fe4c8343e883bbf7f2d8fd312496820e94125",
+    "Q": "544b1fe03df4edfa9c024d7bcd37dec8cd5d3aae6198f8061723695002480246",
+    "R": "525bbe8327988dd04508f2e89c823a2eb23bae83c109986137d2ba5024cb89d0",
+    "T8": "d2e414b6bf60bf6b92938b7569160520711ef6518f013aaaae4721828c43a34f",
+    "T9": "df35ba9df5dc5d3709b4520e66f78d53aa2250331b3b0692d4c7807aa6b02137",
+    "dX": "94cc051417d6803414fad473b68ed281bfc705adcbb927e2ddce13f5e9bccd78",
+    "dW": "f24339ebce8f67652dcbff889ce64043e4aa31dd77a7c97862025013d0b392d1",
+    "dA": "e32a978dfacd0581794710c64f6b579aa2e6eb7cb9be0d97a76a838aa7ae3c55",
+    "dB": "9e287998cf9ea1d086a80fb162fdbbb961d6dc60b1003f93059933ab13feaa95"
+   },
+   "expected_file": "results/proofs/expected_d256_r16_b16_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 256,
+    "r": 16,
+    "b": 16,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d256_r16_b16_seed987654321",
+   "proof_file": "results/proofs/proof_d256_r16_b16_seed987654321.json",
+   "proof_bytes": 2068841,
+   "proof_sha256": "be0c3eff37f170b42fc49c163728bfdc18540a9748f29f2bce9bdf5480b01f5d",
+   "expected_sha256": "b12550d36f7d4bbca0240aca10fd502990ced277669718f549cd418afdbd0fc6",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 16384,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 76.88582199625671
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 107008
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 9.402035997482017,
+     "min": 8.385884000745136,
+     "max": 10.145868000108749,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07123199850320816,
+     "min": 0.06188800185918808,
+     "max": 0.08019199967384338,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 6.336680002277717,
+     "min": 5.87711000116542,
+     "max": 7.5956059954478405,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 5.634405002638232,
+     "min": 4.882889996224549,
+     "max": 7.496010999602731,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 0.6754239797592163,
+     "min": 0.6635199785232544,
+     "max": 0.6791999936103821,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 20.662255003117025,
+     "min": 19.519756999216042,
+     "max": 25.231757994333748,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.1892905630011228,
+   "leaf_hashes": {
+    "W": "1ec7b985953b7b616ed9f803a38beed3d7bc7b14217cc98272be6c0c421fa4b5",
+    "A": "131cb7c4408b32d4d73bc7a78c40c836e1b0f51905927dfbdda73bce958f1984",
+    "B": "dfca7386fe0ee7c603b5871ad7c7741acbf39f6261865a697a9b88719adb475e",
+    "x": "e682d7872b9b3cbebe111d64279c1b8c6df294a31643898d698610c727104872",
+    "g": "ce4f42309a1af81ed40e5cac7b2280322655e4d45ee69a9439729387a47cbc52",
+    "H": "378bab98395968354ff6c5b44d6e7a1ae78ae88cbdf4cc0668808961ea56f77c",
+    "U": "158c3595162d67439117a204a01fb8debe4add799b331c60de6b8f77508b33fb",
+    "V": "31a3cf9508d7877aa5a03b7d546303c7399e188fe039d9e25f60179b59b59a51",
+    "y": "4cd515e152c3495096ad8331597ad87a51142c1bf965bc13c5fe3c369c68a42e",
+    "P": "8645b53f48488a9d34fcc0648c6ed89761b93296b4f6542463b8f4ec127a0fc0",
+    "Q": "cc49cd1e5c5ed582613d4e12557ccf990a9f801d74fe820d32b8ed30501459a4",
+    "R": "ca5b16d639042215572762df9de5178cd4a99f3d2ec5f85dcef26dcbc9a5d4dc",
+    "T8": "a672d260144cc64d483244733de8da96b945c4c848e38d027e7f830a00859e52",
+    "T9": "c107a4795d749714f0d3ad6fe8d92a2a481b306a2610b861ce37d7b444475da5",
+    "dX": "790d7283baf760b2f7f5cc1b93f264a907002531754134413cd6f4466ef7e2a5",
+    "dW": "82f2c7a26f4f914b7b91e039bb5eb5663377d1c171fdb5a15d4c3ef9688a4ee5",
+    "dA": "c0b3742343a36da588d71ebe585c71c805620686eef5e82eb7b2e8a7053d84fb",
+    "dB": "c1c57fe57fae0fdc8a7b923f093614a7f7a8f363d4d9ec14e1e1ebfd6f7ed8f1"
+   },
+   "expected_file": "results/proofs/expected_d256_r16_b16_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 8,
+    "b": 1,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d512_r8_b1_seed20261119",
+   "proof_file": "results/proofs/proof_d512_r8_b1_seed20261119.json",
+   "proof_bytes": 5990218,
+   "proof_sha256": "7415f716fac7617ea26714a16e5ec05f9bf8a34b8a3f240c063781e11e411575",
+   "expected_sha256": "32daa058b09696a44c0186fb9e2e8cd47308ac605d90fef844fdca478f7dfa60",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 9216,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 233.7575339988689
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 281616
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 28.21302200027276,
+     "min": 26.713484003266785,
+     "max": 33.34392599936109,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07929600030183792,
+     "min": 0.07827199995517731,
+     "max": 0.08345600217580795,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 15.936791998683475,
+     "min": 15.683958001318388,
+     "max": 17.509105993667617,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 14.10912999563152,
+     "min": 14.029857993591577,
+     "max": 14.385640002728906,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.203104019165039,
+     "min": 1.1965440511703491,
+     "max": 1.2036800384521484,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 58.43194499902893,
+     "min": 57.92683799518272,
+     "max": 63.91520900069736,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.5459163510022336,
+   "leaf_hashes": {
+    "W": "891321f22ad593563b5b727d1a8e87eaa0dab94ad7f2e452ac17aa74b6f35a87",
+    "A": "fa2bf165214b7468a08c7c31a2609cf0353063617d58e42213c0b01946d0f5ac",
+    "B": "51465714431e4ccb8795ced4e51f19711099880fba53a61958637c7005daf0b8",
+    "x": "0a71a4da3cc7366e1ab353b06f0de3bbfbfae6231024b04a66bd43cf06e3fe2b",
+    "g": "f8a286df4685f4e12d5f6d45ee2bc8b29c54aff36b627356c0cb008cd76b3c4d",
+    "H": "8bf4319304ca1dad40f9bd9545bb503bd13817da4f0d9b1657a94c2ea28ec0ea",
+    "U": "31823104ee4ccf1a128583dd75162d5c236018c0a1eb44fdf6839da0cbea65df",
+    "V": "c2d2ef1f9d18340a5288d2e39f7520eca310dcaa689685dee1f724e99a9c1bb6",
+    "y": "e5a716f1536b13552c61010a3864146b045259209ecbffd4e69399850b3fbb52",
+    "P": "e70e3dc0878766bd035ce88b3f0d45214af569f5fddde42a5a5d18027c8eff2a",
+    "Q": "57f95032517c88d71051798991bfa45376b815faaf0de6b18a5075a7d84c3fb6",
+    "R": "5a17a13bdd175c178af423ea97e3404b4e24f8e491ea72caff25daf509f51afa",
+    "T8": "a7fb26603daed374ed9bffbc5eb5b49d4a9f96c3d2a6f3dcfd3aeb2a0d80ebe8",
+    "T9": "1e521c671bef6567700b4241fc101cd9e13997ce11a83a26518bebce075fb968",
+    "dX": "af194053461c88cc3a3071f7397b318ac18ac5e978b25a190c2c0c4699f72295",
+    "dW": "2b33f60ac901ab2cc9778bf0c55e4ac0002f2f508175397c4fa62d79d06338cf",
+    "dA": "f6c421ca8e8e07b8caa52742a10ec3399539d91a5cca8b67a9a4af5361201c47",
+    "dB": "dce6d7242b35b9cdb0f92df29f75cd40f252bdec585bdd222f2763739559f582"
+   },
+   "expected_file": "results/proofs/expected_d512_r8_b1_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 8,
+    "b": 1,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d512_r8_b1_seed987654321",
+   "proof_file": "results/proofs/proof_d512_r8_b1_seed987654321.json",
+   "proof_bytes": 5990214,
+   "proof_sha256": "7163e4d40eba01792a97657f2b739dcbb4f3ac0496288bbefeb41fe85708db41",
+   "expected_sha256": "de112c5492e8f6bcb5f6f7868c14acd6d895cfc92617ef9c6c22379248a1a082",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 9216,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 233.10463500092737
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 281616
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 29.342946996621322,
+     "min": 29.25187099754112,
+     "max": 30.671019994770177,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.0790719985961914,
+     "min": 0.07811199873685837,
+     "max": 0.0910400003194809,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 19.39906700135907,
+     "min": 17.09025500167627,
+     "max": 20.41479900071863,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 17.816765001043677,
+     "min": 15.432870997756254,
+     "max": 18.4202819946222,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.202720046043396,
+     "min": 1.202463984489441,
+     "max": 1.2040319442749023,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 66.56778899923665,
+     "min": 61.98047599900747,
+     "max": 68.90258399653248,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.5840891710031428,
+   "leaf_hashes": {
+    "W": "71d0d9c396b1a4c843155b494adc7815ea26c1e7e84e2d59bbc446d95cfafbf2",
+    "A": "2b9dde7fec1629c395178cc1a7c82d7e598597b1515651fd4faa0a2de41c2346",
+    "B": "f818f1dbbaf822f30b06d00e3cd9eeeac37022be25b92e6090ccd13dc430f72a",
+    "x": "15b4315c61f5d26719e20db0772a244689d71d2792f55ec2909215028ed6b71b",
+    "g": "22861ea1bd59428f1a96bda24853b2ecd016dac6ebd760925b45ce5d2c9f1f14",
+    "H": "f323819bea5d00cbda1fe2862763b7c363e9782924c14ba41512736d3c6589c2",
+    "U": "8043bc8f81beb9794de1fcd593981bec834e20fa0f9d2a6c0dba5e0e402805e1",
+    "V": "fd6dd1e7102cd0165cd38adcd2c5f9fb7219b2fc71e56b1ffc44204b43ec61d9",
+    "y": "fa28e00a589ce39f14844681f598e87220945df2081373240261cc70a1531bfa",
+    "P": "4da125359cf6704d7ba860d51adae4182d8fd46665232faeb7792a6c782eb842",
+    "Q": "5737a0253d72be3e24bc77147637f3e1d92158409e78997d2fb1723e7b10a07a",
+    "R": "80139482fe3895a92178e75dff319535b2407a096c325fdf90065037cc42f13e",
+    "T8": "ce452b2a9d906d23e94e6eaabf8176c29a9b8ae95e8a84839dbe690b4c6985db",
+    "T9": "af149fa031e3cd1b972e17c556e20595a5605afb987a709a23f2938c8dcb95e1",
+    "dX": "6fa4694a3926f9749a4b0d93aa453ad9b89560a2d3bf39b99853bd16d85a38fb",
+    "dW": "0232fc294d387a1f9ac29c8037eeb994331251d4e9c545e8da2c4e3fab58ab03",
+    "dA": "864c79167013037b99c671676ce899704d8c0e9d2e714cbf8c9cfdad1257a6a6",
+    "dB": "57d28dac1c1872d5009589f9b4856f1829200a07718c53aa015f5d34bf278dca"
+   },
+   "expected_file": "results/proofs/expected_d512_r8_b1_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 8,
+    "b": 16,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d512_r8_b16_seed20261119",
+   "proof_file": "results/proofs/proof_d512_r8_b16_seed20261119.json",
+   "proof_bytes": 6652947,
+   "proof_sha256": "e5d6a03934c926a6c9af179774281b2b06af7a0ef75351aa8744fb7ac0cea8de",
+   "expected_sha256": "870c879c548be8c57492d85dc2ab4577391ae2526eac1073064736218b542b0e",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 24576,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 255.09600599616533
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 327936
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 31.31225099787116,
+     "min": 30.861760998959653,
+     "max": 40.112375994795,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07228799909353256,
+     "min": 0.07168000191450119,
+     "max": 0.07264000177383423,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 20.808995002880692,
+     "min": 17.591730000276584,
+     "max": 20.82526799495099,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 18.940893998660613,
+     "min": 15.74723600060679,
+     "max": 19.134081005176995,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.236448049545288,
+     "min": 1.2363519668579102,
+     "max": 1.2369920015335083,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 70.92587599618128,
+     "min": 64.20072699984303,
+     "max": 80.03303299483377,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.6152489489977597,
+   "leaf_hashes": {
+    "W": "df90c13fd3a24a6394b3bf4907605754b3e0f1cedf2ce70ee02308b0240c5802",
+    "A": "5e07f3aadb63eb936f4efa3810063fd476adf1d2ef3d379ee9885759336ddade",
+    "B": "b9401e7f7b2c9ccc89fb6ab50a7381a681ab5792cdba5589475d0feca28416cf",
+    "x": "99676b7f9b6cce676e1b5f0aac214961c0634efe8bc6f4150a55b6a45ce501cf",
+    "g": "ad43a7d4f0a0096cd5bd31b03d3fc1f01d238cfb10008463c137b0da6c904985",
+    "H": "3263d52ddf35d39812e7347e38d3f6631aac5539b999336033ee707987cf5b7f",
+    "U": "1628ff566ab2b55e00779351b5f961e0fa5a02c232ea8a35e4ad55445092ebf8",
+    "V": "4f9a37a433073b8a5e3596ffea42e32e58d97cd7722896b67393716aeaad2c9a",
+    "y": "c2eeeefe10bdbe0807c3be1b1b64919d3c1ad900fda85935855138bf025399aa",
+    "P": "173d32ce62e9907480c4decf74eb186b51ea04d9265ffd59b6066e8d0293c9c0",
+    "Q": "df396c4361d838d4cfd5395c69f4a8e026497dd1775513ef9181d2c482f72b33",
+    "R": "43a8c23a760742630510b9e57e6a0de003e7d8263687f5a3e2f1c75e6775d008",
+    "T8": "19ac8eed6b4803d157a4b5c93392f4218160cd58c5c265f9cb1f48577d676b1a",
+    "T9": "3b218b38602c6be93535f5bbb9ba5927e8c958d7cb4fbf3218fda29118e8aa2f",
+    "dX": "62653955cfef4e66a0b961c9afd7eb1ac3eb8703925701172dbc4db542e946f7",
+    "dW": "74cc4dfea70d3bd12cbd883c0b35650219993320f78a387723536643c62df7c0",
+    "dA": "22d073e6f71456f21e5a21a6c61eff37897a5eae32d5a905726212ee4a071609",
+    "dB": "51ee2229c1c201b087ab876c6abf5a282d236126be4f96ea2e683f1ac14fe3c6"
+   },
+   "expected_file": "results/proofs/expected_d512_r8_b16_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 8,
+    "b": 16,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d512_r8_b16_seed987654321",
+   "proof_file": "results/proofs/proof_d512_r8_b16_seed987654321.json",
+   "proof_bytes": 6652945,
+   "proof_sha256": "e43559821e97b414e17ee95d2acd0a53a999bdee2c22cac4f84f4da1fcf973e4",
+   "expected_sha256": "21ce89b4e580021dbf3926e6032d61bb0527f0631c88e5f84992046d5451eb04",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 24576,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 250.15849599731155
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 327936
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 32.65268399991328,
+     "min": 32.31953199428972,
+     "max": 40.22880500269821,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07235199958086014,
+     "min": 0.0711359977722168,
+     "max": 0.07286400347948074,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 20.676362000813242,
+     "min": 19.03539199702209,
+     "max": 23.64093299547676,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 18.987060997460503,
+     "min": 17.322204002994113,
+     "max": 19.10300099552842,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.2309759855270386,
+     "min": 1.2279679775238037,
+     "max": 1.2327359914779663,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 72.38364599470515,
+     "min": 68.9597840028,
+     "max": 82.85679899563547,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.6387958659979631,
+   "leaf_hashes": {
+    "W": "4c934613b6ff35b7b16f94749faf13788441fa2326903bd2bdeea870b8cd55e2",
+    "A": "3cf9d1696c05fbad89c38e845b00e786eee14d8d75c49913d178bd2cc3238394",
+    "B": "a4d52a4a892ff3db965cc062bde53de6875c754acb9044186d1157099d3838b0",
+    "x": "55d527bdfbde9c9d248a0b7d8491d60ac1eda78399df02902cafc7717d4f3817",
+    "g": "0ca1f53ada0fc2ca150f7c4c63450443e941510812829567db9e3be402050c5f",
+    "H": "a1cb21fe3b3e6526b79e412b0c58443d8b6c93a8fba3d34f8dbf192820820d82",
+    "U": "1df04fb4a1d38ea485dbaa04d2e2a28292292f1f6a7bcb02026f8d6c7e04bd56",
+    "V": "472161881922d3e5cc2b2afc21d59748d3fe45f3722a29eb99689939ccf0338d",
+    "y": "f63034923d932083ff07cdcf3aa37541fc9d0239da677e34c790da2c2d19a83f",
+    "P": "960822a0fdbd10c774adb242e1ba9563cbf0ddf1e3ca5302423c44b27cca0482",
+    "Q": "f117313395afb48ce294dc0b9cc0b31b95002791bf3620ab764ef309ab0ca235",
+    "R": "02cf0cd13fd9dd9cb753da580e3374001353897bda9099408a67d299d2c03ded",
+    "T8": "0c65808593c375d9553719a922edc0049d1dee1fe2495eeda0c935e1119ec397",
+    "T9": "7d7676df3626a8cbe7aabc0e389de31b1a4b26ad67bedb17ae4fd566b70bf98a",
+    "dX": "1ed94b4a3dfc351495b0af9c77017ab4d87bc8901f31d1230bce1a58e2e5e7ae",
+    "dW": "4baa2d9c311a496042ef26466ac8152c988bda01d198e54c42bd24369d36db8b",
+    "dA": "3b7ea021e94b1cecd75f6962801d1a55e739af4c9145a67ed84612d6f6d1ab96",
+    "dB": "a902db182e124cb3b507f5770ac4b56fa8c7e5c438d52256fd5bf61f1774f73b"
+   },
+   "expected_file": "results/proofs/expected_d512_r8_b16_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 16,
+    "b": 1,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d512_r16_b1_seed20261119",
+   "proof_file": "results/proofs/proof_d512_r16_b1_seed20261119.json",
+   "proof_bytes": 6253228,
+   "proof_sha256": "1cd71dd279755f0fb14143efadf5d603c81205ded31751bd64302fe50e5bb637",
+   "expected_sha256": "deb7951f6dd4a4c5fa3bc021303da5393d2607fabc9af5ffdcfd03c5264fb42b",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 17408,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 230.55492500134278
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 298016
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 34.49508300400339,
+     "min": 30.450941994786263,
+     "max": 36.61894900142215,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.08198399841785431,
+     "min": 0.07993599772453308,
+     "max": 0.10371199995279312,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 19.9578140018275,
+     "min": 18.615703003888484,
+     "max": 20.438614999875426,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 18.47392100171419,
+     "min": 16.790066998510156,
+     "max": 21.5154600009555,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.2182400226593018,
+     "min": 1.209439992904663,
+     "max": 1.2196799516677856,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 73.62140899931546,
+     "min": 66.63351000315743,
+     "max": 74.95381100306986,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.6200747610055259,
+   "leaf_hashes": {
+    "W": "14c85baddcd518ab745eb3481b03d23a8379ba043bc21ee437955fd6b65f5c1a",
+    "A": "0b67a74d625db9421218b422afbb29af6cb07feba6a21e1bb6cdd7d39218cfa2",
+    "B": "03f0ade6759304a150cd3dc7126d80f5e7752e7faa971147ff30b42b4e093eff",
+    "x": "fcaec494c5ca620e17fa894fc1b138561a57ad5cd845f6de8f09f49b6533766e",
+    "g": "5a76ba3b5cb2f753408a32ef11e831f63fafd5a67cb419a5ccfbe0e57d0c4822",
+    "H": "764f9211c01c47a6469212aa5e44e6d0770a6f2c17a340acdad0e06c5dc43a22",
+    "U": "e8b27d3deaaff1eb9b81360ba1ce7c5744b10557b6d79facd87073377d3ac80c",
+    "V": "04fbca3394be99770e12fe37c7d8a3e6c0a67d5f6b3716cc53df09ea4c08b867",
+    "y": "87485a5779735727f5096d423ec9bdae48c0802faf699c372349257f61d252f7",
+    "P": "20055837ad333ff42e765ded4e3ee2e056a3337eaaaf1221686388bdbcd97475",
+    "Q": "072828fb9e70bec0de2a86bdf0dc740abed9cd2a79f7366a8ee4866fd1578b2f",
+    "R": "8dbaa28f2c62656d4db3b95dcf41ac18a535986a708c62454afec5686a640122",
+    "T8": "b6c8cdfebf5a3ddbca98ecd902489c723b11c9b8827d62b220f1c857f4aac3aa",
+    "T9": "6adaca9ed200a63c998bc46f54894d1a8d670b6bd3526ad4f34e8ff942ab510b",
+    "dX": "3f796b54b44dd6f36932eaf76c6f7d2cc2aa3d52214aa4f0e0452f7d5f8912db",
+    "dW": "866421d2561a304b1d2becce02de81ce2e9e983365361a6a0053dd0be3f615ba",
+    "dA": "6913d3cfde0fd83b33bf805185a86c4e8bf0c89eefe75c403a3479685ebb9225",
+    "dB": "3320ed41895d96ce9ea98a262f16b25d1a24bc69b612da9777de1c1749664d85"
+   },
+   "expected_file": "results/proofs/expected_d512_r16_b1_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 16,
+    "b": 1,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d512_r16_b1_seed987654321",
+   "proof_file": "results/proofs/proof_d512_r16_b1_seed987654321.json",
+   "proof_bytes": 6253235,
+   "proof_sha256": "a901d9d4ffee8d247a6fb6478a5db5cacc30f8a875f1724f137236b4b31e8d09",
+   "expected_sha256": "37a490d771de8dcc41b4e785433cae0d8458395520465f9304fcb238bad40828",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 17408,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 231.82628100039437
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 298016
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 30.342334997840226,
+     "min": 29.942690998723265,
+     "max": 38.769425998907536,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.08128000050783157,
+     "min": 0.0793600007891655,
+     "max": 0.08233600109815598,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 19.64037500147242,
+     "min": 17.56532799481647,
+     "max": 20.574599999235943,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 18.124914000509307,
+     "min": 15.914091003651265,
+     "max": 18.816851996234618,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.211616039276123,
+     "min": 1.2095359563827515,
+     "max": 1.2196160554885864,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 69.28790600068169,
+     "min": 63.807575999817345,
+     "max": 76.53471500088926,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.6023126769941882,
+   "leaf_hashes": {
+    "W": "4baf34643ce26bf3c8381107ec37438183abef5bb4fd0bf350c6aac90d7775ab",
+    "A": "0f594ecaef28b51ca203cb751cf97621f0bf6217a4a15cc0b1435df341c551a0",
+    "B": "8df46e0eec201e7812f02d246a07d031e6d534194dd277c19a79f3311cbf6c5a",
+    "x": "9abbf7d95a8e6bd330fcd3f60b1388c7bd47dff8c2ef997a137286063b19f387",
+    "g": "da85290403967221c5733f1d6acefd8cd45a9ae3cf74bd5a8200cbc72053b41d",
+    "H": "aef49f44a53fd43cb6548598ab497d7068aa25fe49a472744e42fcc223e41829",
+    "U": "543ed7aef887dc6dfc83307bb36879c4cdcb8be6a7c94906169c94b088c2f042",
+    "V": "b21aca562f3cc7dd035f8d184e9a20d8d587b899ff2e2f7214a4f325db71fdaf",
+    "y": "5f1204933bb0928c0d9d212ea684539f23a263b033063d98d2e48488b4fc3481",
+    "P": "5c306baaf2940e1e3c7fb2f3863c1138221a0cb0292f72f0b637c39a2bb3ba3f",
+    "Q": "6dae6467bdc20a92c3dfa350ae2d95fa1f114aba1d163a3652a1f87929a358d7",
+    "R": "e8cb5de00f7495356e771e9cd00089ef7bb69c58e2eba5192640ae04930f070d",
+    "T8": "90343f7500ed3fcfd4ba7eb07ca2c4922b6e6a270392c3c18aa737ef2a14b082",
+    "T9": "4929e7bc427c3712dd78139708096669bfac8e7a5bd8caa9f5938e5e6293610d",
+    "dX": "fcdf02f3c5e7a049ec5c39ecdc4bc523b7b249730dec03697559bdbbc59c229c",
+    "dW": "12e9dcec875c1af3400f044415d4f55bb4eb75789af4f4c9c2ede22bca0a778d",
+    "dA": "1b8f503f8263bdb0a42c80f483a3f666b1653aec6115dbbe77dc315bf5ca0740",
+    "dB": "9cf78dc311ab440746e2fdb23bddd28773490506ef4401a717ccfe3e795b12e4"
+   },
+   "expected_file": "results/proofs/expected_d512_r16_b1_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 16,
+    "b": 16,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d512_r16_b16_seed20261119",
+   "proof_file": "results/proofs/proof_d512_r16_b16_seed20261119.json",
+   "proof_bytes": 6918518,
+   "proof_sha256": "6051a354b9c9b987e8b71d9cecd7a388b411998e3b1f15b9e05bab240431f246",
+   "expected_sha256": "c0bbb81b411f797e1194746d66b0967333e298d9c95217a710d7231b232e819d",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 32768,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 259.12099800189026
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 344576
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 32.23732499463949,
+     "min": 32.164828000532,
+     "max": 34.527978001278825,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.07366400212049484,
+     "min": 0.07260800153017044,
+     "max": 0.07478400319814682,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 21.608769995509647,
+     "min": 18.420490996504668,
+     "max": 21.754394001618493,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 19.84040599927539,
+     "min": 16.58374899852788,
+     "max": 19.93169100023806,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.2520639896392822,
+     "min": 1.251263976097107,
+     "max": 1.2537599802017212,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 73.640404996695,
+     "min": 67.20650299394038,
+     "max": 76.21406300313538,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.6388815419995808,
+   "leaf_hashes": {
+    "W": "3bfcdae2068c422c66ce426b0de34f3635ff172edacf38f7cdfc659bb4af25ca",
+    "A": "cad805ee34e648c73c3b3a91a6018c0518babf2d0cda0a1796f44e6b89cb24a7",
+    "B": "8a285fdd5dde2fa94620b4cb2ecbac962ec893f1e13feea2faf30739da1842ff",
+    "x": "40b55e4f0c8ccf23ca0dc51d33cbf730cf549d6120a7be2ad4d3f9936a4e25db",
+    "g": "c55cb2676d75215755d7f22988abfbaae92fcb03b633d07b10d86cfa7fe16973",
+    "H": "127bfa621592b51d8cf15e782375379ae6afeba3f8efc63476dd8b189f7cb57d",
+    "U": "71032aa13b8ea5319d59396d839ff5bd12de1387352401564d7f2b2ff13a5b29",
+    "V": "6c83cf4947a9a4517813c6ed9cf1c974773849fe599a8bd1e0a978ac922b6b24",
+    "y": "7b6d034b17463ee6993f253e0a854b214432bf4bca40dd81b976f54824678ae1",
+    "P": "d10a6ca870b9033cf986da52a1e7e70f138e7c24a10fedf2f9da2afaad8a747d",
+    "Q": "c871b2009055a7d382f1302dca07e329c5d33d98b203eaf464751340303d6e0d",
+    "R": "3ff508279f05ca3cc3903b7d23032809a2f0c037d7177bf0eab872358f0e7a84",
+    "T8": "4254dfbc05cddccc593f6dd4ebd95d7087e2ec6f1f65f3104c301c809490967b",
+    "T9": "ebe748c62b017df775d1ddbe5331281422a9d32df2b1e932706499c0bb3b5b4d",
+    "dX": "fdada0860d9e38b916a14316212ba2fc94074605c6690d67f4ab93c786f1f020",
+    "dW": "82dc9f0de09d8d2694915ffd5afa53a9f5e0fbf5afae161d1db9a9d71731e714",
+    "dA": "a01dcef85e05e5fea7963eae0b26a6c5a036abe6ab7042bf320503891b752cf3",
+    "dB": "f87320e5732f00d93025294dd5e5b1bd5c34a5ef10de7063575709742b0cdf29"
+   },
+   "expected_file": "results/proofs/expected_d512_r16_b16_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 512,
+    "r": 16,
+    "b": 16,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d512_r16_b16_seed987654321",
+   "proof_file": "results/proofs/proof_d512_r16_b16_seed987654321.json",
+   "proof_bytes": 6918521,
+   "proof_sha256": "fafd245e16adf1d7a54459aad1a904cfc171bb62375e004b0ca48dec12fbc648",
+   "expected_sha256": "963f0dbb936d5d0341655c581b69e79e47d3d36d6ec0f4be5ac0b203ebdcb432",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 32768,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 256.98204200307373
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 344576
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 33.21226799744181,
+     "min": 32.86423899407964,
+     "max": 34.722771000815555,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.0727040022611618,
+     "min": 0.07072000205516815,
+     "max": 0.08156800270080566,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 20.78391899704002,
+     "min": 18.814337003277615,
+     "max": 22.017074006726034,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 18.72780099802185,
+     "min": 16.995824997138698,
+     "max": 20.12830099556595,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 1.251520037651062,
+     "min": 1.2414720058441162,
+     "max": 1.2520639896392822,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 74.23449099587742,
+     "min": 68.8362969958689,
+     "max": 75.3576429997338,
+     "n": 5
+    }
+   },
+   "build_wall_s": 0.6503657389985165,
+   "leaf_hashes": {
+    "W": "aff05670a1a37de08441526eeaea8916e06c1aec28e5005658065c0f4920a3d9",
+    "A": "e86c88819adfd3f0b31d70c6a39faa4aab1fb49ff07ce333698f762ae792c823",
+    "B": "2ce9550c1816b9873f57014552b8fe64d6eda81b71f1c8bc5890b7d0d4dce4a1",
+    "x": "8f00d01f8cd429d53a8ad45aee4c111b4b1bc544db8bae3d0c33f841854b1c34",
+    "g": "1d1712a5d7d1a9ca3be9f3ef918da8c217a0ecb66cbab902ab23823d96688a2d",
+    "H": "8aacea29f6a0b89a4143d166f4e6664b63b9b1714413349bb02b2cbc97b136a7",
+    "U": "6263370e173a2d292bc98cf0396b92354e3946ea75fc597f0bff9f0134a67e82",
+    "V": "4899af01399210eafdb9458b61c54240348e32a59aef86fed1cf3ab9ce88a7f3",
+    "y": "3ef6c4d6a9797513bb1ccf9cfaf2ba65b18bcb6b7c72a69fa7f5709874fa98f2",
+    "P": "986ba23e660d2a8cade80efc634854f6e3cd1cdc578e953ce86c68352bb1ac1e",
+    "Q": "0c2a193d0a295705572f00ab0ba40759b05c3e3c3c9c8f5c54c18c463e6843f3",
+    "R": "70928b9d6f197446085b99cfb42fc982dc46eed16a7ccd98bcdd38df30f9fd3d",
+    "T8": "b56b1356d4589de02b1fb19c5df1a7119011cbdcef98b21b67467ae0168d3079",
+    "T9": "28f03bfabb7877329e1781b4de48690083ca921680e6399fec08aed005a9798b",
+    "dX": "da7c867ed3507104c1598263024c1922f1266ea27c31bdf3523b37e02bf88d3b",
+    "dW": "6535e27f561e034353354ea29b1cf653ca961ef28819f0c31f5fe48c9d9bd830",
+    "dA": "cdcb1aaae5e1ed6d4f8b80ada2283c2ad91c4dce99fe5f6a74f89d960ab559e7",
+    "dB": "76850df180507a6bef46c156c4d11aee3cb2215e8a978084f4460cb237176cdb"
+   },
+   "expected_file": "results/proofs/expected_d512_r16_b16_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 8,
+    "b": 1,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d1024_r8_b1_seed20261119",
+   "proof_file": "results/proofs/proof_d1024_r8_b1_seed20261119.json",
+   "proof_bytes": 23160667,
+   "proof_sha256": "e00cb97fe7be06277131f9bb7704e20329f14372e64ed324f2319fd963258217",
+   "expected_sha256": "be0c1598ae2d890d27c150d92d07e7f4f2c82f2fa710756ec2d3cd013b3058a4",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 18432,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 939.7836530042696
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1087504
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 116.02610800036928,
+     "min": 112.17124199902173,
+     "max": 127.83955500344746,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.1233920007944107,
+     "min": 0.12124799937009811,
+     "max": 0.12467200309038162,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 57.389108995266724,
+     "min": 57.1911720035132,
+     "max": 58.606337996025104,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 48.62662900268333,
+     "min": 48.31792099867016,
+     "max": 48.848382000869606,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.299999952316284,
+     "min": 2.29913592338562,
+     "max": 2.340575933456421,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 222.8633430058835,
+     "min": 217.79355200123973,
+     "max": 235.18615700595547,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.1087794880004367,
+   "leaf_hashes": {
+    "W": "3104914dd8a9980dc05994c3fd0a1fb1b3ea1298bee3cc09eb7e617461c4a15a",
+    "A": "dce290c40cba1fc28d5bfd5768b3a2e163cb7bea53a80342e2d871d59d05cc1b",
+    "B": "ec989c9f62036634e19f71062ab8aa04cb9afcd44488dd0270bac1e8d51d3b70",
+    "x": "4ffada875b6dbf1af0ebccb938e51f434db461d237821e3838f43d40051c3851",
+    "g": "dcc359bfa4b211a6d0237b47f38f649e11a6e573301ec77a1a9477005efa6b75",
+    "H": "c32f5ebc966f196b56d61239c9e847756d45f2aea03c531203f1a115396d42f7",
+    "U": "11684468a35d05a6490c382a7457b042e9165a4d79b3bdd7dc59306580b90a74",
+    "V": "f79bf11ffd51792126f260661ccfb39ac86d9aa5b3e87e4a8107c98ea6c827fd",
+    "y": "7acafefef0a1ed7e6b9b87c4a8d97b77472949b4dc5124023921810968ed55df",
+    "P": "d13541d8dd689fdfcc6d56a51d9082e95eb0360206c486c4808319cfcae17d55",
+    "Q": "5524533025d46ef4114a6027acdcaafbfa6d1c5131cdfdb30cc296079c735ad9",
+    "R": "006e26ab84551e1d15dbdacf063155740ec6267e8a9be2747e021f8dbfd16034",
+    "T8": "4d17004979ce33188c972917f2d5a76d15d656f0d078c6748f842e4a97f554f3",
+    "T9": "be0c4ad1f0596903ec4dcc5bc6511be027b487686e5f1ab3711ff7c9c482cc31",
+    "dX": "50b5aa5bdd641027cf67feca4fd04f27914de5519d39a144ecb613067e00c2b1",
+    "dW": "970c46bc325776c8b812e825138575917af36d781c0cb8063c09e0de90d6f220",
+    "dA": "991b082cb9945111fcda10b3d7dc747ef3a5593cbe144395531f92e6fab6e04b",
+    "dB": "1d737358c537455b353db1abb0fc6e16dd186b67a020eec43a8d5a39570a86ac"
+   },
+   "expected_file": "results/proofs/expected_d1024_r8_b1_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 8,
+    "b": 1,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d1024_r8_b1_seed987654321",
+   "proof_file": "results/proofs/proof_d1024_r8_b1_seed987654321.json",
+   "proof_bytes": 23160668,
+   "proof_sha256": "49796be319c66537ca14faa3405c73788119dc7ef8d87e540a594fe65c45757a",
+   "expected_sha256": "f70f2f21b35947e226bbde019a7f0320b758c272c37094dc20b217be76c5046c",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 18432,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 926.2323279981501
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1087504
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 127.36810699425405,
+     "min": 116.29716600145912,
+     "max": 147.74616600334411,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.1241919994354248,
+     "min": 0.12176000326871872,
+     "max": 0.12531200051307678,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 73.46600099845091,
+     "min": 61.56036099855555,
+     "max": 74.28701000026194,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 64.84495499898912,
+     "min": 53.07767499471083,
+     "max": 64.89161100034835,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.3102400302886963,
+     "min": 2.307231903076172,
+     "max": 2.319744110107422,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 254.65477800025837,
+     "min": 242.3071679950226,
+     "max": 286.8781310025952,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.3090225699997973,
+   "leaf_hashes": {
+    "W": "8e210756e04d6c4ce5fc5c738adb358f30d8a55c25f03a5c67895f6024115756",
+    "A": "5b5a704e16f3485286f6deb59c9e1a80a97fbe97df79ac82cd77e366684b8429",
+    "B": "505110dc709a330c7281c5e901723c094f3ce8a9f3c3708d4ef6ce17f35297cd",
+    "x": "787a2afeb476e597a60ba3b64ef8e44cce420c6efe5125e2ee496b67604d16e2",
+    "g": "93c8755440262b33ed97884689e145ce23cb49f6daf1ac8475fb28ffd69df141",
+    "H": "f2640e5fe0f31a7dffb2f69f192f1a768dbe457b65d8732fe7c63558d1872339",
+    "U": "e942dd87c499daf96de39008a525d39da102ed958735723a66262fe7fde6b9c1",
+    "V": "3345451b01ce643d0a2e5618241dcdac3e37189480ec897c9a281fffc71de440",
+    "y": "25080e6c6b74ee98e150c562b4a62f7a4ed09d7243c55d5c65943a66ea0cec84",
+    "P": "f123ce778c4894f1d9d3e916526416dca4d1a45e29573eab153aa812fe5178f2",
+    "Q": "deefce69310e421ed1bdd4ca4a44d55f72cb3bd80b889241e4037ad7328ac90c",
+    "R": "1fbd0767d79f442358c9c65b7727a29aedac5482bfeca9529c2e3fab86b037bb",
+    "T8": "b04b9b5d1cae7096b3a269584d1f70b2ee8d52045ecb5e6804adfe1db2adbac5",
+    "T9": "ba11e6c6245f48c1048307dac81d1fc8ecb4959f6b2ba3493c48e702ad0e7719",
+    "dX": "d9ea01781a280b681924c676aa6ee86eb9b5f42a199d6985dcd8d37c0a001955",
+    "dW": "a2cc7bcd631d6a9b19fe5a09322b97d88dc5406d01f9b2b6a42b1d939c19a126",
+    "dA": "253b2dd6b3ac6f04c69fbf13dba81e122f08c2f5a6b21c9165f3070b1835d0fe",
+    "dB": "9ada24d6d8210bed2c7e64b50a90d79eb83f51a95d98dff92c7bc5077f7779ed"
+   },
+   "expected_file": "results/proofs/expected_d1024_r8_b1_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 8,
+    "b": 16,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d1024_r8_b16_seed20261119",
+   "proof_file": "results/proofs/proof_d1024_r8_b16_seed20261119.json",
+   "proof_bytes": 24478756,
+   "proof_sha256": "270384dfe67456af590e11684c23fc0b921f0f17448cc39aa3737214dd5430a9",
+   "expected_sha256": "34e1c099abfdf2b65572685b4217538c202c563a7c00d2ee29aea548dd583110",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 49152,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 982.0407000006526
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1179904
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 134.397417998116,
+     "min": 123.59537399606779,
+     "max": 162.4473490010132,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.10966400057077408,
+     "min": 0.10915199667215347,
+     "max": 0.11036799848079681,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 76.93700300296769,
+     "min": 64.04182400001446,
+     "max": 77.09834200068144,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 67.62548599363072,
+     "min": 55.20321599760791,
+     "max": 68.10964099713601,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.371551990509033,
+     "min": 2.369407892227173,
+     "max": 2.4226880073547363,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 268.6420179961715,
+     "min": 254.5050229964545,
+     "max": 307.04971999512054,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.4110097119992133,
+   "leaf_hashes": {
+    "W": "2de286fae52c8f28812a90cb224903137832d3a3c41e523e4cf66f4344ea347f",
+    "A": "cb50d302021e24ea02016cb507bc014bf93ce724a3640e633e7a00a3cc0d0919",
+    "B": "ddf8b767bd02f05eef698140f179952f3e898bc6e1afe8fe513c9bb2de29a869",
+    "x": "e3392ecbd2ef219ec72a94ba884580aa949218a9282a5406c78420a127ca7e24",
+    "g": "9d15570921b6f1ee5bd06b2107ac9d54d4829d105de184e5544b0eef99dc735e",
+    "H": "e433a051fa0c9ae6c68085afe8d651f3c1b256fcbf63c385ec5b55b3f0ade892",
+    "U": "17dfbaf2b38dc2ace7843290e12fb24077bd923ad3a0110bda1bdea76dd17246",
+    "V": "b6ac56c44f55d789d41f04f2a9f46ee8984db9155c472fcd0c961dd6fe8a859d",
+    "y": "6fb8518f52664a569ec5d7f891977e5ccbf10356ec6b8f51403cb8891f9d5f6f",
+    "P": "702cb5d50824e0b5aa11c535fb32634252d380770ea6fdd26f395ce64d6e67bf",
+    "Q": "90e077ec11a21c8c46e7911a2996148fdb60b63b3eef5c7b9b3b4a7d45ff1b3c",
+    "R": "1857640356ffe70dd5047fe7d9c6f3bc97d6029c86efe17bb83e00413cc4bbac",
+    "T8": "59ca7dc339cf5a47d63e089609c67aa0aa8ee60a6c9502ce86d6117973cd1bbc",
+    "T9": "48cbc830856694f6e3d8f327198cd1a97d3d35df1d8d218b9b3dd03c37d7bb42",
+    "dX": "8bafaceee60b44fc2dc55939aa2174f2a5bbb5af8e16217defb334bc2c45e053",
+    "dW": "bf5fdfb04a505c8df4faf7273ea02198853a4a33ede6423be977a90a01f8f905",
+    "dA": "836784c66ccab0f9a8959f4dfaec71fc197ec1881aa97b39de7e2f265ba61333",
+    "dB": "10f2d1db9df3a03c7f6ce4c4aad2e5b094460fe49e94e610997cf3315acd19e0"
+   },
+   "expected_file": "results/proofs/expected_d1024_r8_b16_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 8,
+    "b": 16,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d1024_r8_b16_seed987654321",
+   "proof_file": "results/proofs/proof_d1024_r8_b16_seed987654321.json",
+   "proof_bytes": 24478762,
+   "proof_sha256": "8e69a1e292953997dc212122603864f49b8220c20483470fbfd23f1044e91aa2",
+   "expected_sha256": "2cf423d79b742a15937655691612290d344ddee502c78a1a5a551eace3aa1651",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 49152,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 1004.8639979941072
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1179904
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 138.2318820033106,
+     "min": 126.44511699909344,
+     "max": 145.46618700114777,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.10956799983978271,
+     "min": 0.10924799740314484,
+     "max": 0.10992000252008438,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 77.67105400125729,
+     "min": 64.68877899897052,
+     "max": 93.37463499832666,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 68.65637200098718,
+     "min": 55.80065299727721,
+     "max": 69.3861640029354,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.3708479404449463,
+     "min": 2.3703041076660156,
+     "max": 2.430527925491333,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 273.81216100184247,
+     "min": 258.81127300090156,
+     "max": 308.22698600240983,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.4844917310038,
+   "leaf_hashes": {
+    "W": "f749690005ea45ce0c06c981c68e6f5c3a3a6daa957b820a194849caf9626943",
+    "A": "9d4d5146d03871a35c4b9d22b2ddea1f89882126e9cf7d8f09c810f81a3d1329",
+    "B": "61fe8d0c3d9be5c3e92f3eaa467764e54173cee01695610a260226423d70b7d5",
+    "x": "3c9c518aa5a5b69b629ce34c2ce9a4d633491bc0439cdbc6310ac5382b3c3b08",
+    "g": "c0e5dc208ff3d76b06d486df06cc57d01449a1e60b6968a2be21afb9f01b6253",
+    "H": "984ac9016ccb8deccec2a4463a7a5c5d05e6937401e0d6960fbb99f3e867de59",
+    "U": "a6b6d5801c442bc4fd0e58ee03335268ba5bfbad0a24764fb07f94636bf55353",
+    "V": "6449a439dcc7a7c04e3e5749a6b4efc2312b128173c8112d4f2389645ab68b70",
+    "y": "f746fd677e0a24a351dd6d54f73fc3850680b1a9386ce8bad63f0fdae194cad5",
+    "P": "f1db0b7d02ac8baa8fef2ecfda08adf27be98bbd3a2ebde3e31443bb76ad1738",
+    "Q": "cd7e1fe12210209ea8421d0cc1477b018a04f7856506ca052d4ef4dd69f84552",
+    "R": "3d8aeb12ce998ce14e7c70c5471fe7fd1c0fbe2b0951100f8719d7631e2ce7b7",
+    "T8": "885dc926f4c94a2a4f3cd166c29e29be01ce41fb72895d62bfd1d15eb303801e",
+    "T9": "3665fe7dab513171e7f33f6a870f30ca0cf7d7cd2ff7280ee2b305ec045d7285",
+    "dX": "068139d3effc4f80ccf282b70d1c24e53348e5e7de03c543e32fda41c815f2ed",
+    "dW": "2f5d7d87288523748015d6bc83f71f686cbff2403f0f59ce3c91faf27b145f15",
+    "dA": "84da4ab19e2f874fd71eefe39f74fa6976ca2a3053eaaf5b2f0fa18c695a2bef",
+    "dB": "fb12387b8f078e1a6009b4e320901017d70c65b8d5b92cdb66e5499216f405c5"
+   },
+   "expected_file": "results/proofs/expected_d1024_r8_b16_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 16,
+    "b": 1,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d1024_r16_b1_seed20261119",
+   "proof_file": "results/proofs/proof_d1024_r16_b1_seed20261119.json",
+   "proof_bytes": 23685806,
+   "proof_sha256": "723cdfa1181a8f0875be107ca2c7e12bb42f878ed1d12775ea973be55880a112",
+   "expected_sha256": "d554897c6f6baeb32c7a55758a43fb0a792f868485371597e445101d1a516fe8",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 34816,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 941.4210420000018
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1120288
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 123.78568600252038,
+     "min": 120.16800900164526,
+     "max": 140.14858700102195,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.12627199292182922,
+     "min": 0.12534399330615997,
+     "max": 0.12726399302482605,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 74.28385700040963,
+     "min": 65.58451800083276,
+     "max": 75.36398399679456,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 65.80543299787678,
+     "min": 56.91374500020174,
+     "max": 66.15241399413208,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.3427839279174805,
+     "min": 2.340831995010376,
+     "max": 2.354016065597534,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 261.57244900241494,
+     "min": 246.57554399891524,
+     "max": 281.4707509969594,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.3745215110029676,
+   "leaf_hashes": {
+    "W": "6c3757f0fc06fe8d5b28aea654ad18e39e03041c81fae3b7965fa6b583a6c4c2",
+    "A": "b0c89950869d0616133a9083db4372c8d57caaf582782ab736bbb15c9c96c114",
+    "B": "c1b255d234e35a8d10a5e8cc7887419abfd71ba6f196120f33ff6a37cba03eda",
+    "x": "cb378f695af89a1948ec23df7c854e241c50da431d25bfc224d1e26c6d275998",
+    "g": "ce4225f7517ab0a11a751f37cf688969e722d549f275fccbf4fc88277352221d",
+    "H": "d491746011c1e2dc8e854329e9ecee98845ea75cb6bfd1f0f95342f0e23db73c",
+    "U": "387fe0292464f468668c87d127c2edcd7766cabe6b69f55bbda91c360e5718b7",
+    "V": "f6855d12346096a83525ae20ee820f3e3867640840e73f4d3e4e3f8f8ecae32f",
+    "y": "dfc27bbadccce0691066ca9dfa54a15e799a7bb5da0b5710210592063500040f",
+    "P": "18f454a0ae3f232828696655fe9596e1a21490660b4c59534f46f2b92ac54510",
+    "Q": "24e5239ba8e2c4d682c293ea8e03a1cdc5ba2b0a81a4cb08806b9ab297da4209",
+    "R": "5e9dc01bf6082ad9a2c58f6e9ad0cbc647b07d578e99d928722332a6a7464946",
+    "T8": "a9f69e600ad572f1c10f5b3265c5308e64449218dfb08df65ba7b3dcd5e9cb99",
+    "T9": "84b430e4dc013a344dfb35766b43c680a011ee03e4f50340bc6a301a2596dd27",
+    "dX": "71bdd6cde91cd66c1a3df929318573b608770284ff90351b73229dca612df93d",
+    "dW": "1e362303c41b2c483e68001d53ef3fd7230141cc44680015423124f425499a19",
+    "dA": "6eef90a64198a443a3a7c801207753b1e03eecf64430fe4c6ed9f2b3c6d36e7e",
+    "dB": "cd8b19d3c6b4f38069d5b34a1901727127a7bb2525019bcda22eecd30d41e2cf"
+   },
+   "expected_file": "results/proofs/expected_d1024_r16_b1_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 16,
+    "b": 1,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d1024_r16_b1_seed987654321",
+   "proof_file": "results/proofs/proof_d1024_r16_b1_seed987654321.json",
+   "proof_bytes": 23685805,
+   "proof_sha256": "76d18ab7acb0c283761bf582a47420d105faf48e9e88c9bca5660579333373a0",
+   "expected_sha256": "1b75e89c2eb64edee7fe16594cbe2a054985785dc056e11c4f466214c3897ce0",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 34816,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 957.7857969998149
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1120288
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 115.67945099523058,
+     "min": 114.88365699915448,
+     "max": 147.26380399952177,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.127360001206398,
+     "min": 0.12534399330615997,
+     "max": 0.127360001206398,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 72.4649240000872,
+     "min": 63.81105299806222,
+     "max": 73.47639599902323,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 63.446680003835354,
+     "min": 55.0191719958093,
+     "max": 64.14287900406634,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.3434879779815674,
+     "min": 2.3423678874969482,
+     "max": 2.3440959453582764,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 250.93166599981487,
+     "min": 234.4769900009851,
+     "max": 284.18688000238035,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.2733890899980906,
+   "leaf_hashes": {
+    "W": "22cf0712a4d404dbb3ad7a4d41ee6a5a3395d1c3a0034ff42282122778801016",
+    "A": "3131c461aa1f8ce1acc2fbe3ba9518d5094db9233cb32d161dbcca21fe8174ea",
+    "B": "4870392e45e65a8b905d6a0d683d21d0eb0ba50846d9d66031aac4edaa4cb4bf",
+    "x": "0f371a39d778d282e9eff989313becf32ef0a193b4d4ac7612f78541e0c422c6",
+    "g": "bee9496b978fc0cec20cac7df607b6579220d2397af4fc86f3437bf76517999e",
+    "H": "2421212e76acda7371b3117183788659c9f7eb02ef1ba2d3749d008bf296db57",
+    "U": "a8312d21d6de90f73f771fcbde2817cd512a71937c91be49f49fbd245a4bcbc9",
+    "V": "9eea7f8bacce9c67a6c948d112001f68d185e8652ce7f7b3aa98199b208b7413",
+    "y": "ed043853f00a693aa49c31ab0fbb80ceb21ff7089863749db8bcc27513100958",
+    "P": "95c9414d62244509aa013cf7f40634927cd2540060ddf8ee9862e6828a0e0f1d",
+    "Q": "03ee9f119d943a72e0dff5293262cdc6ff6b058c3ed7c13a85bb016c121b2ef2",
+    "R": "bf3970dfd3fa9a9ae3b614c9e204933ce447cc2b1eaf4cb91d6dfe257f7348ed",
+    "T8": "c3137f47918f2c5c06018822fb3b5127614016546f335296075a57715f903107",
+    "T9": "23c8c0ef509de17411a320be9b673bc37bf77f5bef53f53d5f0bdba367bbe0ea",
+    "dX": "d308fcdd9ab7cafeb814368798f266eb2bf8704c7b905f43eff8cfe9b0f04ad3",
+    "dW": "3f9b117e4fe7e943b5d0b930abea05d9678a1e58bae930d0fd1734d4d65cb883",
+    "dA": "cd1a432fcc334a1f26ba65f4eb8c3d014dcf3012158144e9178140dc95fc4b31",
+    "dB": "97a3428c5ad4482ee7b057784391ab865e94c7d4dbd8414ebf0c018bdbb651ff"
+   },
+   "expected_file": "results/proofs/expected_d1024_r16_b1_seed987654321.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 16,
+    "b": 16,
+    "s": 8,
+    "seed": 20261119
+   },
+   "tag": "d1024_r16_b16_seed20261119",
+   "proof_file": "results/proofs/proof_d1024_r16_b16_seed20261119.json",
+   "proof_bytes": 25006456,
+   "proof_sha256": "c444de4c4829399d5d17460e9a07785c80fa1951b38486e397e25a6590f933dd",
+   "expected_sha256": "96895bc5420342923896237012799744bf8d80ae9cee606547cbaa32c4e09677",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 65536,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 1020.758486003615
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1212928
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 123.50078600138659,
+     "min": 121.86519399983808,
+     "max": 132.53383599658264,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.11510399729013443,
+     "min": 0.11427199840545654,
+     "max": 0.11532799899578094,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 75.5779099999927,
+     "min": 65.76429100095993,
+     "max": 76.1563530031708,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 66.11259899364086,
+     "min": 56.667194003239274,
+     "max": 66.3729060033802,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.4037439823150635,
+     "min": 2.402463912963867,
+     "max": 2.4146881103515625,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 263.7087999974028,
+     "min": 244.77175300125964,
+     "max": 274.8027879933943,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.375769869002397,
+   "leaf_hashes": {
+    "W": "c4521fe9480f20d562306e9e713f38e7e2f548809c05a26ed3317c556d259190",
+    "A": "fd608cdd8d8ccda4b3ca0a5833e0b9319d12d1fcdbf7fc255e3b43c29682f0f6",
+    "B": "8c10cdcc9e20cd9a372064cd56939cd99a0c97b0e790b19fd49136916fa62ef5",
+    "x": "dc0872f2adab7a7ca7ddb1d5fee08fc25f1b80c57b9a0b1d8dd3ed944ef9212c",
+    "g": "e9deb090dcdfbcd4b82fda1356cd7d2df24a51bedbb121967edfc53ce3ad2f85",
+    "H": "c9d2e6473bb3daa3f67daf0233dfac244451490a59ad5944c3a7768d34cb060e",
+    "U": "dcb8adfe3f2b3494dc60af6796c9030c7d0b5048d4f2befb46a42eca8d6f1286",
+    "V": "8433527e7197ccff7aed712a793d95f7bbf96590a739ad489196d51ee0196795",
+    "y": "9003ee84e73340838985da043757e839657cf6ec9b17c0ff726e4750ea8ac06e",
+    "P": "bb0446ccbdf2ec1bd60b6b929c13b5e3833bfee81130e8e354da2039391066d4",
+    "Q": "659761dbbfa66a7f773eec25b9e300257da45b3355961c5936ec2eeb6230e9cd",
+    "R": "b604ea06ababc53b3a52079cfd012fe74f0d676d12b5a6c3c398678b16f1a08e",
+    "T8": "47bb494144d145036797f176b4e37fdd73b56492abfe6e52b874dcb3f9be7444",
+    "T9": "fe34e3a1d9fdd3f5052a41b459ba9e96fef59dbe6960138bab913f6d18ddeb6e",
+    "dX": "5c1677014cb525a93451f0bf2aff23fc333d175a856ee54be570544f661c3485",
+    "dW": "47fd694ce04b008c95f06fed4e8c0fd1639ac1bce53241897b09257e9da80a30",
+    "dA": "03b2fe3de8f77235ac7f0cde0d304162df92b3695a39b3334c87cb1ecbb654f5",
+    "dB": "89b60616468caaca8c71503f384e298fa70890c5f323ded03ba691dbb88b376e"
+   },
+   "expected_file": "results/proofs/expected_d1024_r16_b16_seed20261119.json"
+  },
+  {
+   "config": {
+    "d": 1024,
+    "r": 16,
+    "b": 16,
+    "s": 8,
+    "seed": 987654321
+   },
+   "tag": "d1024_r16_b16_seed987654321",
+   "proof_file": "results/proofs/proof_d1024_r16_b16_seed987654321.json",
+   "proof_bytes": 25006462,
+   "proof_sha256": "bf02778bde00be2e77018b31545b8a5881d4b8500fec8918f35a5b8275438e98",
+   "expected_sha256": "d90ab4a38ee3533922731793123cfb0d6de4ee7bb7fd6cf078ca219c9584c8cb",
+   "honest_verifier": {
+    "accepted": true,
+    "cli_exit": 0,
+    "cli_stdout": "YES",
+    "stats": {
+     "checks": {
+      "schema": 1,
+      "step_id": 1,
+      "params": 1,
+      "shapes": 18,
+      "leaf_hashes": 18,
+      "input_pins": 5,
+      "range_bounds": 18,
+      "freivalds": 18,
+      "response_bindings": 54,
+      "combines": 4
+     },
+     "total_checks": 138,
+     "combine_elements_checked": 65536,
+     "freivalds_gemm_checks": 18,
+     "verify_ms": 1014.795499999309
+    }
+   },
+   "oracle": {
+    "ok": true,
+    "mismatches": {},
+    "elements_checked": 1212928
+   },
+   "controls": [
+    {
+     "control": "flip_dX_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: dX",
+     "expected_catch": "exact combine dX = P + sR must fail"
+    },
+    {
+     "control": "alter_W_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch W",
+     "expected_catch": "trusted input pin for W must fail"
+    },
+    {
+     "control": "wrong_y_coherent",
+     "rejected": true,
+     "reason": "exact combine failed: y",
+     "expected_catch": "exact combine y = H + sV must fail"
+    },
+    {
+     "control": "wrong_dW_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 6 (dW) rep 0",
+     "expected_catch": "Freivalds on dW = x^T g must fail"
+    },
+    {
+     "control": "flip_U_coherent",
+     "rejected": true,
+     "reason": "Freivalds identity failed GEMM 1 (U) rep 0",
+     "expected_catch": "Freivalds on U = x A^T must fail"
+    },
+    {
+     "control": "truncated_responses",
+     "rejected": true,
+     "reason": "undecodable responses: 'responses_b64'",
+     "expected_catch": "missing response buffer must fail"
+    },
+    {
+     "control": "truncated_leaf",
+     "rejected": true,
+     "reason": "undecodable leaf W: Incorrect padding",
+     "expected_catch": "truncated leaf data must fail"
+    },
+    {
+     "control": "wrong_step_id",
+     "rejected": true,
+     "reason": "step_id mismatch",
+     "expected_catch": "step_id must match expected"
+    },
+    {
+     "control": "wrong_scale",
+     "rejected": true,
+     "reason": "params mismatch",
+     "expected_catch": "params (scale s) must match expected"
+    },
+    {
+     "control": "tamper_response_v",
+     "rejected": true,
+     "reason": "response v binding failed GEMM 0 rep 0",
+     "expected_catch": "response binding (v vector) must fail"
+    },
+    {
+     "control": "wrong_x_coherent",
+     "rejected": true,
+     "reason": "input pin mismatch x",
+     "expected_catch": "trusted input pin for x must fail"
+    }
+   ],
+   "gemm_paths": [
+    2,
+    1,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prover_timing": {
+    "step_wall_ms": {
+     "median": 121.68820599617902,
+     "min": 118.5722850059392,
+     "max": 122.60112900548847,
+     "n": 5
+    },
+    "step_kernel_ms": {
+     "median": 0.11494400352239609,
+     "min": 0.11398400366306305,
+     "max": 0.11673600226640701,
+     "n": 5
+    },
+    "commit_fs_ms": {
+     "median": 78.07794999826001,
+     "min": 67.54333799472079,
+     "max": 80.64706699951785,
+     "n": 5
+    },
+    "cert_wall_ms": {
+     "median": 68.97100499918452,
+     "min": 58.261785001377575,
+     "max": 69.42799099488184,
+     "n": 5
+    },
+    "cert_kernel_ms": {
+     "median": 2.4033279418945312,
+     "min": 2.4019200801849365,
+     "max": 2.4063680171966553,
+     "n": 5
+    },
+    "prover_wall_ms": {
+     "median": 268.9756070030853,
+     "min": 244.37740800203755,
+     "max": 272.67618699988816,
+     "n": 5
+    }
+   },
+   "build_wall_s": 2.3788782229967183,
+   "leaf_hashes": {
+    "W": "e7aa62ca2d42cd62fda9462319c217a85a2f77b8a069ed15f044ad02cc695141",
+    "A": "3ff7d06f943e562023cbba8f86f1f294380df4afff69d0cd8b375aa920332f61",
+    "B": "1a34047ae5e2b225fcae60adbd7a3d9c62f585ab09c85d8f0b4839b5fc35365e",
+    "x": "e1ee2ceabc16c4f7881c43cf922c7a479e3f169dc1135f7b9b31cbb8504b4058",
+    "g": "e59a8c16ad8855c41b9cc0677d7b093560dc24ed2268f28007b90589422a8949",
+    "H": "dfcf0cb0a2f331f2295b6b19e095b9814da4116224ac59c9a02bc3a82d696348",
+    "U": "9acff96a475f297c5480b1cce177a305f8508b47290844354ce63f30168fd608",
+    "V": "e764f421c06469ba22932e4d032e48a73779994c460a9a4c00be1a6b0801afa2",
+    "y": "a97e59cdbda746035a689aae53b1322f14fabab33a84dd8d1dc60d9a73a54a3a",
+    "P": "01a66afc1342d2224d483fda4e151a489c03760b60cb498919fbfbaa7776f9d6",
+    "Q": "1f24bb72dfe9ee443aa4b172336e62e37ab1d7d90e40f0898c574951be630c27",
+    "R": "91b9a307554a11ad5ea33fe2b9eec73ef85757f188d38de60526ecd441649af1",
+    "T8": "a317d539128320c46a99d8c578da63a209a4f89a6a239e816b397b805060a4c2",
+    "T9": "c31908ca5a50a6106e952545dfeb29128d3257dcbe80ad5d714d63f9ac7ecba7",
+    "dX": "e39d942ea8972b226739d179c8b7f2b1480d4c71827eaa8deb77f9f238631dbb",
+    "dW": "b107c63e90e4b55a6de6dfb3ccdc16f50f225286639da3b8fa68f8e39559e79c",
+    "dA": "34853e46b5c34065faa949b2d0f7e25f681d8396275671e5d180d3dae02048f6",
+    "dB": "f5f492f6824804f65bce4b76a55b9a289ccdcf17abd279a7f11c0f4778865f87"
+   },
+   "expected_file": "results/proofs/expected_d1024_r16_b16_seed987654321.json"
+  }
+ ],
+ "stale_controls": [
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 256,
+    "r": 8,
+    "b": 1,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 256,
+    "r": 8,
+    "b": 16,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 256,
+    "r": 16,
+    "b": 1,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 256,
+    "r": 16,
+    "b": 16,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 512,
+    "r": 8,
+    "b": 1,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 512,
+    "r": 8,
+    "b": 16,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 512,
+    "r": 16,
+    "b": 1,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 512,
+    "r": 16,
+    "b": 16,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 1024,
+    "r": 8,
+    "b": 1,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 1024,
+    "r": 8,
+    "b": 16,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 1024,
+    "r": 16,
+    "b": 1,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  },
+  {
+   "control": "stale_replay_cross_seed",
+   "rejected": true,
+   "reason": "step_id mismatch",
+   "expected_catch": "foreign-seed proof must fail pins/params",
+   "config": {
+    "d": 1024,
+    "r": 16,
+    "b": 16,
+    "seed_presented": 987654321,
+    "seed_expected": 20261119
+   }
+  }
+ ]
+}

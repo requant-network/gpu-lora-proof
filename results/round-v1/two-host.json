@@ -1,0 +1,105 @@
+{
+  "schema": "gpu-lora-round/v1",
+  "verifier_os": "Windows",
+  "python": "3.12.10",
+  "cohorts": [
+    {
+      "seed": 20261121,
+      "bundle_sha256": "df5247ce27e54356eb20568d3225a03eaf9785961ebec1c133ca894c88ee48dc",
+      "assembly_seconds": 1.1761121000163257,
+      "peer_observations": [
+        {
+          "phase": 0,
+          "slot": "worker-a",
+          "role": "Windows CPU",
+          "backend": "cpu"
+        },
+        {
+          "phase": 0,
+          "slot": "worker-b",
+          "role": "LAN Linux RTX",
+          "backend": {
+            "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+            "compute_cap": "12.0",
+            "cuda_driver_version": 13030,
+            "cuda_runtime_version": 13030
+          }
+        },
+        {
+          "phase": 1,
+          "slot": "worker-a",
+          "role": "Windows CPU",
+          "backend": "cpu"
+        },
+        {
+          "phase": 1,
+          "slot": "worker-b",
+          "role": "LAN Linux RTX",
+          "backend": {
+            "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+            "compute_cap": "12.0",
+            "cuda_driver_version": 13030,
+            "cuda_runtime_version": 13030
+          }
+        }
+      ],
+      "verification": {
+        "merkle_root": "3f4fc622bee649c3e16cbf2c905cfab45d21c338a0a6008f04c917d2d6f7bea2",
+        "final_adapter": "18996e730c76ebfafbc34a481d48af12595a766492a347f50edbdc7717e21229",
+        "initial_sse": 24576,
+        "final_sse": 0,
+        "heldout_rows": 16,
+        "verify_wall_seconds": 0.011777900042943656
+      }
+    },
+    {
+      "seed": 90817,
+      "bundle_sha256": "1d0cafe34066976b751fce8553141b72af0bc792cbc2ec11cde1342591da4730",
+      "assembly_seconds": 1.0921578999841586,
+      "peer_observations": [
+        {
+          "phase": 0,
+          "slot": "worker-a",
+          "role": "Windows CPU",
+          "backend": "cpu"
+        },
+        {
+          "phase": 0,
+          "slot": "worker-b",
+          "role": "LAN Linux RTX",
+          "backend": {
+            "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+            "compute_cap": "12.0",
+            "cuda_driver_version": 13030,
+            "cuda_runtime_version": 13030
+          }
+        },
+        {
+          "phase": 1,
+          "slot": "worker-a",
+          "role": "Windows CPU",
+          "backend": "cpu"
+        },
+        {
+          "phase": 1,
+          "slot": "worker-b",
+          "role": "LAN Linux RTX",
+          "backend": {
+            "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+            "compute_cap": "12.0",
+            "cuda_driver_version": 13030,
+            "cuda_runtime_version": 13030
+          }
+        }
+      ],
+      "verification": {
+        "merkle_root": "4b683b59327d1de0b9921292f747c9dc4141728b01ff37ec852bea7fe940bfbe",
+        "final_adapter": "0aab544c8700f4c0b949c397aa2383818677f1930fb4f2bee0f66675e88801f0",
+        "initial_sse": 24576,
+        "final_sse": 0,
+        "heldout_rows": 16,
+        "verify_wall_seconds": 0.011464799987152219
+      }
+    }
+  ]
+}

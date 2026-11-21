@@ -175,10 +175,21 @@ def gpu_cert(lib, leaves, sh, chal, d, r, b):
     return list(rarr), kms.value
 
 
-def build_proof(d, r, b, s, seed, backend, lib=None, reps=5, warmup=2):
+def build_proof(d, r, b, s, seed, backend, lib=None, reps=5, warmup=2, *, inputs=None):
     C.assert_contract(d, r, b, s)
     sh = C.shapes(d, r, b)
-    inp = gen_inputs(d, r, b, seed)
+    if inputs is None:
+        inp = gen_inputs(d, r, b, seed)
+    else:
+        limits = {"W": C.W_MAX, "A": C.A_MAX, "B": C.B_MAX, "x": C.X_MAX, "g": C.G_MAX}
+        if set(inputs) != set(limits):
+            raise ValueError("custom inputs must contain every input leaf")
+        for name, limit in limits.items():
+            rows, cols = sh[name]
+            values = inputs[name]
+            if len(values) != rows * cols or any(type(v) is not int or abs(v) > limit for v in values):
+                raise ValueError(f"custom input {name} exceeds its shape or range contract")
+        inp = inputs
     sid = C.step_id(d, r, b, s, seed)
     params = C.params_dict(d, r, b, s, seed)
     timings = []

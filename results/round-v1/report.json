@@ -1,0 +1,681 @@
+{
+  "schema": "gpu-lora-round/v1",
+  "python": "3.12.3",
+  "cohorts": [
+    {
+      "id": "synthetic-20261121",
+      "manifest_sha256": "c645e19ef587a2b582ceba48719de32032e5584d33eacdbcf33b0db39421fe65",
+      "manifest_bytes": 7976,
+      "cpu": {
+        "build_wall_seconds": 0.23215624599833973,
+        "bundle_bytes": 203425,
+        "contributions": [
+          {
+            "phase": 0,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1210510274395347,
+                "min": 1.1210510274395347,
+                "max": 1.1210510274395347,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.30870697810314596,
+                "min": 0.30870697810314596,
+                "max": 0.30870697810314596,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.8417479984927922,
+                "min": 0.8417479984927922,
+                "max": 0.8417479984927922,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.271506004035473,
+                "min": 2.271506004035473,
+                "max": 2.271506004035473,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 0,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1419340153224766,
+                "min": 1.1419340153224766,
+                "max": 1.1419340153224766,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.29885899857617915,
+                "min": 0.29885899857617915,
+                "max": 0.29885899857617915,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.858021987369284,
+                "min": 0.858021987369284,
+                "max": 0.858021987369284,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.29881500126794,
+                "min": 2.29881500126794,
+                "max": 2.29881500126794,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1571600043680519,
+                "min": 1.1571600043680519,
+                "max": 1.1571600043680519,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.30402702395804226,
+                "min": 0.30402702395804226,
+                "max": 0.30402702395804226,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.9094269771594554,
+                "min": 0.9094269771594554,
+                "max": 0.9094269771594554,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.3706140054855496,
+                "min": 2.3706140054855496,
+                "max": 2.3706140054855496,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1526200105436146,
+                "min": 1.1526200105436146,
+                "max": 1.1526200105436146,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.3050049999728799,
+                "min": 0.3050049999728799,
+                "max": 0.3050049999728799,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.9144550131168216,
+                "min": 0.9144550131168216,
+                "max": 0.9144550131168216,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.372080023633316,
+                "min": 2.372080023633316,
+                "max": 2.372080023633316,
+                "n": 1
+              }
+            }
+          }
+        ]
+      },
+      "mixed": {
+        "build_wall_seconds": 0.726823720993707,
+        "bundle_bytes": 203425,
+        "contributions": [
+          {
+            "phase": 0,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1199330037925392,
+                "min": 1.1199330037925392,
+                "max": 1.1199330037925392,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.31757698161527514,
+                "min": 0.31757698161527514,
+                "max": 0.31757698161527514,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.8401420200243592,
+                "min": 0.8401420200243592,
+                "max": 0.8401420200243592,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.2776520054321736,
+                "min": 2.2776520054321736,
+                "max": 2.2776520054321736,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 0,
+            "worker": "worker-b",
+            "backend": {
+              "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+              "compute_cap": "12.0",
+              "cuda_driver_version": 13030,
+              "cuda_runtime_version": 13030
+            },
+            "timing": {
+              "step_wall_ms": {
+                "median": 104.4804030098021,
+                "min": 104.4804030098021,
+                "max": 104.4804030098021,
+                "n": 1
+              },
+              "step_kernel_ms": {
+                "median": 0.476608008146286,
+                "min": 0.476608008146286,
+                "max": 0.476608008146286,
+                "n": 1
+              },
+              "commit_fs_ms": {
+                "median": 0.3793179930653423,
+                "min": 0.3793179930653423,
+                "max": 0.3793179930653423,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.710093998350203,
+                "min": 0.710093998350203,
+                "max": 0.710093998350203,
+                "n": 1
+              },
+              "cert_kernel_ms": {
+                "median": 0.13078400492668152,
+                "min": 0.13078400492668152,
+                "max": 0.13078400492668152,
+                "n": 1
+              },
+              "prover_wall_ms": {
+                "median": 105.56981500121765,
+                "min": 105.56981500121765,
+                "max": 105.56981500121765,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1509430187288672,
+                "min": 1.1509430187288672,
+                "max": 1.1509430187288672,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.30556399724446237,
+                "min": 0.30556399724446237,
+                "max": 0.30556399724446237,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.9069819934666157,
+                "min": 0.9069819934666157,
+                "max": 0.9069819934666157,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.363489009439945,
+                "min": 2.363489009439945,
+                "max": 2.363489009439945,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-b",
+            "backend": {
+              "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+              "compute_cap": "12.0",
+              "cuda_driver_version": 13030,
+              "cuda_runtime_version": 13030
+            },
+            "timing": {
+              "step_wall_ms": {
+                "median": 122.65398699673824,
+                "min": 122.65398699673824,
+                "max": 122.65398699673824,
+                "n": 1
+              },
+              "step_kernel_ms": {
+                "median": 0.48054400086402893,
+                "min": 0.48054400086402893,
+                "max": 0.48054400086402893,
+                "n": 1
+              },
+              "commit_fs_ms": {
+                "median": 0.38162298733368516,
+                "min": 0.38162298733368516,
+                "max": 0.38162298733368516,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.7111419981811196,
+                "min": 0.7111419981811196,
+                "max": 0.7111419981811196,
+                "n": 1
+              },
+              "cert_kernel_ms": {
+                "median": 0.13478399813175201,
+                "min": 0.13478399813175201,
+                "max": 0.13478399813175201,
+                "n": 1
+              },
+              "prover_wall_ms": {
+                "median": 123.74675198225304,
+                "min": 123.74675198225304,
+                "max": 123.74675198225304,
+                "n": 1
+              }
+            }
+          }
+        ]
+      },
+      "replay": {
+        "merkle_root": "3f4fc622bee649c3e16cbf2c905cfab45d21c338a0a6008f04c917d2d6f7bea2",
+        "final_adapter": "18996e730c76ebfafbc34a481d48af12595a766492a347f50edbdc7717e21229",
+        "initial_sse": 24576,
+        "final_sse": 0,
+        "heldout_rows": 16,
+        "verify_wall_seconds": 0.011664350022329018
+      },
+      "adapter_bytes": 543,
+      "negative_controls": {
+        "changed_optimizer_transition": "incorrect optimizer transition",
+        "missing_phase": "missing or extra phase",
+        "missing_contribution": "missing or extra contribution",
+        "duplicate_contribution": "duplicate or out-of-order contribution",
+        "relabelled_contribution": "step_id mismatch",
+        "valid_step_on_stale_adapter": "input pin mismatch B",
+        "valid_step_with_wrong_gradient": "input pin mismatch g",
+        "resealed_wrong_matrix": "Freivalds identity failed GEMM 6 (dW) rep 0",
+        "changed_round_root": "incorrect Merkle root",
+        "changed_final_digest": "incorrect final adapter"
+      }
+    },
+    {
+      "id": "synthetic-90817",
+      "manifest_sha256": "95755b07cac5a522df5f94cbc721870ebf957c7a42944292fae197a6b0ade829",
+      "manifest_bytes": 7924,
+      "cpu": {
+        "build_wall_seconds": 0.23409411197644658,
+        "bundle_bytes": 203427,
+        "contributions": [
+          {
+            "phase": 0,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1156030232086778,
+                "min": 1.1156030232086778,
+                "max": 1.1156030232086778,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.32106798607856035,
+                "min": 0.32106798607856035,
+                "max": 0.32106798607856035,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.8529240149073303,
+                "min": 0.8529240149073303,
+                "max": 0.8529240149073303,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.2895950241945684,
+                "min": 2.2895950241945684,
+                "max": 2.2895950241945684,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 0,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.2250479776412249,
+                "min": 1.2250479776412249,
+                "max": 1.2250479776412249,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.3066810022573918,
+                "min": 0.3066810022573918,
+                "max": 0.3066810022573918,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.8556469983886927,
+                "min": 0.8556469983886927,
+                "max": 0.8556469983886927,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.3873759782873094,
+                "min": 2.3873759782873094,
+                "max": 2.3873759782873094,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1338329932186753,
+                "min": 1.1338329932186753,
+                "max": 1.1338329932186753,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.3234430041629821,
+                "min": 0.3234430041629821,
+                "max": 0.3234430041629821,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.8998579869512469,
+                "min": 0.8998579869512469,
+                "max": 0.8998579869512469,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.357133984332904,
+                "min": 2.357133984332904,
+                "max": 2.357133984332904,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1333429720252752,
+                "min": 1.1333429720252752,
+                "max": 1.1333429720252752,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.3084269992541522,
+                "min": 0.3084269992541522,
+                "max": 0.3084269992541522,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.9088680089917034,
+                "min": 0.9088680089917034,
+                "max": 0.9088680089917034,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.350637980271131,
+                "min": 2.350637980271131,
+                "max": 2.350637980271131,
+                "n": 1
+              }
+            }
+          }
+        ]
+      },
+      "mixed": {
+        "build_wall_seconds": 0.683878967014607,
+        "bundle_bytes": 203427,
+        "contributions": [
+          {
+            "phase": 0,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1199339933227748,
+                "min": 1.1199339933227748,
+                "max": 1.1199339933227748,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.3057729918509722,
+                "min": 0.3057729918509722,
+                "max": 0.3057729918509722,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.8498500101268291,
+                "min": 0.8498500101268291,
+                "max": 0.8498500101268291,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.275556995300576,
+                "min": 2.275556995300576,
+                "max": 2.275556995300576,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 0,
+            "worker": "worker-b",
+            "backend": {
+              "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+              "compute_cap": "12.0",
+              "cuda_driver_version": 13030,
+              "cuda_runtime_version": 13030
+            },
+            "timing": {
+              "step_wall_ms": {
+                "median": 97.81409197603352,
+                "min": 97.81409197603352,
+                "max": 97.81409197603352,
+                "n": 1
+              },
+              "step_kernel_ms": {
+                "median": 0.47225600481033325,
+                "min": 0.47225600481033325,
+                "max": 0.47225600481033325,
+                "n": 1
+              },
+              "commit_fs_ms": {
+                "median": 0.38406701060011983,
+                "min": 0.38406701060011983,
+                "max": 0.38406701060011983,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.7099549984559417,
+                "min": 0.7099549984559417,
+                "max": 0.7099549984559417,
+                "n": 1
+              },
+              "cert_kernel_ms": {
+                "median": 0.1335040032863617,
+                "min": 0.1335040032863617,
+                "max": 0.1335040032863617,
+                "n": 1
+              },
+              "prover_wall_ms": {
+                "median": 98.90811398508959,
+                "min": 98.90811398508959,
+                "max": 98.90811398508959,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.11329898936674,
+                "min": 1.11329898936674,
+                "max": 1.11329898936674,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.3230239963158965,
+                "min": 0.3230239963158965,
+                "max": 0.3230239963158965,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.933313014684245,
+                "min": 0.933313014684245,
+                "max": 0.933313014684245,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 2.3696360003668815,
+                "min": 2.3696360003668815,
+                "max": 2.3696360003668815,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-b",
+            "backend": {
+              "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+              "compute_cap": "12.0",
+              "cuda_driver_version": 13030,
+              "cuda_runtime_version": 13030
+            },
+            "timing": {
+              "step_wall_ms": {
+                "median": 97.98932800185867,
+                "min": 97.98932800185867,
+                "max": 97.98932800185867,
+                "n": 1
+              },
+              "step_kernel_ms": {
+                "median": 0.4833599925041199,
+                "min": 0.4833599925041199,
+                "max": 0.4833599925041199,
+                "n": 1
+              },
+              "commit_fs_ms": {
+                "median": 0.38385798688977957,
+                "min": 0.38385798688977957,
+                "max": 0.38385798688977957,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 0.7159610104281455,
+                "min": 0.7159610104281455,
+                "max": 0.7159610104281455,
+                "n": 1
+              },
+              "cert_kernel_ms": {
+                "median": 0.13235199451446533,
+                "min": 0.13235199451446533,
+                "max": 0.13235199451446533,
+                "n": 1
+              },
+              "prover_wall_ms": {
+                "median": 99.08914699917659,
+                "min": 99.08914699917659,
+                "max": 99.08914699917659,
+                "n": 1
+              }
+            }
+          }
+        ]
+      },
+      "replay": {
+        "merkle_root": "4b683b59327d1de0b9921292f747c9dc4141728b01ff37ec852bea7fe940bfbe",
+        "final_adapter": "0aab544c8700f4c0b949c397aa2383818677f1930fb4f2bee0f66675e88801f0",
+        "initial_sse": 24576,
+        "final_sse": 0,
+        "heldout_rows": 16,
+        "verify_wall_seconds": 0.011494701990159228
+      },
+      "adapter_bytes": 540,
+      "negative_controls": {
+        "changed_optimizer_transition": "incorrect optimizer transition",
+        "missing_phase": "missing or extra phase",
+        "missing_contribution": "missing or extra contribution",
+        "duplicate_contribution": "duplicate or out-of-order contribution",
+        "relabelled_contribution": "step_id mismatch",
+        "valid_step_on_stale_adapter": "input pin mismatch B",
+        "valid_step_with_wrong_gradient": "input pin mismatch g",
+        "resealed_wrong_matrix": "Freivalds identity failed GEMM 6 (dW) rep 0",
+        "changed_round_root": "incorrect Merkle root",
+        "changed_final_digest": "incorrect final adapter"
+      }
+    }
+  ],
+  "source_sha256": {
+    "round_verifier.py": "082a8aea5137a4129f8bb0c00feacdf261b2e7c0f53c7f75b7064467f9ec72d5",
+    "round_experiment.py": "63d234ef35d892b942612bd5bedef4fb87c1fb50e299524038bd6e71c7a944fc",
+    "prover.py": "492ca1a20696f7acec32163d2fdbb030fa858da4cabf28f50d2a127091910845",
+    "contract.py": "3b8af2b46c6eac3d4e53b7ae916b3c3d26a888f0afbd74bb960c77b28458aec5",
+    "verifier.py": "72fc81f77742bcd1e1f9c53177ee2c6108159e8f32367e8452376a59b2789559",
+    "tamper.py": "faa6f0cf8312dc386a0f43eeea0d23349ce56ffae77b880d4a40ba0531ec586f",
+    "oracle.py": "2579cb30f8555d4ca5348c9caeec06c37eababbc3e262fe3f08dd98aeef2ccb7",
+    "cuda/lora_kernels.cu": "21f95df32493924122faab228cb282619e9d4fd3c9088156751608cc9affc3f7"
+  },
+  "cuda_library_sha256": "e3d1f1f15696dda01ebc62352957958a9e405c3d44c546ae58443b0ba30b3de6"
+}

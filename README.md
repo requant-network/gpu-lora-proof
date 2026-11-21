@@ -4,6 +4,10 @@
 24/24 honest proofs accepted, 276/276 negative controls rejected, zero
 failures.**
 
+The later [verified LoRA round](ROUND.md) extends the same step certificate to
+two linked optimizer phases, two contribution slots per phase and an adapter
+reconstructed by the CPU verifier.
+
 Can a GPU produce a compact certificate that an **exact integer LoRA
 fine-tuning step** (forward *and* backward) was computed correctly, verifiable
 on CPU in milliseconds, with tampering rejected? **Yes at d ≤ 256 (58–77 ms

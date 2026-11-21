@@ -1,0 +1,17 @@
+test_cli_requires_trusted_manifest_and_complete_round (test_round.TestRound.test_cli_requires_trusted_manifest_and_complete_round) ... ok
+test_custom_inputs_reject_before_cuda_dispatch (test_round.TestRound.test_custom_inputs_reject_before_cuda_dispatch) ... ok
+test_all_single_controls_reject (test_verifier.TestVerifier.test_all_single_controls_reject) ... ok
+test_coherent_tamper_keeps_hashes_valid (test_verifier.TestVerifier.test_coherent_tamper_keeps_hashes_valid) ... ok
+test_contract_bounds (test_verifier.TestVerifier.test_contract_bounds) ... ok
+test_controls_reject_cli_exit1 (test_verifier.TestVerifier.test_controls_reject_cli_exit1) ... ok
+test_garbage_rejects (test_verifier.TestVerifier.test_garbage_rejects) ... ok
+test_honest_accepts_cli (test_verifier.TestVerifier.test_honest_accepts_cli) ... ok
+test_honest_check_counts (test_verifier.TestVerifier.test_honest_check_counts) ... ok
+test_missing_leaf_rejects (test_verifier.TestVerifier.test_missing_leaf_rejects) ... ok
+test_soundness_bound_numeric (test_verifier.TestVerifier.test_soundness_bound_numeric) ... ok
+test_stale_replay_rejects (test_verifier.TestVerifier.test_stale_replay_rejects) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.580s
+
+OK

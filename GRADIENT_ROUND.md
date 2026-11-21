@@ -80,6 +80,8 @@ failed preflight. None of these runs wrote a release directory. Changing
 the released LoRA scaling parameter failed the PEFT configuration pin.
 All 14 existing unit tests passed on Windows and Linux.
 
+[Signed false gradient](results/gradient-round/signed-false-gradient.json) ·
+[Signed wrong link](results/gradient-round/signed-wrong-link.json) ·
 [Round controls](results/gradient-round/controls.txt) ·
 [Changed scaling control](results/gradient-round/peft-control.txt)
 
@@ -127,3 +129,6 @@ python -B experiments/gradient_round.py verify "$r/order.json" \
 python -B experiments/check_gradient_peft.py "$r/order.json" \
   results/text-head-v2/corpus.tsv "$MODEL" replay --order-sha256 "$pin"
 ```
+
+To repeat either signed refusal with public files, substitute its JSON
+for the left step-two contribution and use a fresh output path.

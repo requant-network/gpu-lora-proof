@@ -11,3 +11,4 @@ results/text-head-v2/** text eol=lf
 results/text-head-origin/** text eol=lf
 results/transformer-projection/*.json text eol=lf
 results/transformer-projection/*.gguf binary
+results/cross-host-replay/** text eol=lf

@@ -1,0 +1,1 @@
+{"certificate_sha256": "bd40bcd7a191c94dfa3aba62019d4985165ea6a42229e1242db84d57ef26210e", "selected_step": 8, "heldout_before": {"correct": 16, "squared_error": 114328}, "heldout_after": {"correct": 16, "squared_error": 97610, "features_sha256": "a5e596f26fc3712aa9005cb1e8c0da527f63450711c3192e06cc9e75859e4473"}, "release": true, "replay_seconds": 67.551516714}

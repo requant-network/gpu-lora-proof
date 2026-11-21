@@ -59,6 +59,9 @@ byte for byte from their recorded feature tables.
 [Replay timing](results/transformer-projection/verified.json) ·
 [Altered certificate result](results/transformer-projection/altered-certificate.log.txt).
 
+The [cross-host follow-up](CROSS_HOST_REPLAY.md) reproduced the record
+and GGUF byte for byte on the workstation CPU with the same runtime.
+
 The GGUF artifact contains the two generated LoRA factors. The
 frozen base is Qwen2.5-0.5B-Instruct Q4_K_M. The model publisher
 distributes the base under Apache-2.0.

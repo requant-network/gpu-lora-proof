@@ -30,9 +30,10 @@ by the workload. File paths must remain under the verifier's control
 between digest checking and execution. The statement covers this
 feature projection and integer head on the two public corpora.
 The [projection follow-up](TRANSFORMER_PROJECTION.md) tests one
-rank-one weight update inside the transformer. Broader updates,
-independent operator identity and replay on other hosts of the same
-profile remain open.
+rank-one weight update inside the transformer. The separate [cross-host
+replay](CROSS_HOST_REPLAY.md) reproduced the CPU profile on two Ryzen
+processors. Broader updates, independent operator identity and
+cross-host RTX replay remain open.
 
 ## Evidence
 

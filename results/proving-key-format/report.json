@@ -1,0 +1,487 @@
+{
+  "executable_sha256": "c440e09c25dc6d417c5b58849e95c895426eb4088e190f048dd2b849ba7aa18e",
+  "cpus": [
+    0,
+    1
+  ],
+  "rayon_threads": 2,
+  "profiles": {
+    "rtx": {
+      "manifest_sha256": "d200e82458d79b44fc577480ba33b1e7fe79b6e935328bd7812cfdd05763c34a",
+      "key_sha256": "ef6ff88719ce916f2fc86a70e79de8e90470d4b0e534c5782ae9dbde8d8dd38d",
+      "formats": {
+        "compressed": {
+          "bytes": 32074992,
+          "sha256": "c9782ff408d432a2369ae3cabb263c8ce229670b3871adcf1078c6b024a71de3",
+          "runs": [
+            {
+              "process_seconds": 18.27205290697748,
+              "max_rss_kib": 647964,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 15.417477364,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.487843748
+                },
+                "wall_seconds": 18.223727847
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.12868100000000002,
+                "Inlining LCs": 0.552319,
+                "R1CS to QAP witness map": 0.60926,
+                "Compute C": 0.910492,
+                "Compute A": 0.051621,
+                "Compute B in G1": 0.053235,
+                "Compute B in G2": 0.146508,
+                "Finish C": 4.26e-06,
+                "Groth16::Prover": 2.452
+              },
+              "proof_sha256": "d061a4b102b7207c60e54222fd449d4b5279f40f65803b762ba80d640b5d5114",
+              "msm_phase_seconds": 1.161856
+            },
+            {
+              "process_seconds": 18.10317588201724,
+              "max_rss_kib": 647944,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 15.328128766,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.40914331
+                },
+                "wall_seconds": 18.057619611
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.12563,
+                "Inlining LCs": 0.5235890000000001,
+                "R1CS to QAP witness map": 0.5583210000000001,
+                "Compute C": 0.903381,
+                "Compute A": 0.055124000000000006,
+                "Compute B in G1": 0.06401699999999999,
+                "Compute B in G2": 0.14314400000000002,
+                "Finish C": 3.213e-06,
+                "Groth16::Prover": 2.373
+              },
+              "proof_sha256": "46f538dc8d1a2ee07e482e51d59786a9183fe09a6ad1edd925de225601ea9312",
+              "msm_phase_seconds": 1.165666
+            },
+            {
+              "process_seconds": 18.114168931992026,
+              "max_rss_kib": 647832,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 15.323896717,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.430357523
+                },
+                "wall_seconds": 18.068664205
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.123788,
+                "Inlining LCs": 0.52212,
+                "R1CS to QAP witness map": 0.618009,
+                "Compute C": 0.8947039999999999,
+                "Compute A": 0.058802,
+                "Compute B in G1": 0.051078000000000005,
+                "Compute B in G2": 0.125223,
+                "Finish C": 3.423e-06,
+                "Groth16::Prover": 2.394
+              },
+              "proof_sha256": "14d0861968765f2f98a84af9b836a9534e188333f9608037c0abfbf9dc2151f0",
+              "msm_phase_seconds": 1.129807
+            },
+            {
+              "process_seconds": 18.029084184992826,
+              "max_rss_kib": 647816,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 15.322620732,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.347995839
+                },
+                "wall_seconds": 17.983228008
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.12371700000000001,
+                "Inlining LCs": 0.519076,
+                "R1CS to QAP witness map": 0.546516,
+                "Compute C": 0.8941380000000001,
+                "Compute A": 0.047814999999999996,
+                "Compute B in G1": 0.052435,
+                "Compute B in G2": 0.128238,
+                "Finish C": 3.2829999999999997e-06,
+                "Groth16::Prover": 2.312
+              },
+              "proof_sha256": "0ab1cdc5cc8e630c4a20ef98ab9ed643526f28142df7b89e1ce9daf20e8dd851",
+              "msm_phase_seconds": 1.1226260000000001
+            }
+          ],
+          "median_process_seconds": 18.108672407004633,
+          "median_key_load_seconds": 15.326012741500001,
+          "median_msm_phase_seconds": 1.1458315
+        },
+        "uncompressed": {
+          "bytes": 64149936,
+          "sha256": "cb35cd4af3fdead236d2fc3fbf63e4bff50bdace7110782bb00641ec3828a3d4",
+          "runs": [
+            {
+              "process_seconds": 10.850601093989098,
+              "max_rss_kib": 648012,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 8.030917129,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.453763118
+                },
+                "wall_seconds": 10.803176661
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.126095,
+                "Inlining LCs": 0.528097,
+                "R1CS to QAP witness map": 0.6199600000000001,
+                "Compute C": 0.910901,
+                "Compute A": 0.048048,
+                "Compute B in G1": 0.054183,
+                "Compute B in G2": 0.130145,
+                "Finish C": 3.422e-06,
+                "Groth16::Prover": 2.418
+              },
+              "proof_sha256": "79f7bf85393b40d133584864c10f0db7c4dd4ab29db65626fb4482da2a48dfe6",
+              "msm_phase_seconds": 1.1432769999999999
+            },
+            {
+              "process_seconds": 10.905616294010542,
+              "max_rss_kib": 647944,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 8.040093191,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.503514446
+                },
+                "wall_seconds": 10.859236993
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.125538,
+                "Inlining LCs": 0.531933,
+                "R1CS to QAP witness map": 0.593592,
+                "Compute C": 0.977487,
+                "Compute A": 0.054020000000000006,
+                "Compute B in G1": 0.05526,
+                "Compute B in G2": 0.129155,
+                "Finish C": 3.701e-06,
+                "Groth16::Prover": 2.467
+              },
+              "proof_sha256": "197a2924b12e00bd187b185f0c515190b8d3abb598fb8d9772241353108ee347",
+              "msm_phase_seconds": 1.215922
+            },
+            {
+              "process_seconds": 10.734963905997574,
+              "max_rss_kib": 647928,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 8.020503635,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.355770487
+                },
+                "wall_seconds": 10.6883859
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.123792,
+                "Inlining LCs": 0.5201509999999999,
+                "R1CS to QAP witness map": 0.548611,
+                "Compute C": 0.894572,
+                "Compute A": 0.050975,
+                "Compute B in G1": 0.053273,
+                "Compute B in G2": 0.128132,
+                "Finish C": 3.841e-06,
+                "Groth16::Prover": 2.32
+              },
+              "proof_sha256": "fc27280036a93911b1a61b3cc97268cfcc37c0fe1d9c99928696f4890ea9a955",
+              "msm_phase_seconds": 1.126952
+            },
+            {
+              "process_seconds": 10.741822226002114,
+              "max_rss_kib": 647996,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 8.025410607,
+                  "proof_bytes": 128,
+                  "prove_seconds": 2.356669718
+                },
+                "wall_seconds": 10.695670613
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.125256,
+                "Inlining LCs": 0.518815,
+                "R1CS to QAP witness map": 0.546492,
+                "Compute C": 0.902462,
+                "Compute A": 0.047456000000000005,
+                "Compute B in G1": 0.05221,
+                "Compute B in G2": 0.127831,
+                "Finish C": 2.863e-06,
+                "Groth16::Prover": 2.321
+              },
+              "proof_sha256": "72747a83e46298fc9b240dfae1c2c1eb288c329f573beef83a8ebf982dee8836",
+              "msm_phase_seconds": 1.129959
+            }
+          ],
+          "median_process_seconds": 10.796211659995606,
+          "median_key_load_seconds": 8.028163868,
+          "median_msm_phase_seconds": 1.136618
+        }
+      },
+      "conversion": {
+        "process_seconds": 15.619101968011819,
+        "max_rss_kib": 104576,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 15.521546333,
+            "proving_key_bytes": 64149936
+          },
+          "wall_seconds": 15.616812022
+        },
+        "trace_seconds": {}
+      },
+      "controls": {
+        "off_curve_key": "NO: the input buffer contained invalid data",
+        "appended_key_data": "NO: extra bytes after canonical encoding"
+      }
+    },
+    "cpu": {
+      "manifest_sha256": "ccb4d88429a4e2fce34b1f1a3d7cd88f1755f3ab6aaf9d91262ad0a52eb54263",
+      "key_sha256": "082d83afa36e7d5867f93bc6e5d98a86bad2ac5c742cf0b84b584245b84970cd",
+      "formats": {
+        "compressed": {
+          "bytes": 24470768,
+          "sha256": "9a6e2889aab5b8351517bb61d22c8095a82f7a6a15983bc3e4c0246cb00ae005",
+          "runs": [
+            {
+              "process_seconds": 14.538227600016398,
+              "max_rss_kib": 441192,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 12.833664262,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.398502832
+                },
+                "wall_seconds": 14.507505582
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.10281100000000001,
+                "Inlining LCs": 0.36168400000000006,
+                "R1CS to QAP witness map": 0.290375,
+                "Compute C": 0.477996,
+                "Compute A": 0.028009000000000003,
+                "Compute B in G1": 0.031269,
+                "Compute B in G2": 0.07513800000000001,
+                "Finish C": 3.841e-06,
+                "Groth16::Prover": 1.367
+              },
+              "proof_sha256": "e2ef933308b36718b08f22f41f8a75ef37639d74bd521528239538de269804a1",
+              "msm_phase_seconds": 0.612412
+            },
+            {
+              "process_seconds": 14.53875480699935,
+              "max_rss_kib": 440932,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 12.835812664,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.403298261
+                },
+                "wall_seconds": 14.507073774
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.10158400000000001,
+                "Inlining LCs": 0.36249200000000004,
+                "R1CS to QAP witness map": 0.290678,
+                "Compute C": 0.477986,
+                "Compute A": 0.029041,
+                "Compute B in G1": 0.034925,
+                "Compute B in G2": 0.07470099999999999,
+                "Finish C": 2.934e-06,
+                "Groth16::Prover": 1.372
+              },
+              "proof_sha256": "8dd8ffd627727e5a54d45c6d4ffb79d40b97e9b143ae012cdc16c46da37de3b3",
+              "msm_phase_seconds": 0.616653
+            },
+            {
+              "process_seconds": 14.518869377003284,
+              "max_rss_kib": 441056,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 12.816587249,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.40134084
+                },
+                "wall_seconds": 14.487489926
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.10306900000000001,
+                "Inlining LCs": 0.363072,
+                "R1CS to QAP witness map": 0.29174700000000003,
+                "Compute C": 0.477277,
+                "Compute A": 0.028069,
+                "Compute B in G1": 0.031208,
+                "Compute B in G2": 0.075537,
+                "Finish C": 4.3310000000000005e-06,
+                "Groth16::Prover": 1.37
+              },
+              "proof_sha256": "0585fb87c4118cc327150c1a02c728f3afe0eb029ea9f90d61ee2dbfb3dba6fa",
+              "msm_phase_seconds": 0.612091
+            },
+            {
+              "process_seconds": 14.526325364975492,
+              "max_rss_kib": 441188,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 12.820004417,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.404019604
+                },
+                "wall_seconds": 14.493236294999999
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.10228000000000001,
+                "Inlining LCs": 0.363605,
+                "R1CS to QAP witness map": 0.292085,
+                "Compute C": 0.478255,
+                "Compute A": 0.027861,
+                "Compute B in G1": 0.031475,
+                "Compute B in G2": 0.07519100000000001,
+                "Finish C": 3.841e-06,
+                "Groth16::Prover": 1.371
+              },
+              "proof_sha256": "63655dda2708d30fc2d7dfdd589c3ae5f0fc64a7dfabafaae328c913979b97c6",
+              "msm_phase_seconds": 0.612782
+            }
+          ],
+          "median_process_seconds": 14.532276482495945,
+          "median_key_load_seconds": 12.8268343395,
+          "median_msm_phase_seconds": 0.6125970000000001
+        },
+        "uncompressed": {
+          "bytes": 48941488,
+          "sha256": "ab5532d5fcc51d089fda77af00e342aeab944bc8b098b812ecf080365958ed5d",
+          "runs": [
+            {
+              "process_seconds": 8.785917557019275,
+              "max_rss_kib": 441172,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 7.082869812,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.401088982
+                },
+                "wall_seconds": 8.754889905
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.104711,
+                "Inlining LCs": 0.362786,
+                "R1CS to QAP witness map": 0.289748,
+                "Compute C": 0.47741300000000003,
+                "Compute A": 0.027919,
+                "Compute B in G1": 0.031736,
+                "Compute B in G2": 0.075197,
+                "Finish C": 3.353e-06,
+                "Groth16::Prover": 1.37
+              },
+              "proof_sha256": "62ad7012082c99901be86586ad5e464a846fcb79b547ad3d09f8e4406e256bd8",
+              "msm_phase_seconds": 0.6122650000000001
+            },
+            {
+              "process_seconds": 8.798589123005513,
+              "max_rss_kib": 441060,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 7.093576413,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.406996312
+                },
+                "wall_seconds": 8.768744893000001
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.103135,
+                "Inlining LCs": 0.3642,
+                "R1CS to QAP witness map": 0.295962,
+                "Compute C": 0.477856,
+                "Compute A": 0.028114999999999998,
+                "Compute B in G1": 0.031465,
+                "Compute B in G2": 0.074783,
+                "Finish C": 3.422e-06,
+                "Groth16::Prover": 1.376
+              },
+              "proof_sha256": "042374a5487807e7f34eb977974659537c045f8f6db272bdcb464a2833b4380f",
+              "msm_phase_seconds": 0.612219
+            },
+            {
+              "process_seconds": 8.787269466003636,
+              "max_rss_kib": 440936,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 7.08691759,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.401859635
+                },
+                "wall_seconds": 8.756267796
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.103651,
+                "Inlining LCs": 0.363184,
+                "R1CS to QAP witness map": 0.290659,
+                "Compute C": 0.477678,
+                "Compute A": 0.02816,
+                "Compute B in G1": 0.031554,
+                "Compute B in G2": 0.075472,
+                "Finish C": 3.842e-06,
+                "Groth16::Prover": 1.37
+              },
+              "proof_sha256": "3dd11d8290f7c78e9034cc77a74d56ed475408312e83f6c7e2b8df84157fe5ec",
+              "msm_phase_seconds": 0.612864
+            },
+            {
+              "process_seconds": 8.791268058004789,
+              "max_rss_kib": 441044,
+              "reported": {
+                "metrics": {
+                  "key_load_seconds": 7.082168194,
+                  "proof_bytes": 128,
+                  "prove_seconds": 1.40620206
+                },
+                "wall_seconds": 8.759708551
+              },
+              "trace_seconds": {
+                "Constraint synthesis": 0.10245399999999999,
+                "Inlining LCs": 0.36850400000000005,
+                "R1CS to QAP witness map": 0.291472,
+                "Compute C": 0.47707700000000003,
+                "Compute A": 0.028161000000000002,
+                "Compute B in G1": 0.031354,
+                "Compute B in G2": 0.075511,
+                "Finish C": 3.2829999999999997e-06,
+                "Groth16::Prover": 1.375
+              },
+              "proof_sha256": "180feecb39a7fa3b697dbb81a6bf1ac6ae00315adf1a5eadf209b2de82cbbf46",
+              "msm_phase_seconds": 0.6121030000000001
+            }
+          ],
+          "median_process_seconds": 8.789268762004212,
+          "median_key_load_seconds": 7.084893701,
+          "median_msm_phase_seconds": 0.612242
+        }
+      },
+      "conversion": {
+        "process_seconds": 12.990505142020993,
+        "max_rss_kib": 80768,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 12.915133486,
+            "proving_key_bytes": 48941488
+          },
+          "wall_seconds": 12.988516639
+        },
+        "trace_seconds": {}
+      },
+      "controls": {}
+    }
+  }
+}

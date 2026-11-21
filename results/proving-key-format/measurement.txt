@@ -1,0 +1,16 @@
+rtx-1-compressed accepted
+rtx-1-uncompressed accepted
+rtx-2-uncompressed accepted
+rtx-2-compressed accepted
+rtx-3-compressed accepted
+rtx-3-uncompressed accepted
+rtx-4-uncompressed accepted
+rtx-4-compressed accepted
+cpu-1-compressed accepted
+cpu-1-uncompressed accepted
+cpu-2-uncompressed accepted
+cpu-2-compressed accepted
+cpu-3-compressed accepted
+cpu-3-uncompressed accepted
+cpu-4-uncompressed accepted
+cpu-4-compressed accepted

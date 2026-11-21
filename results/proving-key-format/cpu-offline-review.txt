@@ -1,0 +1,9 @@
+cpu-1-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027762348,"pairing_and_public_inputs_seconds":0.04872149,"public_inputs":3587},"wall_seconds":0.07691463}
+cpu-1-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.028086629,"pairing_and_public_inputs_seconds":0.048766119,"public_inputs":3587},"wall_seconds":0.077219913}
+cpu-2-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.02756979,"pairing_and_public_inputs_seconds":0.04899262,"public_inputs":3587},"wall_seconds":0.0769543}
+cpu-2-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027709547,"pairing_and_public_inputs_seconds":0.048767586,"public_inputs":3587},"wall_seconds":0.076844507}
+cpu-3-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027837988,"pairing_and_public_inputs_seconds":0.048978233,"public_inputs":3587},"wall_seconds":0.077238492}
+cpu-3-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027569092,"pairing_and_public_inputs_seconds":0.048752849,"public_inputs":3587},"wall_seconds":0.07670056}
+cpu-4-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027697254,"pairing_and_public_inputs_seconds":0.048807746,"public_inputs":3587},"wall_seconds":0.076938306}
+cpu-4-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027757249,"pairing_and_public_inputs_seconds":0.048756202,"public_inputs":3587},"wall_seconds":0.076886553}
+historical.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.02769439,"pairing_and_public_inputs_seconds":0.048888624,"public_inputs":3587},"wall_seconds":0.076955837}

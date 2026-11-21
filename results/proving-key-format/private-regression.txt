@@ -1,0 +1,1 @@
+RESULT {"metrics":{"accepted":true,"proof_count":3},"wall_seconds":0.009688423}

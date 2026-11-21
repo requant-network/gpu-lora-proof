@@ -1,0 +1,13 @@
+rustc 1.98.1 (48a229cea 2026-09-01)
+Python 3.12.3
+Model name:                              AMD Ryzen 5 5500
+sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+LAN measurement affinity: CPU 0 and CPU 1 on distinct physical cores.
+Research base: 9f492808a93c974949beca86f4bcf3203e6cbd00
+c440e09c25dc6d417c5b58849e95c895426eb4088e190f048dd2b849ba7aa18e  /data2/worknet-ci/research/lora-key-format.sF6AYswe/binary/compact-lora-round
+66ef31bb9f46878341417012f764d89764c36e4b0e0e587087e640df23072de0  compact-round/Cargo.lock
+9beb68d89f1910e4621cf41fd949bb24a8b74f2002ba3b7b7e7abf70352928e7  compact-round/Cargo.toml
+cf20a1add85859614d003b9a9648ddb5677cad8eb47eccb29a3548a9893ef550  compact-round/benchmark.py
+6934b12a18815a610b2e856ae87cbfea8f3aeaeb20768b92468f0b8b82b6604a  compact-round/key_format_trial.py
+cc0d6d4c15f1b2c4deaed5fa418de30a24037624dc565334e6567f342ecb5576  compact-round/src/main.rs
+3c5fb309ab7fe7649663bb5f5909553f7ace8b81490ed75a0f641cf78a799ee6  compact-round/src/private_prefix.rs

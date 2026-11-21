@@ -69,6 +69,9 @@ wrong verification-key pin. The RTX key and proof failed verification against th
 The two earlier public and private v1 proofs still verified.
 Seven Rust tests and fourteen Python tests passed.
 
+The [proving-key format trial](PROVING_KEY_FORMAT.md) reuses these
+two statements and profiles the checked key load and MSM phases.
+
 ## Verify or reproduce
 
 The retained RTX and CPU packages contain separate verification keys

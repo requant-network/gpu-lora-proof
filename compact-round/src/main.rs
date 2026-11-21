@@ -7,7 +7,7 @@ mod statement;
 use ark_bn254::{Bn254, Fr};
 use ark_groth16::{prepare_verifying_key, Groth16, PreparedVerifyingKey, Proof, ProvingKey, VerifyingKey};
 use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystem, SynthesisMode};
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use circuit::RoundCircuit;
 use prefix::{PrefixCircuit, Shape};
 use rand::rngs::OsRng;
@@ -22,8 +22,12 @@ use std::time::Instant;
 const KEY_LIMIT: u64 = 128 << 20;
 
 fn decode<T: CanonicalDeserialize>(bytes: &[u8]) -> Result<T> {
+    decode_form(bytes, Compress::Yes)
+}
+
+fn decode_form<T: CanonicalDeserialize>(bytes: &[u8], compress: Compress) -> Result<T> {
     let mut raw = bytes;
-    let value = T::deserialize_compressed(&mut raw)?;
+    let value = T::deserialize_with_mode(&mut raw, compress, Validate::Yes)?;
     if !raw.is_empty() {
         return Err("extra bytes after canonical encoding".into());
     }
@@ -31,9 +35,13 @@ fn decode<T: CanonicalDeserialize>(bytes: &[u8]) -> Result<T> {
 }
 
 fn write(path: impl AsRef<Path>, value: &impl CanonicalSerialize) -> Result<()> {
+    write_form(path, value, Compress::Yes)
+}
+
+fn write_form(path: impl AsRef<Path>, value: &impl CanonicalSerialize, compress: Compress) -> Result<()> {
     let file = OpenOptions::new().write(true).create_new(true).open(path)?;
     let mut output = BufWriter::new(file);
-    value.serialize_compressed(&mut output)?;
+    value.serialize_with_mode(&mut output, compress)?;
     output.flush()?;
     Ok(())
 }
@@ -53,9 +61,9 @@ fn setup(directory: &str, circuit: impl ConstraintSynthesizer<Fr>) -> Result<ser
     )
 }
 
-fn load_proving_key(path: &str) -> Result<(ProvingKey<Bn254>, f64)> {
+fn load_proving_key(path: &str, compress: Compress) -> Result<(ProvingKey<Bn254>, f64)> {
     let start = Instant::now();
-    let key = decode(&read(path, KEY_LIMIT)?)?;
+    let key = decode_form(&read(path, KEY_LIMIT)?, compress)?;
     Ok((key, start.elapsed().as_secs_f64()))
 }
 
@@ -72,8 +80,9 @@ fn prove(
     circuit: impl ConstraintSynthesizer<Fr>,
     key_path: &str,
     output: &str,
+    compress: Compress,
 ) -> Result<serde_json::Value> {
-    let (key, key_seconds) = load_proving_key(key_path)?;
+    let (key, key_seconds) = load_proving_key(key_path, compress)?;
     let (proof, proof_seconds) = create_proof(circuit, &key)?;
     write(output, &proof)?;
     Ok(
@@ -138,7 +147,7 @@ fn run(args: &[String]) -> Result<()> {
         [command, manifest, pin, adapter, proving_key, output] if command == "prove" => {
             let statement = Statement::load(manifest, pin, adapter)?;
             statement.replay()?;
-            prove(RoundCircuit(Some(statement.public_inputs())), proving_key, output)?
+            prove(RoundCircuit(Some(statement.public_inputs())), proving_key, output, Compress::Yes)?
         }
         [command, manifest, pin, adapter, verifying_key, key_pin, proof] if command == "verify" => {
             let statement = Statement::load(manifest, pin, adapter)?;
@@ -158,12 +167,23 @@ fn run(args: &[String]) -> Result<()> {
             let statement = Statement::load_prefix(manifest, pin, adapter)?;
             check_prefix(&statement, Shape::load(shape)?)?
         }
-        [command, shape, manifest, pin, adapter, proving_key, output] if command == "prefix-prove" => {
+        [command, source, output] if command == "proving-key-uncompress" => {
+            let (key, key_load_seconds) = load_proving_key(source, Compress::Yes)?;
+            let output_bytes = key.uncompressed_size();
+            if output_bytes as u64 > KEY_LIMIT {
+                return Err("uncompressed key exceeds the proving-key byte limit".into());
+            }
+            write_form(output, &key, Compress::No)?;
+            json!({"key_load_seconds": key_load_seconds, "proving_key_bytes": output_bytes})
+        }
+        [command, shape, manifest, pin, adapter, proving_key, output]
+            if command == "prefix-prove" || command == "prefix-prove-uncompressed" => {
             let statement = Statement::load_prefix(manifest, pin, adapter)?;
             let shape = Shape::load(shape)?;
             check_prefix(&statement, shape.clone())?;
             let circuit = PrefixCircuit { shape, public: Some(statement.prefix_inputs()) };
-            prove(circuit, proving_key, output)?
+            let compress = if command == "prefix-prove" { Compress::Yes } else { Compress::No };
+            prove(circuit, proving_key, output, compress)?
         }
         [command, manifest, pin, adapter, verifying_key, key_pin, proof] if command == "prefix-verify" => {
             let statement = Statement::load_prefix(manifest, pin, adapter)?;
@@ -171,7 +191,7 @@ fn run(args: &[String]) -> Result<()> {
         }
         [command, rest @ ..] if command.starts_with("private-prefix-") => private_prefix::run(command, rest)?,
         [command, rest @ ..] if command.starts_with("private-") => private::run(command, rest)?,
-        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | prefix-shape / prefix-setup / prefix-check / prefix-prove / prefix-verify | private-help".into()),
+        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | prefix-shape / prefix-setup / prefix-check / prefix-prove / prefix-prove-uncompressed / prefix-verify | proving-key-uncompress SOURCE OUTPUT | private-help".into()),
     };
     println!(
         "RESULT {}",

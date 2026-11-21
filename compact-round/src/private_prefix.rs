@@ -285,7 +285,7 @@ fn prove_prefix(policy: Policy, choice: usize, args: &[String]) -> Result<Value>
     let [order @ .., key, proof] = args else {
         return Err("expected prefix order, key and proof paths".into());
     };
-    prove(checked_order(policy, choice, order)?, key, proof)
+    prove(checked_order(policy, choice, order)?, key, proof, ark_serialize::Compress::Yes)
 }
 
 fn prove_batch<const N: usize>(
@@ -294,7 +294,7 @@ fn prove_batch<const N: usize>(
     let circuits = orders.chunks_exact(7).map(|order| {
         checked_order(policy.clone(), order[0].parse()?, &order[1..])
     }).collect::<Result<Vec<_>>>()?;
-    let (key, key_load_seconds) = load_proving_key(key)?;
+    let (key, key_load_seconds) = load_proving_key(key, ark_serialize::Compress::Yes)?;
     let mut proofs = Vec::with_capacity(N);
     let mut proof_seconds = Vec::with_capacity(N);
     for circuit in circuits {

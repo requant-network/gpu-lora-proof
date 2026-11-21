@@ -1,0 +1,9 @@
+historical.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027323314,"pairing_and_public_inputs_seconds":0.048802228,"public_inputs":3587},"wall_seconds":0.076498853}
+rtx-1-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027500715,"pairing_and_public_inputs_seconds":0.048170986,"public_inputs":3587},"wall_seconds":0.076046689}
+rtx-1-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027488703,"pairing_and_public_inputs_seconds":0.048072229,"public_inputs":3587},"wall_seconds":0.075921461}
+rtx-2-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.02747222,"pairing_and_public_inputs_seconds":0.048199971,"public_inputs":3587},"wall_seconds":0.076073579}
+rtx-2-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027324222,"pairing_and_public_inputs_seconds":0.048063218,"public_inputs":3587},"wall_seconds":0.07576124}
+rtx-3-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027456714,"pairing_and_public_inputs_seconds":0.048225394,"public_inputs":3587},"wall_seconds":0.076059261}
+rtx-3-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027392737,"pairing_and_public_inputs_seconds":0.048380236,"public_inputs":3587},"wall_seconds":0.076129662}
+rtx-4-compressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027303758,"pairing_and_public_inputs_seconds":0.048034862,"public_inputs":3587},"wall_seconds":0.075719125}
+rtx-4-uncompressed.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027510493,"pairing_and_public_inputs_seconds":0.048044151,"public_inputs":3587},"wall_seconds":0.075913288}

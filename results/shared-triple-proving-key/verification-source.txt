@@ -1,0 +1,2 @@
+0c8b8d78fa4bf38282bdb5699681b83be9458733036ba662f4d8ef1d8a0cda9e  compact-lora-round
+b14dd3ea6c5645a4d7224c2f2a5200ba09af1783b31ccb14d159044176f5e39b  private_prefix.rs

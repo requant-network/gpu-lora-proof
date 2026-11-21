@@ -310,6 +310,18 @@ fn prove_batch<const N: usize>(
     }))
 }
 
+fn verify_batch(vk: &str, pin: &str, orders: &[String]) -> Result<Value> {
+    let commitments = orders.chunks_exact(3)
+        .map(|order| pinned_commitments(&order[0], &order[1]))
+        .collect::<Result<Vec<_>>>()?;
+    let prepared = prepare_key(vk, pin)?;
+    for (public, order) in commitments.iter().zip(orders.chunks_exact(3)) {
+        let proof = decode(&read(&order[2], 1024)?)?;
+        check_proof(public, &prepared, &proof)?;
+    }
+    Ok(json!({"accepted": true, "proof_count": commitments.len()}))
+}
+
 pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
     match (command, args) {
         ("private-prefix-shape", [template]) => shape(Policy::Single(Template::load(template)?)),
@@ -381,13 +393,11 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             let public = pinned_commitments(commitments, order_pin)?;
             verify(&public, vk, pin, proof)
         }
-        ("private-prefix-verify-two", [vk, pin, first, first_pin, first_proof, second, second_pin, second_proof]) => {
-            let first = pinned_commitments(first, first_pin)?;
-            let second = pinned_commitments(second, second_pin)?;
-            let prepared = prepare_key(vk, pin)?;
-            check_proof(&first, &prepared, &decode(&read(first_proof, 1024)?)?)?;
-            check_proof(&second, &prepared, &decode(&read(second_proof, 1024)?)?)?;
-            Ok(json!({"accepted": true, "proof_count": 2}))
+        ("private-prefix-verify-two", [vk, pin, orders @ ..]) if orders.len() == 6 => {
+            verify_batch(vk, pin, orders)
+        }
+        ("private-prefix-verify-three", [vk, pin, orders @ ..]) if orders.len() == 9 => {
+            verify_batch(vk, pin, orders)
         }
         ("private-prefix-open-output", [adapter, output_salt, commitments, order_pin]) => {
             let public = pinned_commitments(commitments, order_pin)?;
@@ -404,6 +414,8 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-prove SHAPE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
             "private-prefix-verify COMMITMENTS ORDER_PIN VK VK_PIN PROOF",
             "private-prefix-verify-two VK VK_PIN FIRST_COMMITMENTS FIRST_ORDER_PIN FIRST_PROOF SECOND_COMMITMENTS SECOND_ORDER_PIN SECOND_PROOF",
+            "private-prefix-verify-three VK VK_PIN ORDER_PROOF ORDER_PROOF ORDER_PROOF",
+            "ORDER_PROOF = COMMITMENTS ORDER_PIN PROOF",
             "private-prefix-open-output ADAPTER OUTPUT_SALT COMMITMENTS ORDER_PIN",
             "private-prefix-pair-shape FIXTURES",
             "private-prefix-pair-setup DIR FIXTURES",

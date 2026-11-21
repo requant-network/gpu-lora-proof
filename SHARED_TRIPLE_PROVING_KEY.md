@@ -49,6 +49,31 @@ latency considerations. Each path uses 904 public bytes for the proofs,
 commitments and shared verifier key. The retained comparison package
 contains the alternate proofs from both paths.
 
+## Verification with one prepared key
+
+The same three proofs were checked with three standalone verifier
+processes and with one process that prepares the key once. The verifier
+pins each original order commitment and checks each proof independently.
+Each path ran five warm-up sets and 64 measured sets on one pinned
+logical CPU with one Rayon thread, alternating the path order.
+The median wall time fell from 13.45 ms to 7.27 ms (46.0%), including
+process startup. The three-proof command also passed in a read-only
+network-disabled container with only the verifier, the shared key,
+commitments, proofs and trusted pins.
+
+A wrong third order pin, a proof copied from the second order and an
+extra byte on the third proof each failed with no success record.
+The two-proof verifier still accepted the first two orders. Seven
+Rust tests passed on the final verifier binary.
+[Verification timings and refusals](results/shared-triple-proving-key/verification-summary.json) ·
+[Offline check](results/shared-triple-proving-key/verification-offline.log.txt) ·
+[Verifier source and binary pins](results/shared-triple-proving-key/verification-source.txt).
+
+Use `private-prefix-verify-three VK VK_PIN` followed by the three
+triples `COMMITMENTS ORDER_PIN PROOF` to reproduce the batch check.
+The referenced report supplies the issued order and key pins for
+these retained fixtures.
+
 ## Reproduce
 
 Build the pinned research binary and run the three-template harness

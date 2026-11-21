@@ -1,0 +1,1 @@
+Modified lora_alpha: exit 1, adapter config SHA-256 mismatch

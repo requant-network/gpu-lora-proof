@@ -1,0 +1,4 @@
+unsigned-edit: exit 1, no release: NO: invalid contribution signature
+signed-wrong-link: exit 1, no release: NO: gradient outside the pinned optimizer input
+signed-false-gradient: exit 1, no release: NO: signed gradient fails independent numerical replay
+duplicate slot: exit 1, no release: NO: expected one signed gradient per slot

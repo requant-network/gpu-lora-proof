@@ -39,3 +39,6 @@ results/shared-triple-proving-key/**/*.proof binary
 results/cuda-h-prover/**/*.proof binary
 results/sharded-projection/*.json text eol=lf
 results/sharded-projection/*.gguf binary
+results/gradient-round/*.json text eol=lf
+results/gradient-round/*.safetensors binary
+results/gradient-round/order.json -text -whitespace

@@ -1,0 +1,15 @@
+{
+  "schema": "qwen-lora-gradient-round/v1",
+  "round": "cad47507862066a60be0ac2c5cba8179adf5d04db5e2c129baddccefd6d0d32a",
+  "keys": {
+    "left": "c603ef0420156e1f8dc08bbdff9c7b6441d6a8dc3d55fc9a9b214be756f9b628",
+    "right": "eeb63e3183ea04b36675222ca5a4ca2858a561785c40c41f3c6e8580c76ad9fb"
+  },
+  "model_files": {
+    "config.json": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
+    "model.safetensors": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "006da433cdc0e70f05759008ef5d8d82721e3cbd95bd4831d394f96c54230680"
+  },
+  "corpus_sha256": "1dec7957b73f1fd41e66e715b0d956a03162987b0987fd958a9be46d38c8a541"
+}

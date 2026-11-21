@@ -1,5 +1,7 @@
 # gpu-lora-proof — Verifiable LoRA fine-tuning step (exact integer forward+backward)
 
+A later [signed Qwen gradient round](GRADIENT_ROUND.md) ran two SGD steps on separate GPU and CPU hosts, then replayed the signed gradients and released a two-layer adapter.
+
 **Status: COMPLETE — bounded spike executed on RTX 5060 Ti (SM120 Blackwell),
 24/24 honest proofs accepted, 276/276 negative controls rejected, zero
 failures.**

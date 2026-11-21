@@ -1,0 +1,1 @@
+{"peft": "0.19.0", "tensors": 4, "baseline": {"correct": 13, "loss": 1939297}, "adapter": {"correct": 13, "loss": 1935283}}

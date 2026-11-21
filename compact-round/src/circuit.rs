@@ -25,7 +25,7 @@ fn sum(values: impl Iterator<Item = Var>) -> Var {
 }
 
 // Both integer signs are represented by field elements far below the modulus.
-fn magnitude(value: &Var, width: usize) -> Result<(Bit, Vec<Bit>, Var)> {
+pub(crate) fn magnitude(value: &Var, width: usize) -> Result<(Bit, Vec<Bit>, Var)> {
     let assigned = value.value().ok().and_then(|v| {
         [(false, v), (true, -v)]
             .into_iter()
@@ -104,57 +104,61 @@ impl ConstraintSynthesizer<Fr> for RoundCircuit {
             // Bind both public halves of the manifest's exact SHA-256.
             pin.enforce_equal(&Var::new_witness(cs.clone(), || pin.value())?)?;
         }
-        let mut remaining = public[2..].iter();
-        let mut take = |count| remaining.by_ref().take(count).cloned().collect::<Vec<_>>();
-        let w = take(D * D);
-        let mut a = take(ADAPTER);
-        let mut b = take(ADAPTER);
-        for phase in 0..2 {
-            let mut combined = vec![constant(0); ADAPTER];
-            for _ in 0..2 {
-                let x = take(BATCH * D);
-                let target = take(BATCH * D);
-                for (row, target) in x.chunks_exact(D).zip(target.chunks_exact(D)) {
-                    let (u, y) = forward(row, &w, &a, &b);
-                    let g: Vec<_> = y
-                        .iter()
-                        .zip(target)
-                        .map(|(p, t)| residual(p, t))
-                        .collect::<Result<_>>()?;
-                    if phase == 0 {
-                        for j in 0..D {
-                            for k in 0..R {
-                                combined[j * R + k] += (&g[j] * &u[k]) * scalar(SCALE);
-                            }
-                        }
-                    } else {
+        enforce_round(&public[2..])
+    }
+}
+
+pub(crate) fn enforce_round(numeric: &[Var]) -> Result<()> {
+    let mut remaining = numeric.iter();
+    let mut take = |count| remaining.by_ref().take(count).cloned().collect::<Vec<_>>();
+    let w = take(D * D);
+    let mut a = take(ADAPTER);
+    let mut b = take(ADAPTER);
+    for phase in 0..2 {
+        let mut combined = vec![constant(0); ADAPTER];
+        for _ in 0..2 {
+            let x = take(BATCH * D);
+            let target = take(BATCH * D);
+            for (row, target) in x.chunks_exact(D).zip(target.chunks_exact(D)) {
+                let (u, y) = forward(row, &w, &a, &b);
+                let g: Vec<_> = y
+                    .iter()
+                    .zip(target)
+                    .map(|(p, t)| residual(p, t))
+                    .collect::<Result<_>>()?;
+                if phase == 0 {
+                    for j in 0..D {
                         for k in 0..R {
-                            let q = sum((0..D).map(|j| &g[j] * &b[j * R + k]));
-                            for j in 0..D {
-                                combined[k * D + j] += (&q * &row[j]) * scalar(SCALE);
-                            }
+                            combined[j * R + k] += (&g[j] * &u[k]) * scalar(SCALE);
+                        }
+                    }
+                } else {
+                    for k in 0..R {
+                        let q = sum((0..D).map(|j| &g[j] * &b[j * R + k]));
+                        for j in 0..D {
+                            combined[k * D + j] += (&q * &row[j]) * scalar(SCALE);
                         }
                     }
                 }
             }
-            let factor = if phase == 0 { &mut b } else { &mut a };
-            for (old, g) in factor.iter_mut().zip(combined) {
-                *old = update(old, &g)?;
-            }
         }
-        let x = take(HELDOUT * D);
-        let target = take(HELDOUT * D);
-        for (row, target) in x.chunks_exact(D).zip(target.chunks_exact(D)) {
-            for (y, target) in forward(row, &w, &a, &b).1.iter().zip(target) {
-                y.enforce_equal(target)?;
-            }
+        let factor = if phase == 0 { &mut b } else { &mut a };
+        for (old, g) in factor.iter_mut().zip(combined) {
+            *old = update(old, &g)?;
         }
-        for (value, expected) in a.iter().chain(&b).zip(take(2 * ADAPTER)) {
-            value.enforce_equal(&expected)?;
-        }
-        debug_assert!(remaining.next().is_none());
-        Ok(())
     }
+    let x = take(HELDOUT * D);
+    let target = take(HELDOUT * D);
+    for (row, target) in x.chunks_exact(D).zip(target.chunks_exact(D)) {
+        for (y, target) in forward(row, &w, &a, &b).1.iter().zip(target) {
+            y.enforce_equal(target)?;
+        }
+    }
+    for (value, expected) in a.iter().chain(&b).zip(take(2 * ADAPTER)) {
+        value.enforce_equal(&expected)?;
+    }
+    debug_assert!(remaining.next().is_none());
+    Ok(())
 }
 
 #[cfg(test)]

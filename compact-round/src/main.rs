@@ -1,7 +1,8 @@
 mod circuit;
+mod private;
 mod statement;
 
-use ark_bn254::Bn254;
+use ark_bn254::{Bn254, Fr};
 use ark_groth16::{prepare_verifying_key, Groth16, Proof, ProvingKey, VerifyingKey};
 use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystem, SynthesisMode};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
@@ -34,6 +35,21 @@ fn write(path: impl AsRef<Path>, value: &impl CanonicalSerialize) -> Result<()> 
     Ok(())
 }
 
+fn setup(directory: &str, circuit: impl ConstraintSynthesizer<Fr>) -> Result<serde_json::Value> {
+    let dir = Path::new(directory);
+    fs::create_dir(dir)?;
+    let key = Groth16::<Bn254>::generate_random_parameters_with_reduction(circuit, &mut OsRng)?;
+    let pk = dir.join("proving.key");
+    let vk = dir.join("verifying.key");
+    write(&pk, &key)?;
+    write(&vk, &key.vk)?;
+    let bytes = read(vk, 1 << 20)?;
+    Ok(
+        json!({"proving_key_bytes": fs::metadata(pk)?.len(), "verifying_key_bytes": bytes.len(),
+              "verifying_key_sha256": sha256(&bytes)}),
+    )
+}
+
 fn run(args: &[String]) -> Result<()> {
     let started = Instant::now();
     let report = match args {
@@ -44,18 +60,7 @@ fn run(args: &[String]) -> Result<()> {
             json!({"constraints": cs.num_constraints(), "public_inputs": cs.num_instance_variables() - 1,
                    "witnesses": cs.num_witness_variables()})
         }
-        [command, directory] if command == "setup" => {
-            let dir = Path::new(directory);
-            fs::create_dir(dir)?;
-            let key = Groth16::<Bn254>::generate_random_parameters_with_reduction(RoundCircuit(None), &mut OsRng)?;
-            let pk = dir.join("proving.key");
-            let vk = dir.join("verifying.key");
-            write(&pk, &key)?;
-            write(&vk, &key.vk)?;
-            let bytes = read(vk, 1 << 20)?;
-            json!({"proving_key_bytes": fs::metadata(pk)?.len(), "verifying_key_bytes": bytes.len(),
-                   "verifying_key_sha256": sha256(&bytes)})
-        }
+        [command, directory] if command == "setup" => setup(directory, RoundCircuit(None))?,
         [command, manifest, pin, adapter] if command == "replay" => {
             Statement::load(manifest, pin, adapter)?.replay()?;
             json!({"accepted": true})
@@ -94,7 +99,8 @@ fn run(args: &[String]) -> Result<()> {
             json!({"accepted": true, "public_inputs": public.len(), "key_and_proof_prepare_seconds": key_prepare_seconds,
                    "pairing_and_public_inputs_seconds": check.elapsed().as_secs_f64()})
         }
-        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF".into()),
+        [command, rest @ ..] if command.starts_with("private-") => private::run(command, rest)?,
+        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | private-help".into()),
     };
     println!(
         "RESULT {}",

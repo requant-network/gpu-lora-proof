@@ -2,3 +2,7 @@ results/round-v1/** text eol=lf
 results/compact-round/*.json text eol=lf
 results/compact-round/*.key binary
 results/compact-round/*.proof binary
+results/private-round/*.json text eol=lf
+results/private-round/*.commitments binary
+results/private-round/*.key binary
+results/private-round/*.proof binary

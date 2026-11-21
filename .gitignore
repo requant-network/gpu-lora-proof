@@ -4,6 +4,8 @@ __pycache__/
 *.o
 build/
 /compact-round/target/
+order.salt
+output.salt
 venv/
 *.log
 results/proofs/

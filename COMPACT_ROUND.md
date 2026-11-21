@@ -6,6 +6,9 @@ on each retained synthetic LoRA manifest. On the lab Ryzen 5 5500, replay took
 6.5 seconds to produce from its saved proving key. Direct replay remains the
 cheapest check for these public inputs. [Raw measurements](results/compact-round/report.json).
 
+The later [private-round experiment](PRIVATE_ROUND.md) evaluates a different
+disclosure contract with the order and adapter behind commitments.
+
 ## Assertion and trust
 
 The verifier pins the exact manifest bytes and independently receives the

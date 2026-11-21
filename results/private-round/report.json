@@ -1,0 +1,150 @@
+{
+  "scope": "synthetic-lora-public-arbiter-v1",
+  "container_image_id": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+  "verifier_sha256": "2e07ec1217dfa2ce291b2b1eca50ff7b462acf0756b17ba32ff42dc80685f402",
+  "shape": {
+    "process_seconds": 0.23241281299851835,
+    "max_rss_kib": 194432,
+    "reported": {
+      "metrics": {
+        "constraints": 146189,
+        "public_inputs": 2,
+        "witnesses": 142997
+      },
+      "wall_seconds": 0.220614782
+    },
+    "trace_seconds": {}
+  },
+  "setup": {
+    "process_seconds": 4.660190216993215,
+    "max_rss_kib": 361668,
+    "reported": {
+      "metrics": {
+        "proving_key_bytes": 31268912,
+        "verifying_key_bytes": 328,
+        "verifying_key_sha256": "a2c79287f13ce07734d7d74c9ecc39f65d97070ab8449f8654adc3e72298a5ae"
+      },
+      "wall_seconds": 4.630947551
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.17556100000000002,
+      "Inlining LCs": 0.44105300000000003,
+      "Constructing evaluation domain": 2.4305e-05,
+      "Evaluate Lagrange coefficients": 0.025309,
+      "R1CS to QAP Instance Map with Evaluation": 0.191778,
+      "Compute G2 table": 0.04327,
+      "Calculate B G2 of size 143000": 1.009,
+      "Compute G1 window table": 0.041818,
+      "Calculate A": 0.53644,
+      "Calculate B G1": 0.371504,
+      "Calculate H": 1.173,
+      "Calculate L": 0.586324,
+      "Generate the R1CS proving key": 2.668,
+      "Generate the R1CS verification key": 0.00040488,
+      "Groth16::Generator": 4.578
+    }
+  },
+  "client_commitment": {
+    "process_seconds": 0.007021952013019472,
+    "max_rss_kib": 3456,
+    "reported": {
+      "metrics": {
+        "commitment_bytes": 32,
+        "order_commitment_sha256": "f71d56e21da7d1028e30600db875e122a7d56e19b589b5db373b326dfe11cba2"
+      },
+      "wall_seconds": 0.004623611
+    },
+    "trace_seconds": {}
+  },
+  "worker_commitment": {
+    "process_seconds": 0.004330619995016605,
+    "max_rss_kib": 3456,
+    "reported": {
+      "metrics": {
+        "public_statement_bytes": 64
+      },
+      "wall_seconds": 0.002262007
+    },
+    "trace_seconds": {}
+  },
+  "prove": {
+    "process_seconds": 15.053224892006256,
+    "max_rss_kib": 482760,
+    "reported": {
+      "metrics": {
+        "proof_bytes": 128,
+        "prove_and_write_seconds": 2.737006648
+      },
+      "wall_seconds": 15.028388207
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.202976,
+      "Inlining LCs": 0.445016,
+      "R1CS to QAP witness map": 0.495416,
+      "Compute C": 1.002,
+      "Compute A": 0.13622800000000002,
+      "Compute B in G1": 0.112934,
+      "Compute B in G2": 0.309131,
+      "Finish C": 3.702e-06,
+      "Groth16::Prover": 2.704
+    }
+  },
+  "arbiter": {
+    "process_seconds": 0.24587918698671274,
+    "max_rss_kib": 31232,
+    "reported": {
+      "metrics": {
+        "accepted": true,
+        "public_inputs": 2
+      },
+      "wall_seconds": 0.003294708
+    },
+    "trace_seconds": {}
+  },
+  "client_opening": {
+    "process_seconds": 0.004253721999702975,
+    "max_rss_kib": 3840,
+    "reported": {
+      "metrics": {
+        "accepted": true
+      },
+      "wall_seconds": 0.002147814
+    },
+    "trace_seconds": {}
+  },
+  "controls": {
+    "swapped_order_commitment": "NO: issued order commitment SHA-256 mismatch",
+    "old_proof_with_new_order_pin": "NO: Groth16 rejected the linked private commitments",
+    "swapped_output_commitment": "NO: Groth16 rejected the linked private commitments",
+    "changed_input_opening": "NO: private opening does not match the order and adapter commitments",
+    "changed_adapter_opening": "NO: private adapter opening mismatch",
+    "wrong_key_pin": "NO: verifying key SHA-256 mismatch",
+    "cross_order_adapter_opening": "NO: private adapter opening mismatch",
+    "trailing_proof_bytes": "NO: file exceeds size limit"
+  },
+  "rerandomized_commitments_differed": true,
+  "public_files": {
+    "round.commitments": {
+      "bytes": 64,
+      "sha256": "daf48d898ba32eca35c8b4b41c94fa2993d9d13a7c7c4b78c169b3cebf4197fb"
+    },
+    "round.proof": {
+      "bytes": 128,
+      "sha256": "5bc5d1e1a162e84d5de26409a2bbcf84733062f769c609a12832272010a40e78"
+    },
+    "verifying.key": {
+      "bytes": 328,
+      "sha256": "a2c79287f13ce07734d7d74c9ecc39f65d97070ab8449f8654adc3e72298a5ae"
+    }
+  },
+  "sources_sha256": {
+    "Cargo.toml": "dc5d2af026f3aa883d1fbaa5784dac3d16cafed65eb8e6e9486ce95a75c002b1",
+    "Cargo.lock": "8ce9187852a9f94a0edd6bb35ef6e4c601f13d7be290e54e97a8fa9c709548c9",
+    "src/circuit.rs": "3a358997b7359350dcd1d252467c766790630a147f366dd3dd8b6e1cbe3d4f9d",
+    "src/main.rs": "bdbfced93c1ed77d03739023c558a908594193054de8b7da07585dadcd1b2b93",
+    "src/private.rs": "c5e58342c113cc1dc0093bdfd1d329060dc0967258bfcb7080f131f59d420ba0",
+    "src/statement.rs": "bcf1ac4f2b148b8cb7e58abafec76c40a96a4c0145eb56fab7d0e6fc6de112b8",
+    "private_trial.py": "b1dd827ceab2effb47dfb28a752ddd2a76e02a6223709a7d0205cd6b2c5ebf1e",
+    "benchmark.py": "cf20a1add85859614d003b9a9648ddb5677cad8eb47eccb29a3548a9893ef550"
+  }
+}

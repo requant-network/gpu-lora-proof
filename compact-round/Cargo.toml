@@ -6,6 +6,7 @@ publish = false
 
 [dependencies]
 ark-bn254 = "=0.5.0"
+ark-crypto-primitives = { version = "=0.5.0", features = ["sponge", "r1cs"] }
 ark-ff = "=0.5.0"
 ark-groth16 = { version = "=0.5.0", features = ["print-trace"] }
 ark-r1cs-std = "=0.5.0"

@@ -1,0 +1,15 @@
+private order proved; public-only offline arbiter accepted; client opened adapter
+8 controls rejected; fresh salts changed both commitments
+     Running unittests src/main.rs (/data2/worknet-ci/research/lora-compact/src/target/release/deps/compact_lora_round-cd2c73749399e057)
+
+running 5 tests
+test circuit::tests::signed_gradient_clips_on_both_boundaries ... ok
+test private::tests::poseidon_constants_match_the_published_width_three_table ... ok
+test private::tests::wrong_commitment_leaves_the_circuit_unsatisfied ... ok
+test circuit::tests::sign_step_clips_and_preserves_zero_gradient ... ok
+test private::tests::private_ranges_and_heldout_separation_are_constrained ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
+
+RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027014044,"pairing_and_public_inputs_seconds":0.078155097,"public_inputs":3586},"wall_seconds":0.105646448}
+RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.026453692,"pairing_and_public_inputs_seconds":0.077593629,"public_inputs":3586},"wall_seconds":0.104487123}

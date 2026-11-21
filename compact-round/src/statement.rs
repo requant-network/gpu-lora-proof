@@ -49,7 +49,7 @@ struct Batch {
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct Manifest {
+pub(crate) struct Manifest {
     schema: String,
     id: String,
     #[serde(rename = "W")]
@@ -92,25 +92,37 @@ fn bounded(v: &[i64], n: usize, max: u64) -> bool {
     v.len() == n && v.iter().all(|v| v.unsigned_abs() <= max)
 }
 
-fn valid_adapter(a: &Adapter) -> bool {
-    bounded(&a.a, ADAPTER, 64) && bounded(&a.b, ADAPTER, 64)
+impl Adapter {
+    pub(crate) fn load(path: &str) -> Result<Self> {
+        let adapter: Self = serde_json::from_slice(&read(path, 8 << 10)?)?;
+        if !adapter.valid() {
+            return Err("invalid adapter range or shape".into());
+        }
+        Ok(adapter)
+    }
+
+    fn valid(&self) -> bool {
+        bounded(&self.a, ADAPTER, 64) && bounded(&self.b, ADAPTER, 64)
+    }
+
+    pub(crate) fn values(&self) -> impl Iterator<Item = Fr> + '_ {
+        self.a.iter().chain(&self.b).copied().map(scalar)
+    }
 }
 
-impl Statement {
-    pub fn load(manifest_path: &str, pin: &str, output_path: &str) -> Result<Self> {
-        let bytes = read(manifest_path, 64 << 10)?;
+impl Manifest {
+    pub(crate) fn load(path: &str, pin: &str) -> Result<(Self, [u8; 32])> {
+        let bytes = read(path, 64 << 10)?;
         if sha256(&bytes) != pin {
             return Err("manifest SHA-256 mismatch".into());
         }
         let manifest: Manifest = serde_json::from_slice(&bytes)?;
-        let output: Adapter = serde_json::from_slice(&read(output_path, 8 << 10)?)?;
         if manifest.schema != SCHEMA
             || manifest.id.is_empty()
             || manifest.id.len() > 128
             || manifest.max_heldout_sse != 0
             || !bounded(&manifest.w, D * D, 1024)
-            || !valid_adapter(&manifest.initial)
-            || !valid_adapter(&output)
+            || !manifest.initial.valid()
         {
             return Err("invalid fixed-round statement or nonzero held-out threshold".into());
         }
@@ -138,34 +150,46 @@ impl Statement {
         {
             return Err("invalid or overlapping held-out rows".into());
         }
-        Ok(Self {
-            manifest,
-            pin: Sha256::digest(bytes).into(),
-            output,
-        })
+        Ok((manifest, Sha256::digest(bytes).into()))
     }
 
-    pub fn public_inputs(&self) -> Vec<Fr> {
-        let m = &self.manifest;
-        let mut out: Vec<_> = self
-            .pin
-            .chunks_exact(16)
-            .map(Fr::from_le_bytes_mod_order)
-            .collect();
+    pub(crate) fn order_fields(&self) -> Vec<Fr> {
+        let mut out = Vec::new();
         let mut push = |values: &[i64]| out.extend(values.iter().copied().map(scalar));
-        push(&m.w);
-        push(&m.initial.a);
-        push(&m.initial.b);
-        for phase in &m.phases {
+        push(&self.w);
+        push(&self.initial.a);
+        push(&self.initial.b);
+        for phase in &self.phases {
             for slot in &phase.slots {
                 push(&slot.x);
                 push(&slot.target);
             }
         }
-        push(&m.heldout.x);
-        push(&m.heldout.target);
-        push(&self.output.a);
-        push(&self.output.b);
+        push(&self.heldout.x);
+        push(&self.heldout.target);
+        out
+    }
+}
+
+impl Statement {
+    pub fn load(manifest_path: &str, pin: &str, output_path: &str) -> Result<Self> {
+        let (manifest, pin) = Manifest::load(manifest_path, pin)?;
+        let output = Adapter::load(output_path)?;
+        Ok(Self {
+            manifest,
+            pin,
+            output,
+        })
+    }
+
+    pub fn public_inputs(&self) -> Vec<Fr> {
+        let mut out: Vec<_> = self
+            .pin
+            .chunks_exact(16)
+            .map(Fr::from_le_bytes_mod_order)
+            .collect();
+        out.extend(self.manifest.order_fields());
+        out.extend(self.output.values());
         debug_assert_eq!(out.len(), PUBLIC);
         out
     }

@@ -15,6 +15,7 @@ from verifier import Reject, verify as verify_step
 
 
 SCHEMA = "gpu-lora-round/v1"
+PREFIX_SCHEMA = "gpu-lora-round/v2"
 D, R, B, SCALE = 32, 4, 4, C.S_DEFAULT
 FACTORS = ("B", "A")
 WORKERS = ("worker-a", "worker-b")
@@ -60,7 +61,7 @@ def bounded_ints(values, n, bound):
 
 
 def validate_manifest(m):
-    if (m["schema"] != SCHEMA or not isinstance(m["id"], str)
+    if (m["schema"] not in (SCHEMA, PREFIX_SCHEMA) or not isinstance(m["id"], str)
             or not 1 <= len(m["id"]) <= 128 or type(m["max_heldout_sse"]) is not int
             or m["max_heldout_sse"] < 0):
         raise Reject("invalid round manifest")
@@ -107,17 +108,21 @@ def residual(predicted, target):
     return [max(-C.G_MAX, min(C.G_MAX, y - t)) for y, t in zip(predicted, target, strict=True)]
 
 
-def slot_seed(manifest_pin, phase, worker):
-    label = canonical([SCHEMA, manifest_pin, phase, worker])
+def squared_error(predicted, target):
+    return sum((y - t)**2 for y, t in zip(predicted, target, strict=True))
+
+
+def slot_seed(manifest_pin, phase, worker, schema=SCHEMA):
+    label = canonical([schema, manifest_pin, phase, worker])
     return int.from_bytes(hashlib.sha256(label).digest()[:8], "big")
 
 
-def adapter_digest(manifest_pin, adapter):
-    return digest([SCHEMA, manifest_pin, "adapter", adapter])
+def adapter_digest(manifest_pin, adapter, schema=SCHEMA):
+    return digest([schema, manifest_pin, "adapter", adapter])
 
 
 def expected_step(manifest, phase, slot, manifest_pin, adapter, proof):
-    seed = slot_seed(manifest_pin, phase, slot["worker"])
+    seed = slot_seed(manifest_pin, phase, slot["worker"], manifest["schema"])
     predicted = C.b64_decode_i64(proof["leaves"]["y"]["data_b64"])
     if len(predicted) != B * D:
         raise Reject("incorrect prediction length")
@@ -147,19 +152,45 @@ def advance(manifest, manifest_pin, phase, adapter, contributions):
         expected = expected_step(manifest, phase, slot, manifest_pin, adapter, proof)
         verify_step(proof, expected)
         gradients.append(C.b64_decode_i64(proof["leaves"]["d" + factor]["data_b64"]))
-    limit = C.A_MAX if factor == "A" else C.B_MAX
-    updated = []
-    for old, terms in zip(adapter[factor], zip(*gradients, strict=True), strict=True):
-        gradient = sum(terms)
-        direction = (gradient > 0) - (gradient < 0)
-        updated.append(max(-limit, min(limit, old - direction)))
+    totals = [sum(terms) for terms in zip(*gradients, strict=True)]
+    updated = sign_step(adapter[factor], factor, totals)
+    if manifest["schema"] == PREFIX_SCHEMA:
+        return choose_prefix(manifest["W"], slots, adapter, factor, updated, totals)
     return {**adapter, factor: updated}
 
 
-def merkle_root(phases):
+def sign_step(values, factor, totals):
+    limit = C.A_MAX if factor == "A" else C.B_MAX
+    updated = []
+    for old, gradient in zip(values, totals, strict=True):
+        direction = (gradient > 0) - (gradient < 0)
+        updated.append(max(-limit, min(limit, old - direction)))
+    return updated
+
+
+def choose_prefix(weights, slots, adapter, factor, updated, totals):
+    features = [value for slot in slots for value in slot["x"]]
+    targets = [value for slot in slots for value in slot["target"]]
+    old = adapter[factor]
+    changed = [i for i, (previous, new) in enumerate(zip(old, updated, strict=True)) if previous != new]
+    ordered = sorted(changed, key=lambda i: (-abs(totals[i]), i))
+    best = old
+    best_error = squared_error(predict(weights, adapter, features), targets)
+    working = old[:]
+    candidate = {**adapter, factor: working}
+    for i in ordered:
+        working[i] = updated[i]
+        error = squared_error(predict(weights, candidate, features), targets)
+        if error < best_error:
+            best_error = error
+            best = working[:]
+    return {**adapter, factor: best}
+
+
+def merkle_root(phases, schema=SCHEMA):
     leaves = [
         hashlib.sha256(b"\x00" + canonical(
-            [SCHEMA, i, phase["previous"], record, phase["next"]]
+            [schema, i, phase["previous"], record, phase["next"]]
         )).digest()
         for i, phase in enumerate(phases)
         for record in phase["contributions"]
@@ -174,28 +205,29 @@ def merkle_root(phases):
 
 def verify_round(manifest, manifest_pin, bundle):
     validate_manifest(manifest)
-    if bundle["schema"] != SCHEMA or bundle["manifest_sha256"] != manifest_pin:
+    schema = manifest["schema"]
+    if bundle["schema"] != schema or bundle["manifest_sha256"] != manifest_pin:
         raise Reject("round manifest pin mismatch")
     phases = bundle["phases"]
     if len(phases) != len(manifest["phases"]):
         raise Reject("missing or extra phase")
     adapter = manifest["initial"]
     for i, phase in enumerate(phases):
-        if phase["previous"] != adapter_digest(manifest_pin, adapter):
+        if phase["previous"] != adapter_digest(manifest_pin, adapter, schema):
             raise Reject("incorrect phase input adapter")
         adapter = advance(manifest, manifest_pin, i, adapter, phase["contributions"])
-        if phase["next"] != adapter_digest(manifest_pin, adapter):
+        if phase["next"] != adapter_digest(manifest_pin, adapter, schema):
             raise Reject("incorrect optimizer transition")
-    if bundle["merkle_root"] != merkle_root(phases):
+    if bundle["merkle_root"] != merkle_root(phases, schema):
         raise Reject("incorrect Merkle root")
-    if bundle["final_adapter"] != adapter_digest(manifest_pin, adapter):
+    if bundle["final_adapter"] != adapter_digest(manifest_pin, adapter, schema):
         raise Reject("incorrect final adapter")
     heldout = manifest["heldout"]
     initial = predict(manifest["W"], manifest["initial"], heldout["x"])
     final = predict(manifest["W"], adapter, heldout["x"])
     targets = heldout["target"]
-    initial_sse = sum((p - y)**2 for p, y in zip(initial, targets, strict=True))
-    final_sse = sum((p - y)**2 for p, y in zip(final, targets, strict=True))
+    initial_sse = squared_error(initial, targets)
+    final_sse = squared_error(final, targets)
     if final_sse > manifest["max_heldout_sse"]:
         raise Reject("held-out quality gate failed")
     return adapter, {"merkle_root": bundle["merkle_root"], "final_adapter": bundle["final_adapter"],

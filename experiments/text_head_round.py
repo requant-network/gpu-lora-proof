@@ -3,6 +3,7 @@
 
 import argparse
 from collections import Counter
+import copy
 import hashlib
 import math
 from pathlib import Path
@@ -11,6 +12,7 @@ import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import contract as C
 import round_experiment as experiment
 import round_verifier as V
 
@@ -95,18 +97,21 @@ def score(manifest, adapter, records):
 
 def phase_diagnostics(manifest, pin, bundle, records, verified_adapter):
     adapter = manifest["initial"]
-    snapshots = [("initial", adapter)]
+    snapshots = [("initial", adapter, 0)]
     for i, phase in enumerate(bundle["phases"]):
+        factor = V.FACTORS[i]
+        prior = adapter[factor]
         adapter = V.advance(manifest, pin, i, adapter, phase["contributions"])
-        snapshots.append((f"after_{V.FACTORS[i]}", adapter))
+        changed = sum(a != b for a, b in zip(prior, adapter[factor], strict=True))
+        snapshots.append((f"after_{factor}", adapter, changed))
     if adapter != verified_adapter:
         raise RuntimeError("diagnostic replay disagrees with independent verifier")
 
     splits = {"source": records["source"], "adapt_B": records["adapt"][:8],
               "adapt_A": records["adapt"][8:], "heldout": records["heldout"]}
     result = {}
-    for stage, snapshot in snapshots:
-        summary = {}
+    for stage, snapshot, changed in snapshots:
+        summary = {"changed_coordinates": changed}
         for split, examples in splits.items():
             rows = score(manifest, snapshot, examples)
             error = 0
@@ -119,21 +124,46 @@ def phase_diagnostics(manifest, pin, bundle, records, verified_adapter):
     return result
 
 
-def check_quality_rejection(manifest, output, baseline_sse):
+def check_quality_gate(manifest, output, baseline_sse, candidate_sha, should_accept):
     output.mkdir()
     manifest_path, bundle_path, adapter_path = (output / name for name in ("manifest.json", "bundle.json", "adapter.json"))
     V.save_json(manifest_path, {**manifest, "max_heldout_sse": baseline_sse})
     pin = sha(manifest_path)
     experiment.assemble(manifest_path, bundle_path, lib=None)
+    report = {"manifest_sha256": pin, "bundle_sha256": sha(bundle_path), "sse_ceiling": baseline_sse}
     try:
         experiment.verify_cli(manifest_path, pin, bundle_path, adapter_path)
     except subprocess.CalledProcessError as error:
         reason = error.stderr.decode("ascii").strip()
-        if error.returncode != 1 or reason != "NO: held-out quality gate failed" or adapter_path.exists():
+        if should_accept or error.returncode != 1 or reason != "NO: held-out quality gate failed" or adapter_path.exists():
             raise
-        return {"manifest_sha256": pin, "bundle_sha256": sha(bundle_path), "sse_ceiling": baseline_sse,
-                "exit_code": error.returncode, "reason": reason, "adapter_written": False}
-    raise RuntimeError("regressing adapter accepted under the baseline quality ceiling")
+        return {**report, "exit_code": error.returncode, "reason": reason, "adapter_written": False}
+    if not should_accept or sha(adapter_path) != candidate_sha:
+        raise RuntimeError("quality gate released an unexpected adapter")
+    return {**report, "exit_code": 0, "adapter_written": True, "adapter_sha256": candidate_sha}
+
+
+def check_full_step_rejection(manifest, pin, bundle):
+    adapter = manifest["initial"]
+    for i, (factor, phase) in enumerate(zip(V.FACTORS, bundle["phases"], strict=True)):
+        records = phase["contributions"]
+        expected = V.advance(manifest, pin, i, adapter, records)
+        gradients = [C.b64_decode_i64(record["proof"]["leaves"]["d" + factor]["data_b64"]) for record in records]
+        totals = [sum(terms) for terms in zip(*gradients, strict=True)]
+        full = {**adapter, factor: V.sign_step(adapter[factor], factor, totals)}
+        if full != expected:
+            altered = copy.deepcopy(bundle)
+            phases = altered["phases"]
+            phases[i]["next"] = V.adapter_digest(pin, full, V.PREFIX_SCHEMA)
+            altered["merkle_root"] = V.merkle_root(phases, V.PREFIX_SCHEMA)
+            try:
+                V.verify_round(manifest, pin, altered)
+            except V.Reject as error:
+                if str(error) != "incorrect optimizer transition":
+                    raise
+                return {"factor": factor, "reason": str(error)}
+            raise RuntimeError("accepted a full step in place of the selected prefix")
+        adapter = expected
 
 
 def main():
@@ -142,10 +172,13 @@ def main():
     parser.add_argument("features", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--lib")
+    parser.add_argument("--prefix", action="store_true", help="use the training-loss-selected round schema")
     args = parser.parse_args()
     corpus_pin, feature_pin = sha(args.corpus), sha(args.features)
     records = read_inputs(args.corpus, args.features)
     manifest = make_manifest(records, corpus_pin, feature_pin)
+    if args.prefix:
+        manifest["schema"] = V.PREFIX_SCHEMA
     args.output.mkdir()
     manifest_path = args.output / "manifest.json"
     bundle_path = args.output / "bundle.json"
@@ -160,17 +193,24 @@ def main():
     final = score(manifest, adapter, records["heldout"])
     before = sum(row["label"] == row["prediction"] for row in prior)
     after = sum(row["label"] == row["prediction"] for row in final)
+    initial_sse, final_sse = verified["initial_sse"], verified["final_sse"]
+    if args.prefix:
+        utility = after >= before and final_sse < initial_sse
+    else:
+        utility = after > before and final_sse <= initial_sse
     report = {"corpus_sha256": corpus_pin, "features_sha256": feature_pin, "manifest_sha256": pin,
               "adapter_sha256": sha(adapter_path), "bundle_sha256": sha(bundle_path), "assembly": assembly,
               "verification": verified, "rejected_controls": control, "initial_correct": before,
               "final_correct": after, "heldout_initial": prior, "heldout_final": final,
               "phase_diagnostics": phase_diagnostics(manifest, pin, bundle, records, adapter),
-              "utility_passed": after > before and verified["final_sse"] <= verified["initial_sse"]}
+              "utility_passed": utility}
     if report["phase_diagnostics"]["after_A"]["heldout"]["topic_scores_sse"] != verified["final_sse"]:
         raise RuntimeError("unexpected nonzero scores outside the two topic columns")
-    if verified["final_sse"] > verified["initial_sse"]:
-        report["quality_gate_control"] = check_quality_rejection(manifest, args.output / "quality-gate",
-                                                               verified["initial_sse"])
+    if args.prefix or final_sse > initial_sse:
+        report["quality_gate_control"] = check_quality_gate(manifest, args.output / "quality-gate", initial_sse,
+                                                           report["adapter_sha256"], final_sse <= initial_sse)
+    if args.prefix:
+        report["full_step_control"] = check_full_step_rejection(manifest, pin, bundle)
     V.save_json(args.output / "report.json", report)
 
 

@@ -14,6 +14,19 @@ import round_verifier as V
 
 
 class TestRound(unittest.TestCase):
+    def test_prefix_selects_training_minimum_and_keeps_noop_on_ties(self):
+        weights = [0] * (V.D * V.D)
+        adapter = {"A": [1] + [0] * (V.R * V.D - 1), "B": [0] * (V.D * V.R)}
+        features = [1] + [0] * (V.D - 1)
+        totals = [-1] + [0] * (V.R - 1) + [-1] + [0] * (V.D * V.R - V.R - 1)
+        updated = V.sign_step(adapter["B"], "B", totals)
+        targets = [8] + [0] * (V.D - 1)
+        slots = [{"x": features, "target": targets}]
+        chosen = V.choose_prefix(weights, slots, adapter, "B", updated, totals)
+        self.assertEqual(chosen["B"], [1] + [0] * (V.D * V.R - 1))
+        targets[0] = 4
+        self.assertEqual(V.choose_prefix(weights, slots, adapter, "B", updated, totals), adapter)
+
     def test_cli_requires_trusted_manifest_and_complete_round(self):
         with tempfile.TemporaryDirectory() as scratch:
             root = Path(scratch)

@@ -7,3 +7,4 @@ results/private-round/*.commitments binary
 results/private-round/*.key binary
 results/private-round/*.proof binary
 results/text-head-v1/** text eol=lf
+results/text-head-v2/** text eol=lf

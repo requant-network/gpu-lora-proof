@@ -1,0 +1,48 @@
+source	s21	sports	Officials counted the final basket after reviewing footage from the clock camera.
+source	s22	weather	The forecast puts the strongest winds on the west side of the bay after midnight.
+source	s23	sports	The second-place pair replaced their coach before the international tournament.
+source	s24	weather	Darker clouds signal an increase in the risk of afternoon lightning.
+source	s25	sports	The striker extended her scoring streak when she converted from the penalty spot.
+source	s26	weather	A slow-moving front will keep showers over the eastern suburbs all day.
+source	s27	sports	The judge awarded the gymnast a higher score after correcting a calculation.
+source	s28	weather	The local forecast warns that gusts could bring down branches on untreated roads.
+source	s29	sports	The crew took the inside lane and beat the reigning national champions.
+source	s30	weather	The air temperature should recover by noon after a hard overnight freeze.
+source	s31	sports	The college team will host the next round after finishing first in the group.
+source	s32	weather	A period of freezing drizzle may form before tomorrow morning's commute.
+source	s33	sports	Two players were suspended for their part in a fight after the match.
+source	s34	weather	The forecast calls for lower humidity once the wind turns north.
+source	s35	sports	The top sprinter qualified for the final by winning the last preliminary race.
+source	s36	weather	The river basin could receive several inches of rain during the next two days.
+adapt	a21	sports	Despite steady drizzle, the top seed won both rounds and advanced to the final.
+adapt	a22	weather	Spectators at the open-air arena should expect a sharp drop in temperature after sunset.
+adapt	a23	sports	The club opened its season with a draw after the linesman reversed a late goal in thick fog.
+adapt	a24	weather	A lightning alert issued for the stadium covers several surrounding neighborhoods as well.
+adapt	a25	sports	The visiting team scored off a corner kick after a brief interruption for hail.
+adapt	a26	weather	Snow showers near the ski course are expected to intensify late in the morning.
+adapt	a27	sports	Runners competed separately after strong winds delayed the start of the relay.
+adapt	a28	weather	Hazardous heat is forecast for the district containing the city's main tennis courts.
+adapt	a29	sports	The team remains unbeaten after holding its lead through a rain-soaked final quarter.
+adapt	a30	weather	Wind direction above the sailing lanes should shift sharply when the front arrives.
+adapt	a31	sports	The keeper held onto a slippery ball to secure the tournament's first shutout.
+adapt	a32	weather	Ice may form on roads leading to the race venue following a dip below freezing.
+adapt	a33	sports	The newest member of the climbing team earned a podium place despite changing conditions.
+adapt	a34	weather	The regional bureau expects the fog around the golf course to lift before noon.
+adapt	a35	sports	The referee added five minutes of stoppage time after a storm delay.
+adapt	a36	weather	Rainfall measured near the training track reached a seasonal high this morning.
+heldout	h21	sports	A rain delay stretched the match past midnight before the defending champion took the last set.
+heldout	h22	weather	The athletics track sits in the part of town most likely to see gusts above the advisory threshold.
+heldout	h23	sports	After skating through blowing snow, the home racer finished seven seconds ahead.
+heldout	h24	weather	The observation station beside the soccer fields recorded a sudden pressure drop.
+heldout	h25	sports	The visitors claimed a semifinal place after a hotly contested penalty shootout in the rain.
+heldout	h26	weather	A frost warning covers the district around the baseball diamond until eight in the morning.
+heldout	h27	sports	Officials restarted the cycling race when the downpour eased, with the race leader still ahead.
+heldout	h28	weather	The stadium roof station detected hail moving northeast toward the neighboring parks.
+heldout	h29	sports	The final jump in gusty conditions moved the school athlete into third place.
+heldout	h30	weather	The strongest part of the squall line should pass north of the arena after the evening game.
+heldout	h31	sports	The team reached the postseason by taking two games on a windy travel weekend.
+heldout	h32	weather	Sailors at the training harbor were advised to prepare for a rapid rise in wind speed after noon.
+heldout	h33	sports	A late equalizer kept the title race open after snow cleared from the pitch.
+heldout	h34	weather	City crews measured poor visibility from fog along the access road to the basketball venue.
+heldout	h35	sports	Though the course remained flooded in places, the visiting rowers set the fastest qualifying time.
+heldout	h36	weather	Temperatures near the rugby grounds will fall as dry air arrives overnight.

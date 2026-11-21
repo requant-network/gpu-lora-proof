@@ -12,6 +12,7 @@ import subprocess
 import sys
 import time
 
+import contract as C
 import oracle
 import prover
 import round_verifier as V
@@ -69,7 +70,7 @@ def proof_for(manifest, pin, phase, slot, adapter, lib=None, upstream=None):
     predicted = V.predict(manifest["W"], adapter, slot["x"])
     g = V.residual(predicted, slot["target"]) if upstream is None else upstream
     inputs = {"W": manifest["W"], **adapter, "x": slot["x"], "g": g}
-    seed = V.slot_seed(pin, phase, slot["worker"])
+    seed = V.slot_seed(pin, phase, slot["worker"], manifest["schema"])
     return prover.build_proof(V.D, V.R, V.B, V.SCALE, seed, "gpu" if lib else "cpu",
                               lib, reps=1, warmup=0, inputs=inputs)
 
@@ -97,7 +98,8 @@ def assemble(manifest_path, path, lib):
     manifest, pin = V.read_json(manifest_path, V.MANIFEST_BYTES)
     V.validate_manifest(manifest)
     adapter = manifest["initial"]
-    bundle = {"schema": V.SCHEMA, "manifest_sha256": pin, "phases": []}
+    schema = manifest["schema"]
+    bundle = {"schema": schema, "manifest_sha256": pin, "phases": []}
     measurements = []
     start = time.perf_counter()
     for phase, plan in enumerate(manifest["phases"]):
@@ -114,10 +116,10 @@ def assemble(manifest_path, path, lib):
             records.append({"worker": worker, "proof": step.pop("proof")})
             measurements.append({"phase": phase, "worker": worker, **step})
         next_adapter = V.advance(manifest, pin, phase, adapter, records)
-        bundle["phases"].append({"previous": V.adapter_digest(pin, adapter),
-                                 "contributions": records, "next": V.adapter_digest(pin, next_adapter)})
+        bundle["phases"].append({"previous": V.adapter_digest(pin, adapter, schema),
+                                 "contributions": records, "next": V.adapter_digest(pin, next_adapter, schema)})
         adapter = next_adapter
-    bundle.update(merkle_root=V.merkle_root(bundle["phases"]), final_adapter=V.adapter_digest(pin, adapter))
+    bundle.update(merkle_root=V.merkle_root(bundle["phases"], schema), final_adapter=V.adapter_digest(pin, adapter, schema))
     V.save_json(path, bundle)
     build_wall = time.perf_counter() - start
     return bundle, {"build_wall_seconds": build_wall, "bundle_bytes": path.stat().st_size,
@@ -127,12 +129,21 @@ def assemble(manifest_path, path, lib):
 def controls(manifest, pin, bundle):
     second = manifest["phases"][1]
     prior = manifest["initial"]
-    stale, expected = proof_for(manifest, pin, 1, second["slots"][0], prior)
+    next_adapter = V.advance(manifest, pin, 0, prior, bundle["phases"][0]["contributions"])
+    wrong_adapter = prior
+    if prior == next_adapter:
+        wrong_adapter = copy.deepcopy(prior)
+        old = wrong_adapter["A"][0]
+        wrong_adapter["A"][0] = old + 1 if old < C.A_MAX else old - 1
+    stale, expected = proof_for(manifest, pin, 1, second["slots"][0], wrong_adapter)
     V.verify_step(stale, expected)
     tampered, _ = tamper.wrong_dW_coherent(bundle["phases"][0]["contributions"][0]["proof"])
-    next_adapter = V.advance(manifest, pin, 0, prior, bundle["phases"][0]["contributions"])
     slot = second["slots"][0]
-    wrong_gradient, expected = proof_for(manifest, pin, 1, slot, next_adapter, upstream=[0] * (V.D * V.B))
+    g = V.residual(V.predict(manifest["W"], next_adapter, slot["x"]), slot["target"])
+    invalid = [0] * len(g)
+    if not any(g):
+        invalid[0] = 1
+    wrong_gradient, expected = proof_for(manifest, pin, 1, slot, next_adapter, upstream=invalid)
     V.verify_step(wrong_gradient, expected)
 
     def shorten(candidate):
@@ -163,7 +174,7 @@ def controls(manifest, pin, bundle):
         altered = copy.deepcopy(bundle)
         change(altered)
         if name not in ("changed_round_root", "missing_phase", "missing_contribution"):
-            altered["merkle_root"] = V.merkle_root(altered["phases"])
+            altered["merkle_root"] = V.merkle_root(altered["phases"], manifest["schema"])
         try:
             V.verify_round(manifest, pin, altered)
         except V.Reject as exc:

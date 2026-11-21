@@ -63,6 +63,10 @@ and key contain no saved openings.
 The [shared-key follow-up](SHARED_PROVING_KEY.md) measures two proofs
 generated in one process using a single checked key load.
 
+The [three-template experiment](PRIVATE_TEMPLATE_TRIPLE.md) measures a
+third hidden option under one key and exercises the old proofs under their
+original trust pins.
+
 ## Disclosure and reproducibility
 
 The public arbiter knows the pair of admissible templates and the

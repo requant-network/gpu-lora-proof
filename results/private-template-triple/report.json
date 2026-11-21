@@ -1,0 +1,326 @@
+{
+  "shape": {
+    "process_seconds": 0.6899696379841771,
+    "max_rss_kib": 572576,
+    "reported": {
+      "metrics": {
+        "constraints": 477025,
+        "public_inputs": 2,
+        "witnesses": 467727
+      },
+      "wall_seconds": 0.650584202
+    },
+    "trace_seconds": {}
+  },
+  "setup": {
+    "process_seconds": 14.200054752989672,
+    "max_rss_kib": 1355556,
+    "reported": {
+      "metrics": {
+        "proving_key_bytes": 91614320,
+        "verifying_key_bytes": 328,
+        "verifying_key_sha256": "d4f8e03f217c344a00868a2fd40c7925fe2b25230da126b1aa679803292935ca"
+      },
+      "wall_seconds": 14.079522455
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.5314099999999999,
+      "Inlining LCs": 1.548,
+      "Constructing evaluation domain": 1.6693e-05,
+      "Evaluate Lagrange coefficients": 0.059345999999999996,
+      "R1CS to QAP Instance Map with Evaluation": 0.7734,
+      "Compute G2 table": 0.142572,
+      "Calculate B G2 of size 467730": 3.762,
+      "Compute G1 window table": 0.076589,
+      "Calculate A": 1.581,
+      "Calculate B G1": 1.468,
+      "Calculate H": 2.204,
+      "Calculate L": 1.81,
+      "Generate the R1CS proving key": 7.065,
+      "Generate the R1CS verification key": 0.000406836,
+      "Groth16::Generator": 13.921
+    }
+  },
+  "orders": [
+    {
+      "order_commitment_sha256": "6c5a341af56b979f65aedeeb2adbad9c43ef22793486bed91b99718b5e401518",
+      "issue": {
+        "process_seconds": 0.006958188983844593,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "6c5a341af56b979f65aedeeb2adbad9c43ef22793486bed91b99718b5e401518"
+          },
+          "wall_seconds": 0.004766583
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.004167328996118158,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002178825
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 54.12519499799237,
+        "max_rss_kib": 1726280,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 46.932729427,
+            "proof_bytes": 128,
+            "prove_seconds": 5.9168211280000005
+          },
+          "wall_seconds": 53.980925195
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.459579,
+          "Inlining LCs": 1.579,
+          "R1CS to QAP witness map": 1.198,
+          "Compute C": 1.776,
+          "Compute A": 0.18817699999999998,
+          "Compute B in G1": 0.163056,
+          "Compute B in G2": 0.43435700000000005,
+          "Finish C": 3.2829999999999997e-06,
+          "Groth16::Prover": 5.801
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.24505053999018855,
+        "max_rss_kib": 31872,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001869001,
+            "pairing_and_public_inputs_seconds": 0.00138876,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003548728
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.004443837009603158,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002301679
+        },
+        "trace_seconds": {}
+      }
+    },
+    {
+      "order_commitment_sha256": "eed6fbf394a6f175e9fe3bf81cb8edf9b3d149336483de0f267fead0a7c8671b",
+      "issue": {
+        "process_seconds": 0.007052546978229657,
+        "max_rss_kib": 4096,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "eed6fbf394a6f175e9fe3bf81cb8edf9b3d149336483de0f267fead0a7c8671b"
+          },
+          "wall_seconds": 0.004817637
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.003964015020756051,
+        "max_rss_kib": 3456,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002101998
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 54.1213452439988,
+        "max_rss_kib": 1725892,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 46.946901459,
+            "proof_bytes": 128,
+            "prove_seconds": 5.906772371
+          },
+          "wall_seconds": 53.973902052
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.459162,
+          "Inlining LCs": 1.577,
+          "R1CS to QAP witness map": 1.194,
+          "Compute C": 1.779,
+          "Compute A": 0.185296,
+          "Compute B in G1": 0.16188,
+          "Compute B in G2": 0.433479,
+          "Finish C": 3.2829999999999997e-06,
+          "Groth16::Prover": 5.792
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.2566714510030579,
+        "max_rss_kib": 31488,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001840156,
+            "pairing_and_public_inputs_seconds": 0.001304459,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.00337461
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.004132615984417498,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002166742
+        },
+        "trace_seconds": {}
+      }
+    },
+    {
+      "order_commitment_sha256": "51179828c636b3149be9aba0ef67cfd354885dcf4b53b7491c4c86ab99364bad",
+      "issue": {
+        "process_seconds": 0.006347201997414231,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "51179828c636b3149be9aba0ef67cfd354885dcf4b53b7491c4c86ab99364bad"
+          },
+          "wall_seconds": 0.004678371
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.0036819190136156976,
+        "max_rss_kib": 3712,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002056531
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 54.3692539879994,
+        "max_rss_kib": 1725976,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 46.954988769,
+            "proof_bytes": 128,
+            "prove_seconds": 6.127758253
+          },
+          "wall_seconds": 54.219945219
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.470063,
+          "Inlining LCs": 1.596,
+          "R1CS to QAP witness map": 1.267,
+          "Compute C": 1.861,
+          "Compute A": 0.191225,
+          "Compute B in G1": 0.175953,
+          "Compute B in G2": 0.44581,
+          "Finish C": 4.26e-06,
+          "Groth16::Prover": 6.01
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.2458975899789948,
+        "max_rss_kib": 31104,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.002031875,
+            "pairing_and_public_inputs_seconds": 0.001291748,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003560671
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.004347034002421424,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002222757
+        },
+        "trace_seconds": {}
+      }
+    }
+  ],
+  "refusals": {
+    "duplicate_template": "NO: triple requires three distinct prefix templates",
+    "outside_allowlist": "NO: triple choice must be 0, 1 or 2",
+    "route_switch": "NO: private prefix opening does not match the commitments",
+    "incompatible_order": "Constraint trace requires enabling `ConstraintLayer`\nNO: private prefix circuit rejected the release statement",
+    "cross_order_proof": "NO: Groth16 rejected the public round and adapter"
+  },
+  "prior_single_template_verification": {
+    "process_seconds": 0.005167341994820163,
+    "max_rss_kib": 4352,
+    "reported": {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.001800485,
+        "pairing_and_public_inputs_seconds": 0.001302504,
+        "public_inputs": 2
+      },
+      "wall_seconds": 0.003291496
+    },
+    "trace_seconds": {}
+  },
+  "arbiter_image": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+  "distinct_templates": 3,
+  "verifying_key_sha256": "d4f8e03f217c344a00868a2fd40c7925fe2b25230da126b1aa679803292935ca",
+  "public_bytes": 904,
+  "prior_pair_verification": {
+    "process_seconds": 0.005212949006818235,
+    "max_rss_kib": 4352,
+    "reported": {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.001826327,
+        "pairing_and_public_inputs_seconds": 0.001492477,
+        "public_inputs": 2
+      },
+      "wall_seconds": 0.003497114
+    },
+    "trace_seconds": {}
+  },
+  "prior_pair_shape": {
+    "process_seconds": 0.5241180800076108,
+    "max_rss_kib": 423936,
+    "reported": {
+      "metrics": {
+        "constraints": 347690,
+        "public_inputs": 2,
+        "witnesses": 341004
+      },
+      "wall_seconds": 0.495598696
+    },
+    "trace_seconds": {}
+  },
+  "template_sha256": [
+    "6d71776af756c8cc517a185bc76e68efe3144e0a130473c430cc33397098992d",
+    "4d7f8f425630ac434380c6549aaf6e3fd5efcf1f82c8b994c43538d4d2f642f6",
+    "2b5094d1ea4038ccc8f818887be234def439dee4b958401a3eab83e8fb130ffa"
+  ],
+  "third_shape_reproducible_public_bytes": 200
+}

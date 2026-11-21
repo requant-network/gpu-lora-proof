@@ -54,33 +54,59 @@ struct Branch {
     decoy: Vec<Fr>,
 }
 
+impl Branch {
+    fn load(paths: &[String]) -> Result<Self> {
+        let [shape, manifest, pin, adapter] = paths else {
+            return Err("expected a shape and its pinned reference order and adapter".into());
+        };
+        Ok(Self {
+            template: Template::load(shape)?,
+            decoy: Statement::load_prefix(manifest, pin, adapter)?.prefix_inputs().split_off(2),
+        })
+    }
+
+    fn constrain(&self, numeric: &[Var], active: &Boolean<Fr>) -> CircuitResult<()> {
+        let routed = numeric.iter().zip(&self.decoy)
+            .map(|(value, decoy)| active.select(value, &Var::Constant(*decoy)))
+            .collect::<CircuitResult<Vec<_>>>()?;
+        enforce_prefix(&routed, &self.template.shape)
+    }
+}
+
 #[derive(Clone)]
 enum Policy {
     Single(Template),
     Pair([Branch; 2]),
+    Triple([Branch; 3]),
 }
 
 impl Policy {
     fn pair(paths: &[String]) -> Result<Self> {
-        let [first_shape, first_manifest, first_pin, first_adapter, second_shape, second_manifest, second_pin, second_adapter] =
-            paths
-        else {
+        if paths.len() != 8 {
             return Err("expected two pinned prefix fixtures".into());
-        };
-        let load = |shape: &str, manifest: &str, pin: &str, adapter: &str| -> Result<Branch> {
-            Ok(Branch {
-                template: Template::load(shape)?,
-                decoy: Statement::load_prefix(manifest, pin, adapter)?
-                    .prefix_inputs()
-                    .split_off(2),
-            })
-        };
-        let first = load(first_shape, first_manifest, first_pin, first_adapter)?;
-        let second = load(second_shape, second_manifest, second_pin, second_adapter)?;
+        }
+        let first = Branch::load(&paths[..4])?;
+        let second = Branch::load(&paths[4..])?;
         if first.template.pin == second.template.pin {
             return Err("pair requires two distinct prefix templates".into());
         }
         Ok(Self::Pair([first, second]))
+    }
+
+    fn triple(paths: &[String]) -> Result<Self> {
+        if paths.len() != 12 {
+            return Err("expected three pinned prefix fixtures".into());
+        }
+        let first = Branch::load(&paths[..4])?;
+        let second = Branch::load(&paths[4..8])?;
+        let third = Branch::load(&paths[8..])?;
+        if first.template.pin == second.template.pin
+            || first.template.pin == third.template.pin
+            || second.template.pin == third.template.pin
+        {
+            return Err("triple requires three distinct prefix templates".into());
+        }
+        Ok(Self::Triple([first, second, third]))
     }
 
     fn template(&self, choice: usize) -> Result<&Template> {
@@ -90,6 +116,10 @@ impl Policy {
                 .get(choice)
                 .map(|branch| &branch.template)
                 .ok_or_else(|| "pair choice must be 0 or 1".into()),
+            Self::Triple(branches) => branches
+                .get(choice)
+                .map(|branch| &branch.template)
+                .ok_or_else(|| "triple choice must be 0, 1 or 2".into()),
         }
     }
 
@@ -110,16 +140,29 @@ impl Policy {
                 })?;
                 // Both branches are enforced. The inactive one receives its public valid fixture.
                 for (branch, active) in [(first, !&pick_second), (second, pick_second.clone())] {
-                    let routed = numeric
-                        .iter()
-                        .zip(&branch.decoy)
-                        .map(|(value, decoy)| active.select(value, &Var::Constant(*decoy)))
-                        .collect::<CircuitResult<Vec<_>>>()?;
-                    enforce_prefix(&routed, &branch.template.shape)?;
+                    branch.constrain(numeric, &active)?;
                 }
                 let [a, b] = first.template.pin.map(Var::Constant);
                 let [c, d] = second.template.pin.map(Var::Constant);
                 Ok([pick_second.select(&c, &a)?, pick_second.select(&d, &b)?])
+            }
+            Self::Triple(branches) => {
+                let zero = Var::Constant(Fr::from(0));
+                let mut selector_sum = zero.clone();
+                let mut pin = [zero.clone(), zero];
+                for (index, branch) in branches.iter().enumerate() {
+                    let selected = Boolean::new_witness(cs.clone(), || {
+                        Ok(choice.ok_or(SynthesisError::AssignmentMissing)? == index)
+                    })?;
+                    branch.constrain(numeric, &selected)?;
+                    let selected = Var::from(selected);
+                    selector_sum += &selected;
+                    for (value, limb) in pin.iter_mut().zip(branch.template.pin) {
+                        *value += &selected * limb;
+                    }
+                }
+                selector_sum.enforce_equal(&Var::Constant(Fr::from(1)))?;
+                Ok(pin)
             }
         }
     }
@@ -269,6 +312,7 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
     match (command, args) {
         ("private-prefix-shape", [template]) => shape(Policy::Single(Template::load(template)?)),
         ("private-prefix-pair-shape", paths) => shape(Policy::pair(paths)?),
+        ("private-prefix-triple-shape", paths) => shape(Policy::triple(paths)?),
         ("private-prefix-setup", [template, dir]) => setup(
             dir,
             PrivatePrefix {
@@ -283,6 +327,17 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
                 witness: None,
             },
         ),
+        ("private-prefix-triple-setup", [dir, paths @ ..]) => setup(
+            dir,
+            PrivatePrefix {
+                policy: Policy::triple(paths)?,
+                witness: None,
+            },
+        ),
+        ("private-prefix-triple-prove", [choice, paths @ ..]) if paths.len() == 20 => {
+            let (policy, proof) = paths.split_at(12);
+            prove_prefix(Policy::triple(policy)?, choice.parse()?, proof)
+        }
         ("private-prefix-pair-prove", [choice, paths @ ..]) if paths.len() == 16 => {
             let (policy, proof) = paths.split_at(8);
             prove_prefix(Policy::pair(policy)?, choice.parse()?, proof)
@@ -348,6 +403,10 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-pair-setup DIR FIXTURES",
             "private-prefix-pair-prove CHOICE FIXTURES MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
             "private-prefix-pair-prove-two PK OUTPUT FIXTURES ORDER ORDER",
+            "private-prefix-triple-shape FIXTURE FIXTURE FIXTURE",
+            "private-prefix-triple-setup DIR FIXTURE FIXTURE FIXTURE",
+            "private-prefix-triple-prove CHOICE FIXTURE FIXTURE FIXTURE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
+            "FIXTURE = SHAPE MANIFEST PIN ADAPTER",
             "ORDER = CHOICE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS",
             "FIXTURES = FIRST_SHAPE FIRST_MANIFEST FIRST_PIN FIRST_ADAPTER SECOND_SHAPE SECOND_MANIFEST SECOND_PIN SECOND_ADAPTER"
         ]})),

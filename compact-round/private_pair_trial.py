@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Prove two private prefix orders with one key and a hidden choice of template."""
+"""Prove private prefix orders under one key and a bounded hidden template choice."""
 
 import argparse
+import copy
 import json
 import os
 from pathlib import Path
@@ -14,7 +15,7 @@ from benchmark import ROOT, sha, timed
 from private_prefix_trial import COMMAND, SOURCE_PIN, V, private_fixture
 
 
-def run(executable, out, image, compare_key_reuse=False):
+def run(executable, out, image, compare_key_reuse=False, three_templates=False):
     os.umask(0o077)
     os.environ["RAYON_NUM_THREADS"] = "2"
     out.mkdir()
@@ -24,11 +25,11 @@ def run(executable, out, image, compare_key_reuse=False):
         ["docker", "image", "inspect", "--format", "{{.Id}}", image], text=True,
     ).strip()
     results = ROOT / "results"
-    profiles = (
+    profiles = [
         (results / "compact-prefix/cpu/shape.json", results / "text-head-origin/cpu", SOURCE_PIN),
         (results / "compact-prefix/shape.json", results / "text-head-v2/mixed-vocabulary",
          "d200e82458d79b44fc577480ba33b1e7fe79b6e935328bd7812cfdd05763c34a"),
-    )
+    ]
     assert sha(profiles[0][0]) != sha(profiles[1][0])
     fixtures = []
     references = []
@@ -45,13 +46,37 @@ def run(executable, out, image, compare_key_reuse=False):
     def call(label, command, *args, reject=None):
         return timed(out, label, [executable, COMMAND + command, *args], reject=reject)
 
-    shape_result = call("shape", "pair-shape", *fixtures)
+    policy = "triple" if three_templates else "pair"
     captures = []
     controls = {}
-    with TemporaryDirectory(prefix="pair-witness-", dir=out) as scratch:
+    with TemporaryDirectory(prefix="prefix-witness-", dir=out) as scratch:
         work = Path(scratch)
+        if three_templates:
+            fixture = work / "permuted-reference"
+            fixture.mkdir()
+            source, adapter = references[0]
+            order = copy.deepcopy(source)
+            for field in ("x", "target"):
+                values = order["heldout"][field]
+                values[:2 * V.D] = values[V.D:2 * V.D] + values[:V.D]
+            manifest, adapter_path = fixture / "manifest.json", fixture / "adapter.json"
+            V.save_json(manifest, order)
+            V.save_json(adapter_path, adapter)
+            cpu_shape = json.loads(profiles[0][0].read_bytes())
+            assert cpu_shape["labels"][0] != cpu_shape["labels"][1]
+            cpu_shape["labels"] = V.top1(order["heldout"]["target"])
+            third_shape = public / "third-shape.json"
+            V.save_json(third_shape, cpu_shape)
+            profiles.append((third_shape, fixture, sha(manifest)))
+            fixtures.extend([third_shape, manifest, sha(manifest), adapter_path])
+            references.append((order, adapter))
+            controls["duplicate_template"] = call(
+                "duplicate-template", "triple-shape", *fixtures[:8], *fixtures[:4],
+                reject="triple requires three distinct prefix templates",
+            )
+        shape_result = call("shape", f"{policy}-shape", *fixtures)
         keys = work / "keys"
-        setup = call("setup", "pair-setup", keys, *fixtures)
+        setup = call("setup", f"{policy}-setup", keys, *fixtures)
         vk = public / "verifying.key"
         shutil.copyfile(keys / vk.name, vk)
         vk_pin = sha(vk)
@@ -80,7 +105,7 @@ def run(executable, out, image, compare_key_reuse=False):
 
         batch_orders = []
         shared = None
-        choices = [0, 1]
+        choices = list(range(len(profiles)))
         secrets.SystemRandom().shuffle(choices)
         for ordinal, choice in enumerate(choices, start=1):
             tag = f"order-{ordinal}"
@@ -101,7 +126,7 @@ def run(executable, out, image, compare_key_reuse=False):
             commitments, proof = published / packet.name, published / "round.proof"
             shutil.copyfile(packet, commitments)
             order_args = [manifest, sha(manifest), adapter_path, order_salt, output_salt, commitments]
-            produced = call(tag + "-prove", "pair-prove", choice, *fixtures, *order_args, keys / "proving.key", proof)
+            produced = call(tag + "-prove", f"{policy}-prove", choice, *fixtures, *order_args, keys / "proving.key", proof)
             batch_orders.append(([choice, *order_args], commitments, order_pin, published))
             arbiter = verify_proof(tag + "-arbiter", commitments, proof, order_pin)
             opened = call(tag + "-open", "open-output", adapter_path, output_salt, commitments, order_pin)
@@ -111,9 +136,14 @@ def run(executable, out, image, compare_key_reuse=False):
             })
             if ordinal == 1:
                 refused = work / "refused.proof"
-                other = 1 - choice
+                other = 0 if choice == len(profiles) - 1 else len(profiles) - 1
+                if three_templates:
+                    controls["outside_allowlist"] = call(
+                        "outside-allowlist", "triple-prove", 3, *fixtures, *order_args,
+                        work / "deliberately-absent.key", refused, reject="triple choice must be 0, 1 or 2",
+                    )
                 controls["route_switch"] = call(
-                    "route-switch", "pair-prove", other, *fixtures, manifest, sha(manifest), adapter_path,
+                    "route-switch", f"{policy}-prove", other, *fixtures, manifest, sha(manifest), adapter_path,
                     order_salt, output_salt, commitments, keys / "proving.key", refused,
                     reject="private prefix opening does not match",
                 )
@@ -123,7 +153,7 @@ def run(executable, out, image, compare_key_reuse=False):
                     "wrong-template", profiles[other][0], manifest, adapter_path, wrong,
                 )
                 controls["incompatible_order"] = call(
-                    "incompatible-order", "pair-prove", other, *fixtures, manifest, sha(manifest), adapter_path,
+                    "incompatible-order", f"{policy}-prove", other, *fixtures, manifest, sha(manifest), adapter_path,
                     wrong_order, wrong_output, wrong_packet, keys / "proving.key", refused,
                     reject="private prefix circuit rejected the release statement",
                 )
@@ -167,8 +197,23 @@ def run(executable, out, image, compare_key_reuse=False):
             first_prior / "round.proof",
         )
         assert legacy_result["reported"]["metrics"]["accepted"]
-    expected = {"verifying.key", "order-1/round.commitments", "order-1/round.proof",
-                "order-2/round.commitments", "order-2/round.proof"}
+        if three_templates:
+            prior_pair = results / "private-template-pair"
+            prior_report = json.loads((prior_pair / "report.json").read_text())
+            prior_pair_result = call(
+                "prior-pair", "verify", prior_pair / "order-1/round.commitments",
+                prior_report["orders"][0]["order_commitment_sha256"], prior_pair / "verifying.key",
+                prior_report["verifying_key_sha256"], prior_pair / "order-1/round.proof",
+            )
+            assert prior_pair_result["reported"]["metrics"]["accepted"]
+            same_pair_shape = call("prior-pair-shape", "pair-shape", *fixtures[:8])
+            assert same_pair_shape["reported"]["metrics"]["constraints"] == 347690
+    expected = {"verifying.key"} | {
+        f"order-{i}/{name}" for i in range(1, len(profiles) + 1)
+        for name in ("round.commitments", "round.proof")
+    }
+    if three_templates:
+        expected.add("third-shape.json")
     if shared is not None:
         expected.update({"order-1/shared-key.proof", "order-2/shared-key.proof"})
     assert {p.relative_to(public).as_posix() for p in public.rglob("*") if p.is_file()} == expected
@@ -178,6 +223,12 @@ def run(executable, out, image, compare_key_reuse=False):
         "distinct_templates": len(profiles), "verifying_key_sha256": vk_pin,
         "public_bytes": sum((public / name).stat().st_size for name in expected),
     }
+    if three_templates:
+        report["prior_pair_verification"] = prior_pair_result
+        report["prior_pair_shape"] = same_pair_shape
+        report["template_sha256"] = [sha(profile[0]) for profile in profiles]
+        report["third_shape_reproducible_public_bytes"] = (public / "third-shape.json").stat().st_size
+        report["public_bytes"] -= report["third_shape_reproducible_public_bytes"]
     if shared is not None:
         report["shared_proving_key"] = shared
     (public / "report.json").write_text(json.dumps(report, indent=2) + "\n")
@@ -188,6 +239,8 @@ if __name__ == "__main__":
     parser.add_argument("executable", type=lambda p: Path(p).resolve())
     parser.add_argument("output", type=lambda p: Path(p).resolve())
     parser.add_argument("--image", default="ubuntu:24.04")
-    parser.add_argument("--compare-key-reuse", action="store_true")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--compare-key-reuse", action="store_true")
+    modes.add_argument("--three-templates", action="store_true")
     args = parser.parse_args()
-    run(args.executable, args.output, args.image, args.compare_key_reuse)
+    run(args.executable, args.output, args.image, args.compare_key_reuse, args.three_templates)

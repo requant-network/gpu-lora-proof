@@ -1,0 +1,9 @@
+rustc 1.98.1 (48a229cea 2026-09-01)
+Python 3.12.3
+Model name:                              AMD Ryzen 5 5500
+Research base: 1f9fa9af4e0125d3c8dccbfb94c530a0048574fc
+f542be378125c03d3035a0e74dee9fc0bfbcc362c567be8b043abadc0aae7c94  compact-round/target/release/compact-lora-round
+66ef31bb9f46878341417012f764d89764c36e4b0e0e587087e640df23072de0  compact-round/Cargo.lock
+f673bb69555c6b2977d568df39d0dd1426714e6127fc48cbecb8968f28469190  compact-round/private_pair_trial.py
+f5dad0015e065410c131c03834215f6e0d1d32d027d78f32ab993f9937f50d1a  compact-round/src/private_prefix.rs
+d86b929c8bf12718c1496cd1d5c60166f578b63083f838e463f12c437d8949bf  PRIVATE_TEMPLATE_TRIPLE.md

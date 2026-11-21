@@ -54,6 +54,10 @@ and altered commitments. Twelve unit tests passed on both platforms. The new
 CLI check refuses a wrong manifest pin, an incomplete round and overwriting a
 recovered adapter. [Linux test output](results/round-v1/checks.log).
 
+A clean Windows checkout with automatic line-ending conversion enabled also
+preserved both manifest pins and recovered the same adapter bytes. The retained
+round files use LF line endings to keep their exact bytes portable.
+
 ## Verify the retained round
 
 ```sh

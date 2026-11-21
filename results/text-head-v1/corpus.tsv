@@ -1,0 +1,48 @@
+source	s01	sports	The home side scored twice in the last ten minutes to win the cup.
+source	s02	weather	A line of thunderstorms will reach the coast before dawn.
+source	s03	sports	The goalkeeper saved the final penalty in front of a full stadium.
+source	s04	weather	Temperatures may drop below freezing across the northern valleys tonight.
+source	s05	sports	A rookie pitcher retired the final three batters without a hit.
+source	s06	weather	Forecasters expect heavy snow on roads above the mountain pass.
+source	s07	sports	The defending champion took the second set on a tiebreak.
+source	s08	weather	The humidity will remain high through the weekend near the river.
+source	s09	sports	The visiting captain lifted the league trophy after the final whistle.
+source	s10	weather	Sunshine returns tomorrow as a dry air mass pushes east.
+source	s11	sports	The cyclist kept the leader's jersey after a sprint finish.
+source	s12	weather	Gusts could exceed seventy kilometers per hour along exposed headlands.
+source	s13	sports	The coach named a new starting lineup for the opening match.
+source	s14	weather	Dense fog is expected during the morning commute before it burns off.
+source	s15	sports	The swimmer broke the meet record in the final heat.
+source	s16	weather	Rainfall totals are likely to rise after a stalled front passes over town.
+adapt	a01	sports	An appeal overturned the earlier decision and restored the winning point.
+adapt	a02	weather	The runway may close when visibility drops to less than a hundred meters.
+adapt	a03	sports	The academy promoted its youngest reserve to the travelling squad.
+adapt	a04	weather	Extra crews are preparing to clear ice from bridges before first light.
+adapt	a05	sports	The relay team stayed in medal contention after a clean final exchange.
+adapt	a06	weather	School buses may start late if the overnight accumulation reaches five centimeters.
+adapt	a07	sports	One successful free throw separated the two sides at the end of overtime.
+adapt	a08	weather	Operators moved boats inland ahead of rising seas and low pressure.
+adapt	a09	sports	The final qualifying place was decided by the smallest margin of the season.
+adapt	a10	weather	A strong inversion is trapping colder air near the floor of the valley.
+adapt	a11	sports	The away team earns a playoff berth even if it draws its next fixture.
+adapt	a12	weather	The water authority advised residents to prepare for another week without rain.
+adapt	a13	sports	A video review found that the runner reached the base before the tag.
+adapt	a14	weather	The afternoon commute will be slick once the rain freezes on contact.
+adapt	a15	sports	The umpire stopped play briefly while an injured starter received treatment.
+adapt	a16	weather	Downslope winds will make the eastern side of the range warmer and drier.
+heldout	h01	sports	The federation overturned a disqualification and returned the bronze medal.
+heldout	h02	weather	The ferry operator warned that swells could keep the morning service in port.
+heldout	h03	sports	A replacement player converted all three attempts in the shootout.
+heldout	h04	weather	The overnight outlook calls for patchy frost in sheltered gardens.
+heldout	h05	sports	A first-place finish put the local rowing crew into the national final.
+heldout	h06	weather	Airport departures may slow if a low cloud ceiling persists after sunrise.
+heldout	h07	sports	The visitors used their last timeout before taking the decisive shot.
+heldout	h08	weather	The observatory expects the storm track to turn away from the peninsula.
+heldout	h09	sports	The fourth seed recovered from two sets down to reach the semifinal.
+heldout	h10	weather	Hail may fall where the colder air meets the warm surface over the plain.
+heldout	h11	sports	The team will play its first home fixture after three away defeats.
+heldout	h12	weather	The crossing could be closed until plows clear the snow above the summit.
+heldout	h13	sports	The captain chose to bowl first after winning the toss.
+heldout	h14	weather	The front is expected to bring showers to both valleys in the afternoon.
+heldout	h15	sports	Officials revised the standings after the final round of the race.
+heldout	h16	weather	High pressure should keep skies clear while night temperatures continue to fall.

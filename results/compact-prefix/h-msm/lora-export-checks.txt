@@ -1,0 +1,10 @@
+RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.026749082,"pairing_and_public_inputs_seconds":0.048589519,"public_inputs":3587},"wall_seconds":0.075743482}
+RESULT {"metrics":{"bytes":25165728,"pairs":262143,"witness_coefficients":262144},"wall_seconds":17.508713411}
+Repeat export matched byte for byte
+NO: proving key has a different verification-key pin
+909d7e4ff374cf0380e9c134071865f9eb568869cefb8bab424339ad6eeeeee5  /data2/worknet-ci/research/bn254-full-msm.IZkxkVWv/qwen-h-msm.bin
+c9782ff408d432a2369ae3cabb263c8ce229670b3871adcf1078c6b024a71de3  /data2/worknet-ci/research/lora-compact-prefix-8f7b721/keys/proving.key
+e3c5ab61ed7bcdd5de8ef270f5120908a1d0c501945b2ad2c9679c10194ca65f  /data2/worknet-ci/research/bn254-full-msm.IZkxkVWv/compact-lora-round
+3aab14bb59938e9a0ccead5955e32a438999e6fe397092007a5624f32d373ab6  compact-round/Cargo.lock
+daf367611874d46c4b92c2c742bfbe57c68a5267b5b8f52a36745682c9bf314b  compact-round/src/main.rs
+d755b414111cb8a75639cfdfba6fade34e753afa8e3c67936d5cf23a791e47fb  compact-round/src/msm_fixture.rs

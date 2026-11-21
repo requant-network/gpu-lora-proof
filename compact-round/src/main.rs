@@ -1,4 +1,5 @@
 mod circuit;
+mod msm_fixture;
 mod prefix;
 mod private;
 mod private_prefix;
@@ -167,6 +168,14 @@ fn run(args: &[String]) -> Result<()> {
             let statement = Statement::load_prefix(manifest, pin, adapter)?;
             check_prefix(&statement, Shape::load(shape)?)?
         }
+        [command, shape, manifest, pin, adapter, proving_key, vk_pin, output]
+            if command == "prefix-export-h-msm" => {
+            let statement = Statement::load_prefix(manifest, pin, adapter)?;
+            let shape = Shape::load(shape)?;
+            check_prefix(&statement, shape.clone())?;
+            let circuit = PrefixCircuit { shape, public: Some(statement.prefix_inputs()) };
+            msm_fixture::export_h(circuit, proving_key, vk_pin, output)?
+        }
         [command, source, output] if command == "proving-key-uncompress" => {
             let (key, key_load_seconds) = load_proving_key(source, Compress::Yes)?;
             let output_bytes = key.uncompressed_size();
@@ -191,7 +200,7 @@ fn run(args: &[String]) -> Result<()> {
         }
         [command, rest @ ..] if command.starts_with("private-prefix-") => private_prefix::run(command, rest)?,
         [command, rest @ ..] if command.starts_with("private-") => private::run(command, rest)?,
-        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | prefix-shape / prefix-setup / prefix-check / prefix-prove / prefix-prove-uncompressed / prefix-verify | proving-key-uncompress SOURCE OUTPUT | private-help".into()),
+        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | prefix-shape / prefix-setup / prefix-check / prefix-prove / prefix-prove-uncompressed / prefix-verify / prefix-export-h-msm | proving-key-uncompress SOURCE OUTPUT | private-help".into()),
     };
     println!(
         "RESULT {}",

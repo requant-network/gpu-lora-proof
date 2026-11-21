@@ -106,3 +106,29 @@ python3 -B compact-round/prefix_shape.py "$rtx/manifest.json" "$rtx/bundle.json"
 "$bin" prefix-prove new-shape.json "$rtx/manifest.json" "$rtx_pin" "$rtx/adapter.json" \
   new-keys/proving.key new-round.proof
 ```
+
+## Export the G1 H query for a standalone MSM comparison
+
+`prefix-export-h-msm` uses the same public statement and Arkworks
+R1CS-to-QAP reduction as the prover. It checks the compressed proving
+key's embedded verification-key digest and exports the actual G1
+bases and scalar coefficients of the H term. The retained RTX-feature
+key has 262,143 bases. Its witness map has one additional coefficient,
+which the exporter checks is zero.
+
+```sh
+"$bin" prefix-export-h-msm new-shape.json "$rtx/manifest.json" "$rtx_pin" \
+  "$rtx/adapter.json" new-keys/proving.key NEW_VERIFICATION_KEY_SHA256 qwen-h-msm.bin
+```
+
+Supply the digest reported by the setup that generated the proving key.
+The file contains 64 bytes per affine base followed by 32 bytes per
+scalar. Coordinates and scalars are unsigned little-endian integers.
+An all-zero point encodes infinity. The command is a fixture export for
+public statements. The resulting wire exposes the QAP coefficients.
+
+Two exports reproduced all 25,165,728 bytes from the same checked key.
+A different verification-key pin was refused before creating an output
+file. The historical RTX proof still verified and seven Rust tests passed.
+[Export digests and checks](results/compact-prefix/h-msm/lora-export-checks.txt) ·
+[Rust tests](results/compact-prefix/h-msm/lora-tests.txt)

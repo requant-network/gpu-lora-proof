@@ -53,17 +53,28 @@ fn setup(directory: &str, circuit: impl ConstraintSynthesizer<Fr>) -> Result<ser
     )
 }
 
+fn load_proving_key(path: &str) -> Result<(ProvingKey<Bn254>, f64)> {
+    let start = Instant::now();
+    let key = decode(&read(path, KEY_LIMIT)?)?;
+    Ok((key, start.elapsed().as_secs_f64()))
+}
+
+fn create_proof(
+    circuit: impl ConstraintSynthesizer<Fr>,
+    key: &ProvingKey<Bn254>,
+) -> Result<(Proof<Bn254>, f64)> {
+    let start = Instant::now();
+    let proof = Groth16::<Bn254>::create_random_proof_with_reduction(circuit, key, &mut OsRng)?;
+    Ok((proof, start.elapsed().as_secs_f64()))
+}
+
 fn prove(
     circuit: impl ConstraintSynthesizer<Fr>,
     key_path: &str,
     output: &str,
 ) -> Result<serde_json::Value> {
-    let load = Instant::now();
-    let key: ProvingKey<Bn254> = decode(&read(key_path, KEY_LIMIT)?)?;
-    let key_seconds = load.elapsed().as_secs_f64();
-    let proof_start = Instant::now();
-    let proof = Groth16::<Bn254>::create_random_proof_with_reduction(circuit, &key, &mut OsRng)?;
-    let proof_seconds = proof_start.elapsed().as_secs_f64();
+    let (key, key_seconds) = load_proving_key(key_path)?;
+    let (proof, proof_seconds) = create_proof(circuit, &key)?;
     write(output, &proof)?;
     Ok(
         json!({"proof_bytes": fs::metadata(output)?.len(), "key_load_seconds": key_seconds,

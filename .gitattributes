@@ -23,3 +23,7 @@ results/private-template-pair/**/*.json text eol=lf
 results/private-template-pair/**/*.commitments binary
 results/private-template-pair/**/*.key binary
 results/private-template-pair/**/*.proof binary
+results/shared-proving-key/**/*.json text eol=lf
+results/shared-proving-key/**/*.commitments binary
+results/shared-proving-key/**/*.key binary
+results/shared-proving-key/**/*.proof binary

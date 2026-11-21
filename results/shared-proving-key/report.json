@@ -1,0 +1,275 @@
+{
+  "shape": {
+    "process_seconds": 0.525549340993166,
+    "max_rss_kib": 424476,
+    "reported": {
+      "metrics": {
+        "constraints": 347690,
+        "public_inputs": 2,
+        "witnesses": 341004
+      },
+      "wall_seconds": 0.495912486
+    },
+    "trace_seconds": {}
+  },
+  "setup": {
+    "process_seconds": 11.473291583009996,
+    "max_rss_kib": 1025464,
+    "reported": {
+      "metrics": {
+        "proving_key_bytes": 71338640,
+        "verifying_key_bytes": 328,
+        "verifying_key_sha256": "52945e1e41a7569e149e410ff8f84e848d7f6a6d0307887f226cf2a0f2fdecf5"
+      },
+      "wall_seconds": 11.38470844
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.39407400000000004,
+      "Inlining LCs": 1.169,
+      "Constructing evaluation domain": 1.7111999999999998e-05,
+      "Evaluate Lagrange coefficients": 0.056889,
+      "R1CS to QAP Instance Map with Evaluation": 0.6014299999999999,
+      "Compute G2 table": 0.144131,
+      "Calculate B G2 of size 341007": 2.856,
+      "Compute G1 window table": 0.077417,
+      "Calculate A": 1.202,
+      "Calculate B G1": 1.096,
+      "Calculate H": 2.3,
+      "Calculate L": 1.395,
+      "Generate the R1CS proving key": 5.996,
+      "Generate the R1CS verification key": 0.000489809,
+      "Groth16::Generator": 11.26
+    }
+  },
+  "orders": [
+    {
+      "order_commitment_sha256": "f4d1bcbeab6c5a83f1ba843d2515864af1ad69ae92ef18943610a4996150b16e",
+      "issue": {
+        "process_seconds": 0.007592569018015638,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "f4d1bcbeab6c5a83f1ba843d2515864af1ad69ae92ef18943610a4996150b16e"
+          },
+          "wall_seconds": 0.00528691
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.004145465005422011,
+        "max_rss_kib": 3584,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002123019
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 41.49176448700018,
+        "max_rss_kib": 1352976,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 35.132076744,
+            "proof_bytes": 128,
+            "prove_seconds": 5.394474092
+          },
+          "wall_seconds": 41.389706592
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.353862,
+          "Inlining LCs": 1.169,
+          "R1CS to QAP witness map": 1.215,
+          "Compute C": 1.835,
+          "Compute A": 0.172623,
+          "Compute B in G1": 0.14996700000000002,
+          "Compute B in G2": 0.411769,
+          "Finish C": 3.353e-06,
+          "Groth16::Prover": 5.31
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.2583246220019646,
+        "max_rss_kib": 31360,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001822765,
+            "pairing_and_public_inputs_seconds": 0.001266674,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003333959
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.004477849026443437,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002311945
+        },
+        "trace_seconds": {}
+      }
+    },
+    {
+      "order_commitment_sha256": "734aafd5570516636cc8959f1691c0eb25c3f6208afb4f6f0d5e6b430d375468",
+      "issue": {
+        "process_seconds": 0.0069375110033433884,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "734aafd5570516636cc8959f1691c0eb25c3f6208afb4f6f0d5e6b430d375468"
+          },
+          "wall_seconds": 0.004651478
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.004056555015267804,
+        "max_rss_kib": 3584,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002237562
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 41.3256943099841,
+        "max_rss_kib": 1352676,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 35.114362619,
+            "proof_bytes": 128,
+            "prove_seconds": 5.2539380829999995
+          },
+          "wall_seconds": 41.219727578
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.347243,
+          "Inlining LCs": 1.159,
+          "R1CS to QAP witness map": 1.191,
+          "Compute C": 1.748,
+          "Compute A": 0.16859800000000003,
+          "Compute B in G1": 0.145547,
+          "Compute B in G2": 0.406686,
+          "Finish C": 2.9329999999999997e-06,
+          "Groth16::Prover": 5.168
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.2339141950069461,
+        "max_rss_kib": 31872,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001808517,
+            "pairing_and_public_inputs_seconds": 0.00128637,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003336124
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.004267480981070548,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002171631
+        },
+        "trace_seconds": {}
+      }
+    }
+  ],
+  "refusals": {
+    "route_switch": "NO: private prefix opening does not match the commitments",
+    "incompatible_order": "Constraint trace requires enabling `ConstraintLayer`\nNO: private prefix circuit rejected the release statement",
+    "invalid_second_order": "Constraint trace requires enabling `ConstraintLayer`\nNO: private prefix circuit rejected the release statement",
+    "cross_order_proof": "NO: Groth16 rejected the public round and adapter"
+  },
+  "prior_single_template_verification": {
+    "process_seconds": 0.005222026025876403,
+    "max_rss_kib": 4224,
+    "reported": {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.001831634,
+        "pairing_and_public_inputs_seconds": 0.001290211,
+        "public_inputs": 2
+      },
+      "wall_seconds": 0.003348066
+    },
+    "trace_seconds": {}
+  },
+  "arbiter_image": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+  "distinct_templates": 2,
+  "verifying_key_sha256": "52945e1e41a7569e149e410ff8f84e848d7f6a6d0307887f226cf2a0f2fdecf5",
+  "public_bytes": 968,
+  "shared_proving_key": {
+    "process_seconds": 46.77128134801751,
+    "max_rss_kib": 1369176,
+    "reported": {
+      "metrics": {
+        "key_load_seconds": 35.071391265,
+        "proof_bytes": 256,
+        "proof_count": 2,
+        "proof_seconds": [
+          5.222277346,
+          4.862635234
+        ]
+      },
+      "wall_seconds": 46.663854616
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.229706,
+      "Inlining LCs": 0.921492,
+      "R1CS to QAP witness map": 1.187,
+      "Compute C": 1.726,
+      "Compute A": 0.16498300000000002,
+      "Compute B in G1": 0.146445,
+      "Compute B in G2": 0.404553,
+      "Finish C": 2.934e-06,
+      "Groth16::Prover": 4.782
+    },
+    "verifications": [
+      {
+        "process_seconds": 0.23967799500678666,
+        "max_rss_kib": 31488,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001805792,
+            "pairing_and_public_inputs_seconds": 0.001271423,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003309584
+        },
+        "trace_seconds": {}
+      },
+      {
+        "process_seconds": 0.23009301201091148,
+        "max_rss_kib": 32256,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001860339,
+            "pairing_and_public_inputs_seconds": 0.001280503,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003371465
+        },
+        "trace_seconds": {}
+      }
+    ]
+  }
+}

@@ -16,7 +16,7 @@ use crate::private::{
     ORDER_FIELDS,
 };
 use crate::statement::{read, sha256, Adapter, Manifest, Result, Statement, PUBLIC};
-use crate::{decode, prove, setup, verify, write};
+use crate::{create_proof, decode, load_proving_key, prove, setup, verify, write};
 
 const ORDER_TAG: u64 = u64::from_be_bytes(*b"lora-in2");
 const OUTPUT_TAG: u64 = u64::from_be_bytes(*b"loraout2");
@@ -198,11 +198,9 @@ fn shape(policy: Policy) -> Result<Value> {
     )
 }
 
-fn prove_prefix(policy: Policy, choice: usize, args: &[String]) -> Result<Value> {
-    let [manifest, pin, adapter, order_salt, output_salt, commitments, key, proof] = args else {
-        return Err(
-            "expected manifest, adapter, openings, commitments, key and proof paths".into(),
-        );
+fn checked_order(policy: Policy, choice: usize, args: &[String]) -> Result<PrivatePrefix> {
+    let [manifest, pin, adapter, order_salt, output_salt, commitments] = args else {
+        return Err("expected manifest, adapter, openings and commitments".into());
     };
     let template = policy.template(choice)?;
     let inputs = Statement::load_prefix(manifest, pin, adapter)?
@@ -236,8 +234,35 @@ fn prove_prefix(policy: Policy, choice: usize, args: &[String]) -> Result<Value>
     if !cs.is_satisfied()? {
         return Err("private prefix circuit rejected the release statement".into());
     }
-    drop(cs);
-    prove(circuit, key, proof)
+    Ok(circuit)
+}
+
+fn prove_prefix(policy: Policy, choice: usize, args: &[String]) -> Result<Value> {
+    let [order @ .., key, proof] = args else {
+        return Err("expected prefix order, key and proof paths".into());
+    };
+    prove(checked_order(policy, choice, order)?, key, proof)
+}
+
+fn prove_two(key: &str, output: &str, policy: Policy, orders: &[String]) -> Result<Value> {
+    let (first, second) = orders.split_at(7);
+    let [first_choice, first_args @ ..] = first else {
+        unreachable!("bounded pair arguments");
+    };
+    let [second_choice, second_args @ ..] = second else {
+        unreachable!("bounded pair arguments");
+    };
+    let first = checked_order(policy.clone(), first_choice.parse()?, first_args)?;
+    let second = checked_order(policy, second_choice.parse()?, second_args)?;
+    let (key, key_load_seconds) = load_proving_key(key)?;
+    let (first, first_seconds) = create_proof(first, &key)?;
+    let (second, second_seconds) = create_proof(second, &key)?;
+    write(output, &[first, second])?;
+    Ok(json!({
+        "proof_count": 2, "proof_bytes": std::fs::metadata(output)?.len(),
+        "key_load_seconds": key_load_seconds,
+        "proof_seconds": [first_seconds, second_seconds],
+    }))
 }
 
 pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
@@ -261,6 +286,10 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
         ("private-prefix-pair-prove", [choice, paths @ ..]) if paths.len() == 16 => {
             let (policy, proof) = paths.split_at(8);
             prove_prefix(Policy::pair(policy)?, choice.parse()?, proof)
+        }
+        ("private-prefix-pair-prove-two", [key, output, paths @ ..]) if paths.len() == 22 => {
+            let (policy, orders) = paths.split_at(8);
+            prove_two(key, output, Policy::pair(policy)?, orders)
         }
         ("private-prefix-order", [template, manifest, pin, dir]) => {
             let template = Template::load(template)?;
@@ -309,6 +338,8 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-pair-shape FIXTURES",
             "private-prefix-pair-setup DIR FIXTURES",
             "private-prefix-pair-prove CHOICE FIXTURES MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
+            "private-prefix-pair-prove-two PK OUTPUT FIXTURES ORDER ORDER",
+            "ORDER = CHOICE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS",
             "FIXTURES = FIRST_SHAPE FIRST_MANIFEST FIRST_PIN FIRST_ADAPTER SECOND_SHAPE SECOND_MANIFEST SECOND_PIN SECOND_ADAPTER"
         ]})),
         _ => Err("use private-prefix-help for private prefix command syntax".into()),

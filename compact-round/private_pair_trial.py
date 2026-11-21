@@ -14,7 +14,7 @@ from benchmark import ROOT, sha, timed
 from private_prefix_trial import COMMAND, SOURCE_PIN, V, private_fixture
 
 
-def run(executable, out, image):
+def run(executable, out, image, compare_key_reuse=False):
     os.umask(0o077)
     os.environ["RAYON_NUM_THREADS"] = "2"
     out.mkdir()
@@ -64,6 +64,22 @@ def run(executable, out, image):
             assert pin == issue["reported"]["metrics"]["order_commitment_sha256"]
             return customer / "order.salt", worker / "output.salt", worker / "round.commitments", pin, issue, seal
 
+        def verify_proof(tag, commitments, proof, order_pin):
+            verify = [
+                "docker", "run", "--rm", "--pull=never", "--network=none", "--read-only",
+                "--cap-drop=all", "--security-opt=no-new-privileges", "--pids-limit=64",
+                "--memory=192m", "--cpus=1", "--user", f"{os.getuid()}:{os.getgid()}",
+                "--mount", f"type=bind,src={commitments},dst=/round.commitments,readonly",
+                "--mount", f"type=bind,src={proof},dst=/round.proof,readonly",
+                "--mount", f"type=bind,src={vk},dst=/verifying.key,readonly",
+                "--mount", f"type=bind,src={executable},dst=/verify-round,readonly",
+                image_id, "/verify-round", COMMAND + "verify", "/round.commitments", order_pin,
+                "/verifying.key", vk_pin, "/round.proof",
+            ]
+            return timed(out, tag, verify)
+
+        batch_orders = []
+        shared = None
         choices = [0, 1]
         secrets.SystemRandom().shuffle(choices)
         for ordinal, choice in enumerate(choices, start=1):
@@ -84,20 +100,10 @@ def run(executable, out, image):
             published.mkdir()
             commitments, proof = published / packet.name, published / "round.proof"
             shutil.copyfile(packet, commitments)
-            produced = call(tag + "-prove", "pair-prove", choice, *fixtures, manifest, sha(manifest),
-                            adapter_path, order_salt, output_salt, commitments, keys / "proving.key", proof)
-            verify = [
-                "docker", "run", "--rm", "--pull=never", "--network=none", "--read-only",
-                "--cap-drop=all", "--security-opt=no-new-privileges", "--pids-limit=64",
-                "--memory=192m", "--cpus=1", "--user", f"{os.getuid()}:{os.getgid()}",
-                "--mount", f"type=bind,src={commitments},dst=/round.commitments,readonly",
-                "--mount", f"type=bind,src={proof},dst=/round.proof,readonly",
-                "--mount", f"type=bind,src={vk},dst=/verifying.key,readonly",
-                "--mount", f"type=bind,src={executable},dst=/verify-round,readonly",
-                image_id, "/verify-round", COMMAND + "verify", "/round.commitments", order_pin,
-                "/verifying.key", vk_pin, "/round.proof",
-            ]
-            arbiter = timed(out, tag + "-arbiter", verify)
+            order_args = [manifest, sha(manifest), adapter_path, order_salt, output_salt, commitments]
+            produced = call(tag + "-prove", "pair-prove", choice, *fixtures, *order_args, keys / "proving.key", proof)
+            batch_orders.append(([choice, *order_args], commitments, order_pin, published))
+            arbiter = verify_proof(tag + "-arbiter", commitments, proof, order_pin)
             opened = call(tag + "-open", "open-output", adapter_path, output_salt, commitments, order_pin)
             captures.append({
                 "order_commitment_sha256": order_pin, "issue": issue, "seal": seal,
@@ -122,6 +128,29 @@ def run(executable, out, image):
                     reject="private prefix circuit rejected the release statement",
                 )
                 assert not refused.exists()
+                invalid_order = [other, manifest, sha(manifest), adapter_path, wrong_order, wrong_output, wrong_packet]
+
+        if compare_key_reuse:
+            packed = work / "pair.proofs"
+            first_args, second_args = (order[0] for order in batch_orders)
+            shared = call("shared-key", "pair-prove-two", keys / "proving.key", packed,
+                          *fixtures, *first_args, *second_args)
+            raw = packed.read_bytes()
+            assert len(raw) == 256 and shared["reported"]["metrics"]["proof_count"] == 2
+            shared["verifications"] = []
+            for ordinal, (_, commitments, pin, folder) in enumerate(batch_orders):
+                proof = folder / "shared-key.proof"
+                proof.write_bytes(raw[ordinal * 128: (ordinal + 1) * 128])
+                accepted = verify_proof(f"shared-key-{ordinal + 1}-arbiter", commitments, proof, pin)
+                assert accepted["reported"]["metrics"]["accepted"]
+                shared["verifications"].append(accepted)
+            refused = work / "refused-pair.proofs"
+            controls["invalid_second_order"] = call(
+                "invalid-second-order", "pair-prove-two", work / "deliberately-absent.key", refused,
+                *fixtures, *first_args, *invalid_order,
+                reject="private prefix circuit rejected the release statement",
+            )
+            assert not refused.exists()
 
         first, second = (public / f"order-{i}" for i in (1, 2))
         controls["cross_order_proof"] = call(
@@ -140,6 +169,8 @@ def run(executable, out, image):
         assert legacy_result["reported"]["metrics"]["accepted"]
     expected = {"verifying.key", "order-1/round.commitments", "order-1/round.proof",
                 "order-2/round.commitments", "order-2/round.proof"}
+    if shared is not None:
+        expected.update({"order-1/shared-key.proof", "order-2/shared-key.proof"})
     assert {p.relative_to(public).as_posix() for p in public.rglob("*") if p.is_file()} == expected
     report = {
         "shape": shape_result, "setup": setup, "orders": captures, "refusals": controls,
@@ -147,6 +178,8 @@ def run(executable, out, image):
         "distinct_templates": len(profiles), "verifying_key_sha256": vk_pin,
         "public_bytes": sum((public / name).stat().st_size for name in expected),
     }
+    if shared is not None:
+        report["shared_proving_key"] = shared
     (public / "report.json").write_text(json.dumps(report, indent=2) + "\n")
 
 
@@ -155,5 +188,6 @@ if __name__ == "__main__":
     parser.add_argument("executable", type=lambda p: Path(p).resolve())
     parser.add_argument("output", type=lambda p: Path(p).resolve())
     parser.add_argument("--image", default="ubuntu:24.04")
+    parser.add_argument("--compare-key-reuse", action="store_true")
     args = parser.parse_args()
-    run(args.executable, args.output, args.image)
+    run(args.executable, args.output, args.image, args.compare_key_reuse)

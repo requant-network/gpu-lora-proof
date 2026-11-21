@@ -60,6 +60,9 @@ The 712-byte figure excludes the verifier binary and the separately
 distributed key and order fingerprints. The retained proof artifacts
 and key contain no saved openings.
 
+The [shared-key follow-up](SHARED_PROVING_KEY.md) measures two proofs
+generated in one process using a single checked key load.
+
 ## Disclosure and reproducibility
 
 The public arbiter knows the pair of admissible templates and the

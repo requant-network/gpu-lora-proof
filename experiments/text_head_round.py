@@ -34,6 +34,12 @@ def read_inputs(corpus, features):
     if len({identity for _, identity, _, _ in texts}) != len(texts) or len({text for _, _, _, text in texts}) != len(texts):
         raise ValueError("text or ID reused")
 
+    records = read_raw_features(texts, features)
+    centers, scales = source_normalization(records["source"])
+    return quantize_features(records, centers, scales)
+
+
+def read_raw_features(texts, features):
     header, *rows = features.read_text(encoding="ascii").splitlines()
     if header != "width\t896":
         raise ValueError("unexpected feature source width")
@@ -46,16 +52,22 @@ def read_inputs(corpus, features):
             raise ValueError("invalid captured hidden row")
         records[split].append((identity, label, values))
 
-    source = list(zip(*(row for _, _, row in records["source"]), strict=True))
-    centers = [statistics.mean(column) for column in source]
-    scales = [statistics.pstdev(column) or 1.0 for column in source]
-    for split, items in records.items():
-        records[split] = [
-            (identity, label, [max(-16, min(16, round(4 * (v - center) / scale)))
-                               for v, center, scale in zip(row, centers, scales, strict=True)])
-            for identity, label, row in items
-        ]
     return records
+
+
+def source_normalization(source_rows):
+    source = list(zip(*(row for _, _, row in source_rows), strict=True))
+    return ([statistics.mean(column) for column in source],
+            [statistics.pstdev(column) or 1.0 for column in source])
+
+
+def quantize_features(records, centers, scales):
+    return {
+        split: [(identity, label, [max(-16, min(16, round(4 * (v - center) / scale)))
+                                  for v, center, scale in zip(row, centers, scales, strict=True)])
+                for identity, label, row in items]
+        for split, items in records.items()
+    }
 
 
 def make_manifest(records, corpus_pin, feature_pin):

@@ -29,8 +29,10 @@ system driver. The pinned runtime list identifies the libraries used
 by the workload. File paths must remain under the verifier's control
 between digest checking and execution. The statement covers this
 feature projection and integer head on the two public corpora.
-Verification of transformer weight updates, independent operator
-identity and replay on other hosts of the same profile remain open.
+The [projection follow-up](TRANSFORMER_PROJECTION.md) tests one
+rank-one weight update inside the transformer. Broader updates,
+independent operator identity and replay on other hosts of the same
+profile remain open.
 
 ## Evidence
 

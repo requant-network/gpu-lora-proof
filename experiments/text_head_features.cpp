@@ -16,8 +16,8 @@ static void require(bool ok, const char *message) {
 }
 
 int main(int argc, char **argv) try {
-    require(argc == 4 || argc == 5, "usage: text_head_features MODEL LIBDIR CORPUS [--pinned-rtx|--cpu]");
-    const std::string profile = argc == 5 ? argv[4] : "";
+    require(argc >= 4 && argc <= 6, "usage: text_head_features MODEL LIBDIR CORPUS [--pinned-rtx|--cpu [ADAPTER]]");
+    const std::string profile = argc >= 5 ? argv[4] : "";
     const bool cpu = profile == "--cpu";
     require(profile.empty() || cpu || profile == "--pinned-rtx", "unknown capture profile");
     std::ifstream corpus(argv[3]);
@@ -54,6 +54,13 @@ int main(int argc, char **argv) try {
     cp.embeddings = true;
     std::unique_ptr<llama_context, decltype(&llama_free)> ctx(llama_init_from_model(model.get(), cp), llama_free);
     require(bool(ctx), "context creation failed");
+    if (argc == 6) {
+        require(cpu, "the projection adapter fixture runs on the CPU profile");
+        auto adapter = llama_adapter_lora_init(model.get(), argv[5]);
+        require(adapter, "adapter load failed");
+        float scale = 1.0f;
+        require(llama_set_adapters_lora(ctx.get(), &adapter, 1, &scale) == 0, "adapter activation failed");
+    }
     auto vocab = llama_model_get_vocab(model.get());
     const int width = llama_model_n_embd_out(model.get());
     require(width == 896, "unexpected frozen embedding width");

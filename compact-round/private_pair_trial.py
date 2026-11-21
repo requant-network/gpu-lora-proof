@@ -161,12 +161,14 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
                 invalid_order = [other, manifest, sha(manifest), adapter_path, wrong_order, wrong_output, wrong_packet]
 
         if compare_key_reuse:
-            packed = work / "pair.proofs"
-            first_args, second_args = (order[0] for order in batch_orders)
-            shared = call("shared-key", "pair-prove-two", keys / "proving.key", packed,
-                          *fixtures, *first_args, *second_args)
+            packed = work / "batch.proofs"
+            count = len(batch_orders)
+            batch_command = f"{policy}-prove-{'three' if three_templates else 'two'}"
+            orders = [argument for item in batch_orders for argument in item[0]]
+            shared = call("shared-key", batch_command, keys / "proving.key", packed, *fixtures, *orders)
             raw = packed.read_bytes()
-            assert len(raw) == 256 and shared["reported"]["metrics"]["proof_count"] == 2
+            assert len(raw) == 128 * count
+            assert shared["reported"]["metrics"]["proof_count"] == count
             shared["verifications"] = []
             for ordinal, (_, commitments, pin, folder) in enumerate(batch_orders):
                 proof = folder / "shared-key.proof"
@@ -174,10 +176,12 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
                 accepted = verify_proof(f"shared-key-{ordinal + 1}-arbiter", commitments, proof, pin)
                 assert accepted["reported"]["metrics"]["accepted"]
                 shared["verifications"].append(accepted)
-            refused = work / "refused-pair.proofs"
-            controls["invalid_second_order"] = call(
-                "invalid-second-order", "pair-prove-two", work / "deliberately-absent.key", refused,
-                *fixtures, *first_args, *invalid_order,
+            refused = work / "refused-batch.proofs"
+            valid_prefix = orders[:-len(invalid_order)]
+            control = "invalid_third_order" if three_templates else "invalid_second_order"
+            controls[control] = call(
+                control.replace("_", "-"), batch_command, work / "deliberately-absent.key", refused,
+                *fixtures, *valid_prefix, *invalid_order,
                 reject="private prefix circuit rejected the release statement",
             )
             assert not refused.exists()
@@ -215,7 +219,7 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
     if three_templates:
         expected.add("third-shape.json")
     if shared is not None:
-        expected.update({"order-1/shared-key.proof", "order-2/shared-key.proof"})
+        expected.update(f"order-{i}/shared-key.proof" for i in range(1, len(profiles) + 1))
     assert {p.relative_to(public).as_posix() for p in public.rglob("*") if p.is_file()} == expected
     report = {
         "shape": shape_result, "setup": setup, "orders": captures, "refusals": controls,
@@ -239,8 +243,7 @@ if __name__ == "__main__":
     parser.add_argument("executable", type=lambda p: Path(p).resolve())
     parser.add_argument("output", type=lambda p: Path(p).resolve())
     parser.add_argument("--image", default="ubuntu:24.04")
-    modes = parser.add_mutually_exclusive_group()
-    modes.add_argument("--compare-key-reuse", action="store_true")
-    modes.add_argument("--three-templates", action="store_true")
+    parser.add_argument("--compare-key-reuse", action="store_true")
+    parser.add_argument("--three-templates", action="store_true")
     args = parser.parse_args()
     run(args.executable, args.output, args.image, args.compare_key_reuse, args.three_templates)

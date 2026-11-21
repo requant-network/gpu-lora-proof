@@ -32,3 +32,7 @@ results/private-template-triple/**/*.json text eol=lf
 results/private-template-triple/**/*.commitments binary
 results/private-template-triple/**/*.key binary
 results/private-template-triple/**/*.proof binary
+results/shared-triple-proving-key/**/*.json text eol=lf
+results/shared-triple-proving-key/**/*.commitments binary
+results/shared-triple-proving-key/**/*.key binary
+results/shared-triple-proving-key/**/*.proof binary

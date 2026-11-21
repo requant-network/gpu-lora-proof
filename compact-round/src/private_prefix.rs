@@ -1,4 +1,5 @@
-use ark_bn254::Fr;
+use ark_bn254::{Bn254, Fr};
+use ark_groth16::Proof;
 use ark_ff::{PrimeField, UniformRand};
 use ark_r1cs_std::eq::EqGadget;
 use ark_r1cs_std::fields::fp::FpVar;
@@ -287,24 +288,25 @@ fn prove_prefix(policy: Policy, choice: usize, args: &[String]) -> Result<Value>
     prove(checked_order(policy, choice, order)?, key, proof)
 }
 
-fn prove_two(key: &str, output: &str, policy: Policy, orders: &[String]) -> Result<Value> {
-    let (first, second) = orders.split_at(7);
-    let [first_choice, first_args @ ..] = first else {
-        unreachable!("bounded pair arguments");
-    };
-    let [second_choice, second_args @ ..] = second else {
-        unreachable!("bounded pair arguments");
-    };
-    let first = checked_order(policy.clone(), first_choice.parse()?, first_args)?;
-    let second = checked_order(policy, second_choice.parse()?, second_args)?;
+fn prove_batch<const N: usize>(
+    key: &str, output: &str, policy: Policy, orders: &[String],
+) -> Result<Value> {
+    let circuits = orders.chunks_exact(7).map(|order| {
+        checked_order(policy.clone(), order[0].parse()?, &order[1..])
+    }).collect::<Result<Vec<_>>>()?;
     let (key, key_load_seconds) = load_proving_key(key)?;
-    let (first, first_seconds) = create_proof(first, &key)?;
-    let (second, second_seconds) = create_proof(second, &key)?;
-    write(output, &[first, second])?;
+    let mut proofs = Vec::with_capacity(N);
+    let mut proof_seconds = Vec::with_capacity(N);
+    for circuit in circuits {
+        let (proof, elapsed) = create_proof(circuit, &key)?;
+        proofs.push(proof);
+        proof_seconds.push(elapsed);
+    }
+    let proofs: [Proof<Bn254>; N] = proofs.try_into().map_err(|_| "batch proof count mismatch")?;
+    write(output, &proofs)?;
     Ok(json!({
-        "proof_count": 2, "proof_bytes": std::fs::metadata(output)?.len(),
-        "key_load_seconds": key_load_seconds,
-        "proof_seconds": [first_seconds, second_seconds],
+        "proof_count": N, "proof_bytes": std::fs::metadata(output)?.len(),
+        "key_load_seconds": key_load_seconds, "proof_seconds": proof_seconds,
     }))
 }
 
@@ -344,7 +346,11 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
         }
         ("private-prefix-pair-prove-two", [key, output, paths @ ..]) if paths.len() == 22 => {
             let (policy, orders) = paths.split_at(8);
-            prove_two(key, output, Policy::pair(policy)?, orders)
+            prove_batch::<2>(key, output, Policy::pair(policy)?, orders)
+        }
+        ("private-prefix-triple-prove-three", [key, output, paths @ ..]) if paths.len() == 33 => {
+            let (policy, orders) = paths.split_at(12);
+            prove_batch::<3>(key, output, Policy::triple(policy)?, orders)
         }
         ("private-prefix-order", [template, manifest, pin, dir]) => {
             let template = Template::load(template)?;
@@ -406,6 +412,7 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-triple-shape FIXTURE FIXTURE FIXTURE",
             "private-prefix-triple-setup DIR FIXTURE FIXTURE FIXTURE",
             "private-prefix-triple-prove CHOICE FIXTURE FIXTURE FIXTURE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
+            "private-prefix-triple-prove-three PK OUTPUT FIXTURE FIXTURE FIXTURE ORDER ORDER ORDER",
             "FIXTURE = SHAPE MANIFEST PIN ADAPTER",
             "ORDER = CHOICE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS",
             "FIXTURES = FIRST_SHAPE FIRST_MANIFEST FIRST_PIN FIRST_ADAPTER SECOND_SHAPE SECOND_MANIFEST SECOND_PIN SECOND_ADAPTER"

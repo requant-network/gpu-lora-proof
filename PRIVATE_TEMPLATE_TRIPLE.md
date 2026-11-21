@@ -74,6 +74,9 @@ arbitrary templates and secrets hidden from the worker remain outside
 this experiment. The added measured cost falls mainly on proving-key
 handling and on proving.
 
+The [shared proving-key follow-up](SHARED_TRIPLE_PROVING_KEY.md)
+compares the same three orders with one checked key load.
+
 ## Reproduce
 
 Use the pinned dependencies and a preloaded Ubuntu 24.04 Docker image.

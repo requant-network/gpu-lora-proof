@@ -1,0 +1,14 @@
+   Compiling compact-lora-round v0.1.0 (/data2/worknet-ci/research/lora-triple-reuse.IXAJ3b2L/source/compact-round)
+    Finished `release` profile [optimized] target(s) in 2.49s
+     Running unittests src/main.rs (compact-round/target/release/deps/compact_lora_round-cd2c73749399e057)
+
+running 7 tests
+test prefix::tests::unsigned_gate_rejects_a_negative_difference ... ok
+test prefix::tests::picks_first_prefix_with_minimum_loss ... ok
+test circuit::tests::signed_gradient_clips_on_both_boundaries ... ok
+test private::tests::poseidon_constants_match_the_published_width_three_table ... ok
+test private::tests::wrong_commitment_leaves_the_circuit_unsatisfied ... ok
+test circuit::tests::sign_step_clips_and_preserves_zero_gradient ... ok
+test private::tests::private_ranges_and_heldout_separation_are_constrained ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s

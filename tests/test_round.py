@@ -27,6 +27,18 @@ class TestRound(unittest.TestCase):
         targets[0] = 4
         self.assertEqual(V.choose_prefix(weights, slots, adapter, "B", updated, totals), adapter)
 
+    def test_accuracy_floor_is_versioned_and_needs_class_labels(self):
+        manifest, _ = experiment.fixture(20261121)
+        manifest["min_heldout_correct"] = V.EVAL_ROWS
+        with self.assertRaisesRegex(V.Reject, "correctness floor"):
+            V.validate_manifest(manifest)
+        manifest["schema"] = V.PREFIX_SCHEMA
+        with self.assertRaisesRegex(V.Reject, "unique maximum"):
+            V.validate_manifest(manifest)
+        manifest["heldout"]["target"] = ([0, 1] + [0] * (V.D - 2)) * V.EVAL_ROWS
+        V.validate_manifest(manifest)
+        self.assertEqual(V.top1([0] * V.D + manifest["heldout"]["target"][:V.D]), [0, 1])
+
     def test_cli_requires_trusted_manifest_and_complete_round(self):
         with tempfile.TemporaryDirectory() as scratch:
             root = Path(scratch)

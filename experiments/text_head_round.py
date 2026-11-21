@@ -124,21 +124,23 @@ def phase_diagnostics(manifest, pin, bundle, records, verified_adapter):
     return result
 
 
-def check_quality_gate(manifest, output, baseline_sse, candidate_sha, should_accept):
+def check_quality_gate(manifest, output, limits, candidate_sha, refusal=None):
     output.mkdir()
     manifest_path, bundle_path, adapter_path = (output / name for name in ("manifest.json", "bundle.json", "adapter.json"))
-    V.save_json(manifest_path, {**manifest, "max_heldout_sse": baseline_sse})
+    V.save_json(manifest_path, {**manifest, **limits})
     pin = sha(manifest_path)
     experiment.assemble(manifest_path, bundle_path, lib=None)
-    report = {"manifest_sha256": pin, "bundle_sha256": sha(bundle_path), "sse_ceiling": baseline_sse}
+    report = {"manifest_sha256": pin, "bundle_sha256": sha(bundle_path), "sse_ceiling": limits["max_heldout_sse"]}
+    if "min_heldout_correct" in limits:
+        report["min_heldout_correct"] = limits["min_heldout_correct"]
     try:
         experiment.verify_cli(manifest_path, pin, bundle_path, adapter_path)
     except subprocess.CalledProcessError as error:
         reason = error.stderr.decode("ascii").strip()
-        if should_accept or error.returncode != 1 or reason != "NO: held-out quality gate failed" or adapter_path.exists():
+        if refusal is None or error.returncode != 1 or reason != f"NO: {refusal}" or adapter_path.exists():
             raise
         return {**report, "exit_code": error.returncode, "reason": reason, "adapter_written": False}
-    if not should_accept or sha(adapter_path) != candidate_sha:
+    if refusal is not None or sha(adapter_path) != candidate_sha:
         raise RuntimeError("quality gate released an unexpected adapter")
     return {**report, "exit_code": 0, "adapter_written": True, "adapter_sha256": candidate_sha}
 
@@ -207,10 +209,21 @@ def main():
     if report["phase_diagnostics"]["after_A"]["heldout"]["topic_scores_sse"] != verified["final_sse"]:
         raise RuntimeError("unexpected nonzero scores outside the two topic columns")
     if args.prefix or final_sse > initial_sse:
-        report["quality_gate_control"] = check_quality_gate(manifest, args.output / "quality-gate", initial_sse,
-                                                           report["adapter_sha256"], final_sse <= initial_sse)
+        refusal = "held-out quality gate failed" if final_sse > initial_sse else None
+        report["quality_gate_control"] = check_quality_gate(manifest, args.output / "quality-gate",
+                                                           {"max_heldout_sse": initial_sse},
+                                                           report["adapter_sha256"], refusal)
     if args.prefix:
         report["full_step_control"] = check_full_step_rejection(manifest, pin, bundle)
+        if initial_sse > 0:
+            refusal = None
+            if final_sse >= initial_sse:
+                refusal = "held-out quality gate failed"
+            elif after < before:
+                refusal = "held-out correctness gate failed"
+            limits = {"max_heldout_sse": initial_sse - 1, "min_heldout_correct": before}
+            report["combined_quality_gate_control"] = check_quality_gate(
+                manifest, args.output / "combined-gate", limits, report["adapter_sha256"], refusal)
     V.save_json(args.output / "report.json", report)
 
 

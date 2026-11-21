@@ -88,6 +88,14 @@ def validate_manifest(m):
     heldout = {tuple(x[i:i+D]) for i in range(0, len(x), D)}
     if len(heldout) != EVAL_ROWS or heldout & trained:
         raise Reject("evaluation inputs repeat or overlap training")
+    if "min_heldout_correct" in m:
+        floor = m["min_heldout_correct"]
+        if m["schema"] != PREFIX_SCHEMA or type(floor) is not int or not 0 <= floor <= EVAL_ROWS:
+            raise Reject("invalid held-out correctness floor")
+        for i in range(0, len(y), D):
+            row = y[i:i+D]
+            if row.count(max(row)) != 1:
+                raise Reject("held-out classification target needs a unique maximum")
 
 
 def predict(weights, adapter, features):
@@ -110,6 +118,14 @@ def residual(predicted, target):
 
 def squared_error(predicted, target):
     return sum((y - t)**2 for y, t in zip(predicted, target, strict=True))
+
+
+def top1(values):
+    winners = []
+    for start in range(0, len(values), D):
+        row = values[start:start + D]
+        winners.append(max(range(D), key=row.__getitem__))
+    return winners
 
 
 def slot_seed(manifest_pin, phase, worker, schema=SCHEMA):
@@ -230,6 +246,10 @@ def verify_round(manifest, manifest_pin, bundle):
     final_sse = squared_error(final, targets)
     if final_sse > manifest["max_heldout_sse"]:
         raise Reject("held-out quality gate failed")
+    if "min_heldout_correct" in manifest:
+        correct = sum(actual == wanted for actual, wanted in zip(top1(final), top1(targets), strict=True))
+        if correct < manifest["min_heldout_correct"]:
+            raise Reject("held-out correctness gate failed")
     return adapter, {"merkle_root": bundle["merkle_root"], "final_adapter": bundle["final_adapter"],
                      "initial_sse": initial_sse, "final_sse": final_sse, "heldout_rows": EVAL_ROWS}
 

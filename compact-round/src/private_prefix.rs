@@ -16,7 +16,7 @@ use crate::private::{
     ORDER_FIELDS,
 };
 use crate::statement::{read, sha256, Adapter, Manifest, Result, Statement, PUBLIC};
-use crate::{create_proof, decode, load_proving_key, prove, setup, verify, write};
+use crate::{check_proof, create_proof, decode, load_proving_key, prepare_key, prove, setup, verify, write};
 
 const ORDER_TAG: u64 = u64::from_be_bytes(*b"lora-in2");
 const OUTPUT_TAG: u64 = u64::from_be_bytes(*b"loraout2");
@@ -320,6 +320,14 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             let public = pinned_commitments(commitments, order_pin)?;
             verify(&public, vk, pin, proof)
         }
+        ("private-prefix-verify-two", [vk, pin, first, first_pin, first_proof, second, second_pin, second_proof]) => {
+            let first = pinned_commitments(first, first_pin)?;
+            let second = pinned_commitments(second, second_pin)?;
+            let prepared = prepare_key(vk, pin)?;
+            check_proof(&first, &prepared, &decode(&read(first_proof, 1024)?)?)?;
+            check_proof(&second, &prepared, &decode(&read(second_proof, 1024)?)?)?;
+            Ok(json!({"accepted": true, "proof_count": 2}))
+        }
         ("private-prefix-open-output", [adapter, output_salt, commitments, order_pin]) => {
             let public = pinned_commitments(commitments, order_pin)?;
             let adapter: Vec<_> = Adapter::load(adapter)?.values().collect();
@@ -334,6 +342,7 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-order SHAPE MANIFEST PIN DIR", "private-prefix-output ORDER ADAPTER DIR",
             "private-prefix-prove SHAPE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
             "private-prefix-verify COMMITMENTS ORDER_PIN VK VK_PIN PROOF",
+            "private-prefix-verify-two VK VK_PIN FIRST_COMMITMENTS FIRST_ORDER_PIN FIRST_PROOF SECOND_COMMITMENTS SECOND_ORDER_PIN SECOND_PROOF",
             "private-prefix-open-output ADAPTER OUTPUT_SALT COMMITMENTS ORDER_PIN",
             "private-prefix-pair-shape FIXTURES",
             "private-prefix-pair-setup DIR FIXTURES",

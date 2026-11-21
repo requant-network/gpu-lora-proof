@@ -5,7 +5,7 @@ mod private_prefix;
 mod statement;
 
 use ark_bn254::{Bn254, Fr};
-use ark_groth16::{prepare_verifying_key, Groth16, Proof, ProvingKey, VerifyingKey};
+use ark_groth16::{prepare_verifying_key, Groth16, PreparedVerifyingKey, Proof, ProvingKey, VerifyingKey};
 use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystem, SynthesisMode};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use circuit::RoundCircuit;
@@ -82,6 +82,26 @@ fn prove(
     )
 }
 
+fn prepare_key(key_path: &str, key_pin: &str) -> Result<PreparedVerifyingKey<Bn254>> {
+    let key = read(key_path, 1 << 20)?;
+    if sha256(&key) != key_pin {
+        return Err("verifying key SHA-256 mismatch".into());
+    }
+    let vk: VerifyingKey<Bn254> = decode(&key)?;
+    Ok(prepare_verifying_key(&vk))
+}
+
+fn check_proof(
+    public: &[Fr],
+    prepared: &PreparedVerifyingKey<Bn254>,
+    proof: &Proof<Bn254>,
+) -> Result<()> {
+    if !Groth16::<Bn254>::verify_proof(prepared, proof, public)? {
+        return Err("Groth16 rejected the public round and adapter".into());
+    }
+    Ok(())
+}
+
 fn verify(
     public: &[Fr],
     key_path: &str,
@@ -89,18 +109,11 @@ fn verify(
     proof_path: &str,
 ) -> Result<serde_json::Value> {
     let load = Instant::now();
-    let key = read(key_path, 1 << 20)?;
-    if sha256(&key) != key_pin {
-        return Err("verifying key SHA-256 mismatch".into());
-    }
-    let vk: VerifyingKey<Bn254> = decode(&key)?;
+    let prepared = prepare_key(key_path, key_pin)?;
     let proof: Proof<Bn254> = decode(&read(proof_path, 1024)?)?;
-    let prepared = prepare_verifying_key(&vk);
     let key_prepare_seconds = load.elapsed().as_secs_f64();
     let check = Instant::now();
-    if !Groth16::<Bn254>::verify_proof(&prepared, &proof, public)? {
-        return Err("Groth16 rejected the public round and adapter".into());
-    }
+    check_proof(public, &prepared, &proof)?;
     Ok(
         json!({"accepted": true, "public_inputs": public.len(), "key_and_proof_prepare_seconds": key_prepare_seconds,
               "pairing_and_public_inputs_seconds": check.elapsed().as_secs_f64()}),

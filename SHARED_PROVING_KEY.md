@@ -52,6 +52,8 @@ remain separate scheduling questions.
 The retained package includes both comparison paths. A delivery under
 either one still needs 192 bytes per order with a cached verifier key.
 
+The [shared verifier trial](SHARED_VERIFYING_KEY.md) reused the prepared verification key for the same proof pair and measured verifier wall time.
+
 ## Reproduce
 
 Use the locked Rust dependencies and the preloaded Ubuntu 24.04 image.

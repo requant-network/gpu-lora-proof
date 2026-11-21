@@ -8,6 +8,9 @@ cheapest check for these public inputs. [Raw measurements](results/compact-round
 
 The later [private-round experiment](PRIVATE_ROUND.md) evaluates a different
 disclosure contract with the order and adapter behind commitments.
+The [compact v2 follow-up](COMPACT_PREFIX.md) proves the accepted
+real Qwen CPU and RTX head transitions, including prefix selection
+and the held-out accuracy gate.
 
 ## Assertion and trust
 

@@ -12,3 +12,6 @@ results/text-head-origin/** text eol=lf
 results/transformer-projection/*.json text eol=lf
 results/transformer-projection/*.gguf binary
 results/cross-host-replay/** text eol=lf
+results/compact-prefix/**/*.json text eol=lf
+results/compact-prefix/**/*.key binary
+results/compact-prefix/**/*.proof binary

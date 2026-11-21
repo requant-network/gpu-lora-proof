@@ -1,0 +1,127 @@
+{
+  "environment": {
+    "cpu": "AMD Ryzen 5 5500",
+    "rayon_threads": 2,
+    "rust": "1.98.1",
+    "python": "3.12.3"
+  },
+  "shape": {
+    "metrics": {
+      "constraints": 125749,
+      "public_inputs": 3587,
+      "witnesses": 123138
+    },
+    "wall_seconds": 0.159151228
+  },
+  "constraint_check": {
+    "metrics": {
+      "accepted": true,
+      "constraints": 125749
+    },
+    "wall_seconds": 0.279956495
+  },
+  "setup": {
+    "metrics": {
+      "proving_key_bytes": 24470768,
+      "verifying_key_bytes": 115048,
+      "verifying_key_sha256": "082d83afa36e7d5867f93bc6e5d98a86bad2ac5c742cf0b84b584245b84970cd"
+    },
+    "wall_seconds": 3.69580948,
+    "process_wall_seconds": 3.72,
+    "peak_rss_kib": 340636
+  },
+  "prove": {
+    "metrics": {
+      "key_load_seconds": 12.754814464,
+      "proof_bytes": 128,
+      "prove_seconds": 1.404676958
+    },
+    "wall_seconds": 14.428443987,
+    "process_wall_seconds": 14.45,
+    "peak_rss_kib": 440684
+  },
+  "compact_verify": [
+    {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.026971036,
+        "pairing_and_public_inputs_seconds": 0.048994945,
+        "public_inputs": 3587
+      },
+      "wall_seconds": 0.076467035,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 4864
+    },
+    {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.026987449,
+        "pairing_and_public_inputs_seconds": 0.049243516,
+        "public_inputs": 3587
+      },
+      "wall_seconds": 0.076698286,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 4608
+    },
+    {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.026866341,
+        "pairing_and_public_inputs_seconds": 0.049026933,
+        "public_inputs": 3587
+      },
+      "wall_seconds": 0.07638909,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 4864
+    }
+  ],
+  "transparent_verify": [
+    {
+      "merkle_root": "dffd3026c2c409f989d44093a934d4b4bc8be6f99683412f6aebf1c319fd08fa",
+      "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+      "initial_sse": 114328,
+      "final_sse": 72888,
+      "heldout_rows": 16,
+      "verify_wall_seconds": 0.041503293003188446,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 19040
+    },
+    {
+      "merkle_root": "dffd3026c2c409f989d44093a934d4b4bc8be6f99683412f6aebf1c319fd08fa",
+      "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+      "initial_sse": 114328,
+      "final_sse": 72888,
+      "heldout_rows": 16,
+      "verify_wall_seconds": 0.04081212598248385,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 19296
+    },
+    {
+      "merkle_root": "dffd3026c2c409f989d44093a934d4b4bc8be6f99683412f6aebf1c319fd08fa",
+      "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+      "initial_sse": 114328,
+      "final_sse": 72888,
+      "heldout_rows": 16,
+      "verify_wall_seconds": 0.04096584999933839,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 19200
+    }
+  ],
+  "sizes_bytes": {
+    "manifest": 7679,
+    "bundle": 203427,
+    "adapter": 527,
+    "proof": 128,
+    "verification_key": 115048,
+    "transparent": 211106,
+    "compact_cached": 8334,
+    "compact_first": 123382
+  },
+  "cross_profile_refusal": "NO: Groth16 rejected the public round and adapter",
+  "verification_directory": [
+    "adapter.json",
+    "cpu-round.proof",
+    "manifest.json",
+    "verifying.key"
+  ]
+}

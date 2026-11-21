@@ -16,11 +16,11 @@ type Result<T> = std::result::Result<T, SynthesisError>;
 
 pub struct RoundCircuit(pub Option<Vec<Fr>>);
 
-fn constant(v: i64) -> Var {
+pub(crate) fn constant(v: i64) -> Var {
     Var::Constant(scalar(v))
 }
 
-fn sum(values: impl Iterator<Item = Var>) -> Var {
+pub(crate) fn sum(values: impl Iterator<Item = Var>) -> Var {
     values.fold(constant(0), |total, value| total + value)
 }
 
@@ -51,14 +51,14 @@ fn signed(sign: &Bit, mag: &Var) -> Result<Var> {
     Var::conditionally_select(sign, &mag.negate()?, mag)
 }
 
-fn residual(predicted: &Var, target: &Var) -> Result<Var> {
+pub(crate) fn residual(predicted: &Var, target: &Var) -> Result<Var> {
     let (sign, bits, mag) = magnitude(&(predicted - target), 32)?;
     let saturated = Bit::kary_or(&bits[7..])?;
     let clipped = Var::conditionally_select(&saturated, &constant(127), &mag)?;
     signed(&sign, &clipped)
 }
 
-fn update(old: &Var, gradient: &Var) -> Result<Var> {
+pub(crate) fn update(old: &Var, gradient: &Var) -> Result<Var> {
     let (negative, bits, _) = magnitude(gradient, 32)?;
     let nonzero = Var::from(Bit::kary_or(&bits)?);
     let new = old - signed(&negative, &nonzero)?;
@@ -73,7 +73,7 @@ fn update(old: &Var, gradient: &Var) -> Result<Var> {
     )
 }
 
-fn forward(x: &[Var], w: &[Var], a: &[Var], b: &[Var]) -> (Vec<Var>, Vec<Var>) {
+pub(crate) fn forward(x: &[Var], w: &[Var], a: &[Var], b: &[Var]) -> (Vec<Var>, Vec<Var>) {
     let u: Vec<_> = a
         .chunks_exact(D)
         .map(|row| sum(x.iter().zip(row).map(|(x, a)| x * a)))

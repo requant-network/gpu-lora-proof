@@ -15,6 +15,7 @@ pub const SCALE: i64 = 8;
 pub const ADAPTER: usize = D * R;
 pub const PUBLIC: usize = 2 + D * D + 4 * ADAPTER + 8 * BATCH * D + 2 * HELDOUT * D;
 const SCHEMA: &str = "gpu-lora-round/v1";
+const PREFIX_SCHEMA: &str = "gpu-lora-round/v2";
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -58,6 +59,14 @@ pub(crate) struct Manifest {
     phases: [Phase; 2],
     heldout: Batch,
     max_heldout_sse: u64,
+    #[serde(default, deserialize_with = "read_floor")]
+    min_heldout_correct: Option<u64>,
+}
+
+fn read_floor<'de, T: serde::Deserializer<'de>>(
+    reader: T,
+) -> std::result::Result<Option<u64>, T::Error> {
+    Ok(Some(u64::deserialize(reader)?))
 }
 
 pub struct Statement {
@@ -112,19 +121,25 @@ impl Adapter {
 
 impl Manifest {
     pub(crate) fn load(path: &str, pin: &str) -> Result<(Self, [u8; 32])> {
+        Self::load_schema(path, pin, SCHEMA)
+    }
+
+    fn load_schema(path: &str, pin: &str, schema: &str) -> Result<(Self, [u8; 32])> {
         let bytes = read(path, 64 << 10)?;
         if sha256(&bytes) != pin {
             return Err("manifest SHA-256 mismatch".into());
         }
         let manifest: Manifest = serde_json::from_slice(&bytes)?;
-        if manifest.schema != SCHEMA
+        if manifest.schema != schema
             || manifest.id.is_empty()
             || manifest.id.len() > 128
-            || manifest.max_heldout_sse != 0
+            || (schema == SCHEMA
+                && (manifest.max_heldout_sse != 0 || manifest.min_heldout_correct.is_some()))
+            || (schema == PREFIX_SCHEMA && manifest.min_heldout_correct != Some(HELDOUT as u64))
             || !bounded(&manifest.w, D * D, 1024)
             || !manifest.initial.valid()
         {
-            return Err("invalid fixed-round statement or nonzero held-out threshold".into());
+            return Err("invalid round statement or unsupported held-out gate".into());
         }
         let mut train = HashSet::new();
         for (phase, expected) in manifest.phases.iter().zip(["B", "A"]) {
@@ -180,6 +195,22 @@ impl Statement {
             pin,
             output,
         })
+    }
+
+    pub fn load_prefix(manifest_path: &str, pin: &str, output_path: &str) -> Result<Self> {
+        let (manifest, pin) = Manifest::load_schema(manifest_path, pin, PREFIX_SCHEMA)?;
+        let output = Adapter::load(output_path)?;
+        Ok(Self {
+            manifest,
+            pin,
+            output,
+        })
+    }
+
+    pub fn prefix_inputs(&self) -> Vec<Fr> {
+        let mut fields = self.public_inputs();
+        fields.push(Fr::from(self.manifest.max_heldout_sse));
+        fields
     }
 
     pub fn public_inputs(&self) -> Vec<Fr> {

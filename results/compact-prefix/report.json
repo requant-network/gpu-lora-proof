@@ -1,0 +1,136 @@
+{
+  "environment": {
+    "cpu": "AMD Ryzen 5 5500",
+    "rayon_threads": 2,
+    "rust": "1.98.1",
+    "python": "3.12.3"
+  },
+  "shape": {
+    "metrics": {
+      "constraints": 147125,
+      "public_inputs": 3587,
+      "witnesses": 144450
+    },
+    "wall_seconds": 0.184672001
+  },
+  "constraint_check": {
+    "metrics": {
+      "accepted": true,
+      "constraints": 147125
+    },
+    "wall_seconds": 0.310742616
+  },
+  "setup": {
+    "metrics": {
+      "proving_key_bytes": 32074992,
+      "verifying_key_bytes": 115048,
+      "verifying_key_sha256": "ef6ff88719ce916f2fc86a70e79de8e90470d4b0e534c5782ae9dbde8d8dd38d"
+    },
+    "wall_seconds": 4.851443938,
+    "process_wall_seconds": 4.89,
+    "peak_rss_kib": 520892
+  },
+  "prove": {
+    "metrics": {
+      "key_load_seconds": 15.238912981,
+      "proof_bytes": 128,
+      "prove_seconds": 2.392700708
+    },
+    "wall_seconds": 17.940566015,
+    "process_wall_seconds": 17.98,
+    "peak_rss_kib": 647616
+  },
+  "compact_verify": [
+    {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.026896099,
+        "pairing_and_public_inputs_seconds": 0.048359728,
+        "public_inputs": 3587
+      },
+      "wall_seconds": 0.07568194,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 4736
+    },
+    {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.026832961,
+        "pairing_and_public_inputs_seconds": 0.048388993,
+        "public_inputs": 3587
+      },
+      "wall_seconds": 0.075636961,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 4864
+    },
+    {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.026968176,
+        "pairing_and_public_inputs_seconds": 0.048379913,
+        "public_inputs": 3587
+      },
+      "wall_seconds": 0.075818903,
+      "process_wall_seconds": 0.07,
+      "peak_rss_kib": 4992
+    }
+  ],
+  "transparent_verify": [
+    {
+      "merkle_root": "30dbb31e8382c0f10f6dccc8874913750ff6ad87e2129c4a6b48cb59544b2007",
+      "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+      "initial_sse": 130474,
+      "final_sse": 80010,
+      "heldout_rows": 16,
+      "verify_wall_seconds": 0.06493182500707917,
+      "process_wall_seconds": 0.1,
+      "peak_rss_kib": 19084
+    },
+    {
+      "merkle_root": "30dbb31e8382c0f10f6dccc8874913750ff6ad87e2129c4a6b48cb59544b2007",
+      "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+      "initial_sse": 130474,
+      "final_sse": 80010,
+      "heldout_rows": 16,
+      "verify_wall_seconds": 0.06463338600588031,
+      "process_wall_seconds": 0.1,
+      "peak_rss_kib": 19252
+    },
+    {
+      "merkle_root": "30dbb31e8382c0f10f6dccc8874913750ff6ad87e2129c4a6b48cb59544b2007",
+      "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+      "initial_sse": 130474,
+      "final_sse": 80010,
+      "heldout_rows": 16,
+      "verify_wall_seconds": 0.06514037799206562,
+      "process_wall_seconds": 0.1,
+      "peak_rss_kib": 19256
+    }
+  ],
+  "sizes_bytes": {
+    "manifest": 7669,
+    "bundle": 203421,
+    "adapter": 528,
+    "proof": 128,
+    "verification_key": 115048,
+    "transparent": 211090,
+    "compact_cached": 8325,
+    "compact_first": 123373
+  },
+  "controls": [
+    "omitted-coordinate NO: prefix circuit rejected the statement",
+    "wrong-order NO: prefix circuit rejected the statement",
+    "stricter-error NO: prefix circuit rejected the statement",
+    "wrong-top1 NO: prefix circuit rejected the statement",
+    "changed-adapter NO: Groth16 rejected the public round and adapter",
+    "changed-manifest-identity NO: Groth16 rejected the public round and adapter",
+    "trailing-proof NO: extra bytes after canonical encoding",
+    "wrong-verification-key-pin NO: verifying key SHA-256 mismatch"
+  ],
+  "verification_directory": [
+    "adapter.json",
+    "manifest.json",
+    "round.proof",
+    "verifying.key"
+  ]
+}

@@ -1,4 +1,5 @@
 mod circuit;
+mod prefix;
 mod private;
 mod statement;
 
@@ -7,6 +8,7 @@ use ark_groth16::{prepare_verifying_key, Groth16, Proof, ProvingKey, VerifyingKe
 use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystem, SynthesisMode};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use circuit::RoundCircuit;
+use prefix::{PrefixCircuit, Shape};
 use rand::rngs::OsRng;
 use serde_json::json;
 use statement::{read, sha256, Result, Statement};
@@ -50,6 +52,49 @@ fn setup(directory: &str, circuit: impl ConstraintSynthesizer<Fr>) -> Result<ser
     )
 }
 
+fn prove(
+    circuit: impl ConstraintSynthesizer<Fr>,
+    key_path: &str,
+    output: &str,
+) -> Result<serde_json::Value> {
+    let load = Instant::now();
+    let key: ProvingKey<Bn254> = decode(&read(key_path, KEY_LIMIT)?)?;
+    let key_seconds = load.elapsed().as_secs_f64();
+    let proof_start = Instant::now();
+    let proof = Groth16::<Bn254>::create_random_proof_with_reduction(circuit, &key, &mut OsRng)?;
+    let proof_seconds = proof_start.elapsed().as_secs_f64();
+    write(output, &proof)?;
+    Ok(
+        json!({"proof_bytes": fs::metadata(output)?.len(), "key_load_seconds": key_seconds,
+              "prove_seconds": proof_seconds}),
+    )
+}
+
+fn verify(
+    public: &[Fr],
+    key_path: &str,
+    key_pin: &str,
+    proof_path: &str,
+) -> Result<serde_json::Value> {
+    let load = Instant::now();
+    let key = read(key_path, 1 << 20)?;
+    if sha256(&key) != key_pin {
+        return Err("verifying key SHA-256 mismatch".into());
+    }
+    let vk: VerifyingKey<Bn254> = decode(&key)?;
+    let proof: Proof<Bn254> = decode(&read(proof_path, 1024)?)?;
+    let prepared = prepare_verifying_key(&vk);
+    let key_prepare_seconds = load.elapsed().as_secs_f64();
+    let check = Instant::now();
+    if !Groth16::<Bn254>::verify_proof(&prepared, &proof, public)? {
+        return Err("Groth16 rejected the public round and adapter".into());
+    }
+    Ok(
+        json!({"accepted": true, "public_inputs": public.len(), "key_and_proof_prepare_seconds": key_prepare_seconds,
+              "pairing_and_public_inputs_seconds": check.elapsed().as_secs_f64()}),
+    )
+}
+
 fn run(args: &[String]) -> Result<()> {
     let started = Instant::now();
     let report = match args {
@@ -67,46 +112,59 @@ fn run(args: &[String]) -> Result<()> {
         }
         [command, manifest, pin, adapter, proving_key, output] if command == "prove" => {
             let statement = Statement::load(manifest, pin, adapter)?;
-            // Reject an incorrect public adapter before generating an artifact.
             statement.replay()?;
-            let public = statement.public_inputs();
-            let load = Instant::now();
-            let key: ProvingKey<Bn254> = decode(&read(proving_key, KEY_LIMIT)?)?;
-            let key_seconds = load.elapsed().as_secs_f64();
-            let proof_start = Instant::now();
-            let proof = Groth16::<Bn254>::create_random_proof_with_reduction(RoundCircuit(Some(public)), &key, &mut OsRng)?;
-            let proof_seconds = proof_start.elapsed().as_secs_f64();
-            write(output, &proof)?;
-            json!({"proof_bytes": fs::metadata(output)?.len(), "key_load_seconds": key_seconds,
-                   "prove_seconds": proof_seconds})
+            prove(RoundCircuit(Some(statement.public_inputs())), proving_key, output)?
         }
         [command, manifest, pin, adapter, verifying_key, key_pin, proof] if command == "verify" => {
             let statement = Statement::load(manifest, pin, adapter)?;
-            let public = statement.public_inputs();
-            let load = Instant::now();
-            let key = read(verifying_key, 1 << 20)?;
-            if sha256(&key) != *key_pin {
-                return Err("verifying key SHA-256 mismatch".into());
-            }
-            let vk: VerifyingKey<Bn254> = decode(&key)?;
-            let proof: Proof<Bn254> = decode(&read(proof, 1024)?)?;
-            let prepared = prepare_verifying_key(&vk);
-            let key_prepare_seconds = load.elapsed().as_secs_f64();
-            let check = Instant::now();
-            if !Groth16::<Bn254>::verify_proof(&prepared, &proof, &public)? {
-                return Err("Groth16 rejected the public round and adapter".into());
-            }
-            json!({"accepted": true, "public_inputs": public.len(), "key_and_proof_prepare_seconds": key_prepare_seconds,
-                   "pairing_and_public_inputs_seconds": check.elapsed().as_secs_f64()})
+            verify(&statement.public_inputs(), verifying_key, key_pin, proof)?
+        }
+        [command, shape] if command == "prefix-shape" => {
+            let cs = ConstraintSystem::new_ref();
+            cs.set_mode(SynthesisMode::Setup);
+            PrefixCircuit { shape: Shape::load(shape)?, public: None }.generate_constraints(cs.clone())?;
+            json!({"constraints": cs.num_constraints(), "public_inputs": cs.num_instance_variables() - 1,
+                   "witnesses": cs.num_witness_variables()})
+        }
+        [command, shape, directory] if command == "prefix-setup" => {
+            setup(directory, PrefixCircuit { shape: Shape::load(shape)?, public: None })?
+        }
+        [command, shape, manifest, pin, adapter] if command == "prefix-check" => {
+            let statement = Statement::load_prefix(manifest, pin, adapter)?;
+            check_prefix(&statement, Shape::load(shape)?)?
+        }
+        [command, shape, manifest, pin, adapter, proving_key, output] if command == "prefix-prove" => {
+            let statement = Statement::load_prefix(manifest, pin, adapter)?;
+            let shape = Shape::load(shape)?;
+            check_prefix(&statement, shape.clone())?;
+            let circuit = PrefixCircuit { shape, public: Some(statement.prefix_inputs()) };
+            prove(circuit, proving_key, output)?
+        }
+        [command, manifest, pin, adapter, verifying_key, key_pin, proof] if command == "prefix-verify" => {
+            let statement = Statement::load_prefix(manifest, pin, adapter)?;
+            verify(&statement.prefix_inputs(), verifying_key, key_pin, proof)?
         }
         [command, rest @ ..] if command.starts_with("private-") => private::run(command, rest)?,
-        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | private-help".into()),
+        _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | prefix-shape / prefix-setup / prefix-check / prefix-prove / prefix-verify | private-help".into()),
     };
     println!(
         "RESULT {}",
         json!({"wall_seconds": started.elapsed().as_secs_f64(), "metrics": report})
     );
     Ok(())
+}
+
+fn check_prefix(statement: &Statement, shape: Shape) -> Result<serde_json::Value> {
+    let cs = ConstraintSystem::new_ref();
+    PrefixCircuit {
+        shape,
+        public: Some(statement.prefix_inputs()),
+    }
+    .generate_constraints(cs.clone())?;
+    if !cs.is_satisfied()? {
+        return Err("prefix circuit rejected the statement".into());
+    }
+    Ok(json!({"accepted": true, "constraints": cs.num_constraints()}))
 }
 
 fn main() {

@@ -1,0 +1,7 @@
+paired-0.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027771995,"pairing_and_public_inputs_seconds":0.048760407,"public_inputs":3587},"wall_seconds":0.076968362}
+paired-1.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027586421,"pairing_and_public_inputs_seconds":0.048759918,"public_inputs":3587},"wall_seconds":0.076716439}
+paired-2.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027757188,"pairing_and_public_inputs_seconds":0.048929707,"public_inputs":3587},"wall_seconds":0.077079203}
+paired-3.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027549684,"pairing_and_public_inputs_seconds":0.048671986,"public_inputs":3587},"wall_seconds":0.076595889}
+paired-4.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027566795,"pairing_and_public_inputs_seconds":0.048956038,"public_inputs":3587},"wall_seconds":0.076889859}
+paired-5.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027801049,"pairing_and_public_inputs_seconds":0.049012401,"public_inputs":3587},"wall_seconds":0.077181244}
+paired-6.proof RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.02795645,"pairing_and_public_inputs_seconds":0.049235759,"public_inputs":3587},"wall_seconds":0.077563565}

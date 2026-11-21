@@ -1,0 +1,21 @@
+rustc 1.98.1 (48a229cea 2026-09-01)
+Python 3.12.3
+Model name:                              AMD Ryzen 5 5500
+NVIDIA GeForce RTX 5060 Ti, 610.43.03
+sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+Research base: d078ef2372fee37dce5297fac46717112f22a11d
+CUDA implementation: 13ed7e91f16d471c6cd5824b91d4742bb128001c
+e5afe57bc760a9dffeab73d18cca4ad6dfc65ddc947d31d6f032dca67b807ab4  /data2/worknet-ci/research/lora-cuda-prover.rXP8CPjh/cuda-prover
+7f8b70bd9c9e42878c2db55d3a8ec545c5a4aad5d3ad609a0b9cba236dbd1619  /data2/worknet-ci/research/lora-cuda-prover.rXP8CPjh/standard
+e5f6a270aaf131f24de1ebb35c08d15ccf3c8e5dcee600d6b48a39dd06ef1bc5  /data2/worknet-ci/research/bn254-full-msm.IZkxkVWv/libfullmsm.so
+c440e09c25dc6d417c5b58849e95c895426eb4088e190f048dd2b849ba7aa18e  /data2/worknet-ci/research/lora-key-format.sF6AYswe/binary/compact-lora-round
+cb35cd4af3fdead236d2fc3fbf63e4bff50bdace7110782bb00641ec3828a3d4  /data2/worknet-ci/research/lora-key-format.sF6AYswe/measure/rtx-uncompressed.key
+ab5532d5fcc51d089fda77af00e342aeab944bc8b098b812ecf080365958ed5d  /data2/worknet-ci/research/lora-key-format.sF6AYswe/measure/cpu-uncompressed.key
+7626eebce152398ac7cc59a73cc2863a3a8acc2312524a3111e57dbfd6f87c60  compact-round/Cargo.lock
+7aaeb3f6ecfec6ab1e0104af812d8a53686df385ea48d393b2c7ea5c39f17fdc  compact-round/Cargo.toml
+112bfe629f8e13bd782a23f65177d3ed14bb1d36b9b5c38383ff3adb1d794b76  compact-round/cuda_h_trial.py
+daabf3352e21980a096011b6377e6630dbf91c74337e19b85d54df50c3879dc8  compact-round/src/main.rs
+ef4e0fc89ae3dd375ab84a6db4c09e28e24ef2c60d7b9ea65f620eef9bb6dc08  compact-round/src/msm_fixture.rs
+866743c15fbdc775235c1f64d750aeaa6fca45a25fd34f211a5fbe2c6701fd71  compact-round/src/cuda_h.rs
+LF-normalized Git source for the mixed-line-ending build input:
+2e8750f3f860cb6625287fac2275806dc244079dfce0bbcbcbd7b7dc15b78174  compact-round/src/main.rs

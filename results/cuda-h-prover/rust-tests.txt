@@ -1,0 +1,11 @@
+
+running 7 tests
+test circuit::tests::signed_gradient_clips_on_both_boundaries ... ok
+test prefix::tests::picks_first_prefix_with_minimum_loss ... ok
+test prefix::tests::unsigned_gate_rejects_a_negative_difference ... ok
+test private::tests::poseidon_constants_match_the_published_width_three_table ... ok
+test circuit::tests::sign_step_clips_and_preserves_zero_gradient ... ok
+test private::tests::wrong_commitment_leaves_the_circuit_unsatisfied ... ok
+test private::tests::private_ranges_and_heldout_separation_are_constrained ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s

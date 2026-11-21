@@ -36,3 +36,4 @@ results/shared-triple-proving-key/**/*.json text eol=lf
 results/shared-triple-proving-key/**/*.commitments binary
 results/shared-triple-proving-key/**/*.key binary
 results/shared-triple-proving-key/**/*.proof binary
+results/cuda-h-prover/**/*.proof binary

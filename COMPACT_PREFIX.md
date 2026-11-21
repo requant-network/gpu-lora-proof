@@ -71,6 +71,8 @@ Seven Rust tests and fourteen Python tests passed.
 
 The [proving-key format trial](PROVING_KEY_FORMAT.md) reuses these
 two statements and profiles the checked key load and MSM phases.
+The [CUDA H prover trial](CUDA_H_PROVER.md) measures proof
+construction on the same two statements with H on the GPU.
 
 ## Verify or reproduce
 

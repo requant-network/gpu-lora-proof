@@ -1,4 +1,6 @@
 mod circuit;
+#[cfg(all(feature = "cuda-h", target_os = "linux"))]
+mod cuda_h;
 mod msm_fixture;
 mod prefix;
 mod private;
@@ -175,6 +177,15 @@ fn run(args: &[String]) -> Result<()> {
             check_prefix(&statement, shape.clone())?;
             let circuit = PrefixCircuit { shape, public: Some(statement.prefix_inputs()) };
             msm_fixture::export_h(circuit, proving_key, vk_pin, output)?
+        }
+        #[cfg(all(feature = "cuda-h", target_os = "linux"))]
+        [command, shape, manifest, pin, adapter, proving_key, vk_pin, output]
+            if command == "prefix-prove-cuda-h" || command == "prefix-bench-cuda-h" => {
+            let statement = Statement::load_prefix(manifest, pin, adapter)?;
+            let shape = Shape::load(shape)?;
+            check_prefix(&statement, shape.clone())?;
+            let circuit = PrefixCircuit { shape, public: Some(statement.prefix_inputs()) };
+            cuda_h::run(circuit, proving_key, vk_pin, output, command == "prefix-bench-cuda-h")?
         }
         [command, source, output] if command == "proving-key-uncompress" => {
             let (key, key_load_seconds) = load_proving_key(source, Compress::Yes)?;

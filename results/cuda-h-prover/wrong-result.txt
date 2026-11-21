@@ -1,0 +1,15 @@
+Start:   Groth16::Prover
+··Start:   R1CS to QAP witness map
+····End:     R1CS to QAP witness map ...............................................1.466µs
+··Start:   Compute C
+····End:     Compute C .............................................................77.219ms
+··Start:   Compute A
+····End:     Compute A .............................................................62.787ms
+··Start:   Compute B in G1
+····End:     Compute B in G1 .......................................................56.590ms
+··Start:   Compute B in G2
+····End:     Compute B in G2 .......................................................144.057ms
+··Start:   Finish C
+····End:     Finish C ..............................................................3.422µs
+··End:     Groth16::Prover .........................................................343.218ms
+NO: Groth16 rejected the public round and adapter

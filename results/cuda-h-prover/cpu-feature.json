@@ -1,0 +1,101 @@
+{
+  "metrics": {
+    "encode_h_bases_seconds": 0.002563731,
+    "key_load_seconds": 7.111781934,
+    "pairs": 131071,
+    "trials": [
+      {
+        "cpu_prove_seconds": 1.385973168,
+        "cuda": {
+          "h_cuda_wall_seconds": 0.281333494,
+          "h_upload_and_import_ms": 4.0153279304504395,
+          "proof_assembly_seconds": 0.176805318,
+          "prove_seconds": 1.087874114,
+          "synthesis_seconds": 0.444089522,
+          "witness_seconds": 0.18262646199999993
+        },
+        "cuda_verify_seconds": 0.051280906,
+        "round": 0
+      },
+      {
+        "cpu_prove_seconds": 1.272026508,
+        "cuda": {
+          "h_cuda_wall_seconds": 0.121566682,
+          "h_upload_and_import_ms": 2.14083194732666,
+          "proof_assembly_seconds": 0.17002432,
+          "prove_seconds": 0.943351678,
+          "synthesis_seconds": 0.469240165,
+          "witness_seconds": 0.17948219500000007
+        },
+        "cuda_verify_seconds": 0.049806938,
+        "round": 1
+      },
+      {
+        "cpu_prove_seconds": 1.270616375,
+        "cuda": {
+          "h_cuda_wall_seconds": 0.121528199,
+          "h_upload_and_import_ms": 2.128959894180298,
+          "proof_assembly_seconds": 0.1660045,
+          "prove_seconds": 0.943712905,
+          "synthesis_seconds": 0.464681854,
+          "witness_seconds": 0.188444742
+        },
+        "cuda_verify_seconds": 0.050710288,
+        "round": 2
+      },
+      {
+        "cpu_prove_seconds": 1.276026839,
+        "cuda": {
+          "h_cuda_wall_seconds": 0.121681364,
+          "h_upload_and_import_ms": 2.140320062637329,
+          "proof_assembly_seconds": 0.171925729,
+          "prove_seconds": 0.941201836,
+          "synthesis_seconds": 0.465354234,
+          "witness_seconds": 0.17919276500000003
+        },
+        "cuda_verify_seconds": 0.049939989,
+        "round": 3
+      },
+      {
+        "cpu_prove_seconds": 1.26921993,
+        "cuda": {
+          "h_cuda_wall_seconds": 0.121626886,
+          "h_upload_and_import_ms": 2.1446080207824707,
+          "proof_assembly_seconds": 0.168103285,
+          "prove_seconds": 0.938723452,
+          "synthesis_seconds": 0.466555534,
+          "witness_seconds": 0.17940180600000005
+        },
+        "cuda_verify_seconds": 0.050812399,
+        "round": 4
+      },
+      {
+        "cpu_prove_seconds": 1.268325728,
+        "cuda": {
+          "h_cuda_wall_seconds": 0.121477492,
+          "h_upload_and_import_ms": 2.1392641067504883,
+          "proof_assembly_seconds": 0.179904605,
+          "prove_seconds": 0.950446967,
+          "synthesis_seconds": 0.464431885,
+          "witness_seconds": 0.18160689200000002
+        },
+        "cuda_verify_seconds": 0.04981937,
+        "round": 5
+      },
+      {
+        "cpu_prove_seconds": 1.2702168,
+        "cuda": {
+          "h_cuda_wall_seconds": 0.121728229,
+          "h_upload_and_import_ms": 2.1689279079437256,
+          "proof_assembly_seconds": 0.166829137,
+          "prove_seconds": 0.942056434,
+          "synthesis_seconds": 0.470277753,
+          "witness_seconds": 0.18018502600000003
+        },
+        "cuda_verify_seconds": 0.050770982,
+        "round": 6
+      }
+    ]
+  },
+  "wall_seconds": 23.785387572
+}

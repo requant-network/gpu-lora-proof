@@ -1,0 +1,7 @@
+Resident medians {'cpu': 2.2176983960000003, 'cuda': 1.5557330645}
+fresh-1-cpu verified
+fresh-1-cuda verified
+fresh-2-cuda verified
+fresh-2-cpu verified
+fresh-3-cpu verified
+fresh-3-cuda verified

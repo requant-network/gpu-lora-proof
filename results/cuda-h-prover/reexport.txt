@@ -1,0 +1,2 @@
+RESULT {"metrics":{"bytes":25165728,"pairs":262143,"witness_coefficients":262144},"wall_seconds":17.729142849}
+CPU-only build exported the original 25,165,728 H input bytes

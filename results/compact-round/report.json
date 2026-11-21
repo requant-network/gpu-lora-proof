@@ -1,0 +1,1334 @@
+{
+  "platform": "Linux",
+  "python": "3.12.3",
+  "rayon_threads": 2,
+  "verifier_sha256": "1cb5f35299770b63c226036b06b72674d4bea871e5fe67d38d84b68df38c128b",
+  "shape": {
+    "process_seconds": 0.11127907599438913,
+    "max_rss_kib": 95104,
+    "reported": {
+      "metrics": {
+        "constraints": 78850,
+        "public_inputs": 3586,
+        "witnesses": 77058
+      },
+      "wall_seconds": 0.10279419
+    },
+    "trace_seconds": {}
+  },
+  "setup": {
+    "process_seconds": 2.2178295709891245,
+    "max_rss_kib": 185340,
+    "reported": {
+      "metrics": {
+        "proving_key_bytes": 17097808,
+        "verifying_key_bytes": 115016,
+        "verifying_key_sha256": "ec74c5322c33e420ee3343b2181adf6869fe4fff2af2379ae9101fe3b21c7833"
+      },
+      "wall_seconds": 2.202490147
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.08351800000000001,
+      "Inlining LCs": 0.169276,
+      "Constructing evaluation domain": 1.7111e-05,
+      "Evaluate Lagrange coefficients": 0.012961,
+      "R1CS to QAP Instance Map with Evaluation": 0.094247,
+      "Compute G2 table": 0.043765,
+      "Calculate B G2 of size 80645": 0.389401,
+      "Compute G1 window table": 0.043319,
+      "Calculate A": 0.266702,
+      "Calculate B G1": 0.15570599999999998,
+      "Calculate H": 0.577947,
+      "Calculate L": 0.329697,
+      "Generate the R1CS proving key": 1.331,
+      "Generate the R1CS verification key": 0.015538,
+      "Groth16::Generator": 2.174
+    }
+  },
+  "cohorts": [
+    {
+      "seed": 20261121,
+      "manifest_sha256": "c645e19ef587a2b582ceba48719de32032e5584d33eacdbcf33b0db39421fe65",
+      "adapter_sha256": "be0cbca2f0547da5a5b564173cbb2f713d9e68d282f59b27215fc0d9c69e19ae",
+      "proof_sha256": "4ca0d16c76ef09b1a71ace6f20e200711c99b5b5942b1adab8074cab994afe2a",
+      "manifest_bytes": 7976,
+      "adapter_bytes": 543,
+      "transparent_bundle_bytes": 203425,
+      "compact_proof_bytes": 128,
+      "trials": [
+        {
+          "replay": {
+            "process_seconds": 0.002069520007353276,
+            "max_rss_kib": 3200,
+            "reported": {
+              "metrics": {
+                "accepted": true
+              },
+              "wall_seconds": 0.000158613
+            },
+            "trace_seconds": {}
+          },
+          "transparent_build": {
+            "process_seconds": 0.31198542698984966,
+            "max_rss_kib": 21248,
+            "reported": {
+              "build_wall_seconds": 0.25972723701852374,
+              "bundle_bytes": 203425,
+              "contributions": [
+                {
+                  "phase": 0,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3160529779270291,
+                      "min": 1.3160529779270291,
+                      "max": 1.3160529779270291,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.32037001801654696,
+                      "min": 0.32037001801654696,
+                      "max": 0.32037001801654696,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8438439981546253,
+                      "min": 0.8438439981546253,
+                      "max": 0.8438439981546253,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4802669940982014,
+                      "min": 2.4802669940982014,
+                      "max": 2.4802669940982014,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 0,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.4014710031915456,
+                      "min": 1.4014710031915456,
+                      "max": 1.4014710031915456,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3265169798396528,
+                      "min": 0.3265169798396528,
+                      "max": 0.3265169798396528,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8474760106764734,
+                      "min": 0.8474760106764734,
+                      "max": 0.8474760106764734,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.5754639937076718,
+                      "min": 2.5754639937076718,
+                      "max": 2.5754639937076718,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.26325199380517,
+                      "min": 1.26325199380517,
+                      "max": 1.26325199380517,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.30926501494832337,
+                      "min": 0.30926501494832337,
+                      "max": 0.30926501494832337,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9030009969137609,
+                      "min": 0.9030009969137609,
+                      "max": 0.9030009969137609,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4755180056672543,
+                      "min": 2.4755180056672543,
+                      "max": 2.4755180056672543,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.544091006508097,
+                      "min": 1.544091006508097,
+                      "max": 1.544091006508097,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3305670106783509,
+                      "min": 0.3305670106783509,
+                      "max": 0.3305670106783509,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9291919996030629,
+                      "min": 0.9291919996030629,
+                      "max": 0.9291919996030629,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.803850016789511,
+                      "min": 2.803850016789511,
+                      "max": 2.803850016789511,
+                      "n": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "trace_seconds": {}
+          },
+          "transparent_verify": {
+            "process_seconds": 0.05201981702703051,
+            "max_rss_kib": 18764,
+            "reported": {
+              "merkle_root": "3f4fc622bee649c3e16cbf2c905cfab45d21c338a0a6008f04c917d2d6f7bea2",
+              "final_adapter": "18996e730c76ebfafbc34a481d48af12595a766492a347f50edbdc7717e21229",
+              "initial_sse": 24576,
+              "final_sse": 0,
+              "heldout_rows": 16,
+              "verify_wall_seconds": 0.011654014990199357
+            },
+            "trace_seconds": {}
+          },
+          "prove": {
+            "process_seconds": 6.478419586987002,
+            "max_rss_kib": 246576,
+            "reported": {
+              "metrics": {
+                "key_load_seconds": 5.382366088,
+                "proof_bytes": 128,
+                "prove_seconds": 1.076953165
+              },
+              "wall_seconds": 6.462523933
+            },
+            "trace_seconds": {
+              "Constraint synthesis": 0.096,
+              "Inlining LCs": 0.169517,
+              "R1CS to QAP witness map": 0.24262200000000003,
+              "Compute C": 0.467146,
+              "Compute A": 0.028344,
+              "Compute B in G1": 0.018090000000000002,
+              "Compute B in G2": 0.037062,
+              "Finish C": 3.352e-06,
+              "Groth16::Prover": 1.059
+            }
+          },
+          "verify": {
+            "process_seconds": 0.10776492199511267,
+            "max_rss_kib": 4224,
+            "reported": {
+              "metrics": {
+                "accepted": true,
+                "key_and_proof_prepare_seconds": 0.027234746,
+                "pairing_and_public_inputs_seconds": 0.077691334,
+                "public_inputs": 3586
+              },
+              "wall_seconds": 0.105470996
+            },
+            "trace_seconds": {}
+          }
+        },
+        {
+          "replay": {
+            "process_seconds": 0.0023434449976775795,
+            "max_rss_kib": 3200,
+            "reported": {
+              "metrics": {
+                "accepted": true
+              },
+              "wall_seconds": 0.00023118
+            },
+            "trace_seconds": {}
+          },
+          "transparent_build": {
+            "process_seconds": 0.3229241090011783,
+            "max_rss_kib": 21248,
+            "reported": {
+              "build_wall_seconds": 0.2626898399903439,
+              "bundle_bytes": 203425,
+              "contributions": [
+                {
+                  "phase": 0,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3355390110518783,
+                      "min": 1.3355390110518783,
+                      "max": 1.3355390110518783,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3101030015386641,
+                      "min": 0.3101030015386641,
+                      "max": 0.3101030015386641,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8518759859725833,
+                      "min": 0.8518759859725833,
+                      "max": 0.8518759859725833,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4975179985631257,
+                      "min": 2.4975179985631257,
+                      "max": 2.4975179985631257,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 0,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.2615750019904226,
+                      "min": 1.2615750019904226,
+                      "max": 1.2615750019904226,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3234430041629821,
+                      "min": 0.3234430041629821,
+                      "max": 0.3234430041629821,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.845310976728797,
+                      "min": 0.845310976728797,
+                      "max": 0.845310976728797,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4303289828822017,
+                      "min": 2.4303289828822017,
+                      "max": 2.4303289828822017,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.4903809933457524,
+                      "min": 1.4903809933457524,
+                      "max": 1.4903809933457524,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3309159947093576,
+                      "min": 0.3309159947093576,
+                      "max": 0.3309159947093576,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9003470186144114,
+                      "min": 0.9003470186144114,
+                      "max": 0.9003470186144114,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.7216440066695213,
+                      "min": 2.7216440066695213,
+                      "max": 2.7216440066695213,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3175189960747957,
+                      "min": 1.3175189960747957,
+                      "max": 1.3175189960747957,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.312896998366341,
+                      "min": 0.312896998366341,
+                      "max": 0.312896998366341,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8882640104275197,
+                      "min": 0.8882640104275197,
+                      "max": 0.8882640104275197,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.5186800048686564,
+                      "min": 2.5186800048686564,
+                      "max": 2.5186800048686564,
+                      "n": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "trace_seconds": {}
+          },
+          "transparent_verify": {
+            "process_seconds": 0.053113278991077095,
+            "max_rss_kib": 18984,
+            "reported": {
+              "merkle_root": "3f4fc622bee649c3e16cbf2c905cfab45d21c338a0a6008f04c917d2d6f7bea2",
+              "final_adapter": "18996e730c76ebfafbc34a481d48af12595a766492a347f50edbdc7717e21229",
+              "initial_sse": 24576,
+              "final_sse": 0,
+              "heldout_rows": 16,
+              "verify_wall_seconds": 0.011718619003659114
+            },
+            "trace_seconds": {}
+          },
+          "prove": {
+            "process_seconds": 6.482040462986333,
+            "max_rss_kib": 246472,
+            "reported": {
+              "metrics": {
+                "key_load_seconds": 5.392254751,
+                "proof_bytes": 128,
+                "prove_seconds": 1.070589205
+              },
+              "wall_seconds": 6.4660769909999996
+            },
+            "trace_seconds": {
+              "Constraint synthesis": 0.093475,
+              "Inlining LCs": 0.170432,
+              "R1CS to QAP witness map": 0.236391,
+              "Compute C": 0.466606,
+              "Compute A": 0.027687000000000003,
+              "Compute B in G1": 0.015738,
+              "Compute B in G2": 0.038947,
+              "Finish C": 2.794e-06,
+              "Groth16::Prover": 1.049
+            }
+          },
+          "verify": {
+            "process_seconds": 0.10736765401088633,
+            "max_rss_kib": 4480,
+            "reported": {
+              "metrics": {
+                "accepted": true,
+                "key_and_proof_prepare_seconds": 0.026747381,
+                "pairing_and_public_inputs_seconds": 0.077731634,
+                "public_inputs": 3586
+              },
+              "wall_seconds": 0.104896188
+            },
+            "trace_seconds": {}
+          }
+        },
+        {
+          "replay": {
+            "process_seconds": 0.0022977670014370233,
+            "max_rss_kib": 3456,
+            "reported": {
+              "metrics": {
+                "accepted": true
+              },
+              "wall_seconds": 0.000170627
+            },
+            "trace_seconds": {}
+          },
+          "transparent_build": {
+            "process_seconds": 0.3117883310187608,
+            "max_rss_kib": 21376,
+            "reported": {
+              "build_wall_seconds": 0.2587575360084884,
+              "bundle_bytes": 203425,
+              "contributions": [
+                {
+                  "phase": 0,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.2379690015222877,
+                      "min": 1.2379690015222877,
+                      "max": 1.2379690015222877,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3071000101044774,
+                      "min": 0.3071000101044774,
+                      "max": 0.3071000101044774,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.867100985487923,
+                      "min": 0.867100985487923,
+                      "max": 0.867100985487923,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.412169997114688,
+                      "min": 2.412169997114688,
+                      "max": 2.412169997114688,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 0,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.4870980230625719,
+                      "min": 1.4870980230625719,
+                      "max": 1.4870980230625719,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.33371098106727004,
+                      "min": 0.33371098106727004,
+                      "max": 0.33371098106727004,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.84363401401788,
+                      "min": 0.84363401401788,
+                      "max": 0.84363401401788,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.664443018147722,
+                      "min": 2.664443018147722,
+                      "max": 2.664443018147722,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3456669985316694,
+                      "min": 1.3456669985316694,
+                      "max": 1.3456669985316694,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3549419925548136,
+                      "min": 0.3549419925548136,
+                      "max": 0.3549419925548136,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8960170089267194,
+                      "min": 0.8960170089267194,
+                      "max": 0.8960170089267194,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.5966260000132024,
+                      "min": 2.5966260000132024,
+                      "max": 2.5966260000132024,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.1920809920411557,
+                      "min": 1.1920809920411557,
+                      "max": 1.1920809920411557,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3140839980915189,
+                      "min": 0.3140839980915189,
+                      "max": 0.3140839980915189,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9061440068762749,
+                      "min": 0.9061440068762749,
+                      "max": 0.9061440068762749,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4123089970089495,
+                      "min": 2.4123089970089495,
+                      "max": 2.4123089970089495,
+                      "n": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "trace_seconds": {}
+          },
+          "transparent_verify": {
+            "process_seconds": 0.052174518001265824,
+            "max_rss_kib": 19072,
+            "reported": {
+              "merkle_root": "3f4fc622bee649c3e16cbf2c905cfab45d21c338a0a6008f04c917d2d6f7bea2",
+              "final_adapter": "18996e730c76ebfafbc34a481d48af12595a766492a347f50edbdc7717e21229",
+              "initial_sse": 24576,
+              "final_sse": 0,
+              "heldout_rows": 16,
+              "verify_wall_seconds": 0.011575370997888967
+            },
+            "trace_seconds": {}
+          },
+          "prove": {
+            "process_seconds": 6.4733762920077424,
+            "max_rss_kib": 246320,
+            "reported": {
+              "metrics": {
+                "key_load_seconds": 5.397236518,
+                "proof_bytes": 128,
+                "prove_seconds": 1.05674156
+              },
+              "wall_seconds": 6.457178288
+            },
+            "trace_seconds": {
+              "Constraint synthesis": 0.096815,
+              "Inlining LCs": 0.17128700000000002,
+              "R1CS to QAP witness map": 0.231549,
+              "Compute C": 0.454305,
+              "Compute A": 0.031083,
+              "Compute B in G1": 0.017663,
+              "Compute B in G2": 0.035201,
+              "Finish C": 3.352e-06,
+              "Groth16::Prover": 1.038
+            }
+          },
+          "verify": {
+            "process_seconds": 0.10749379100161605,
+            "max_rss_kib": 4352,
+            "reported": {
+              "metrics": {
+                "accepted": true,
+                "key_and_proof_prepare_seconds": 0.027118946,
+                "pairing_and_public_inputs_seconds": 0.077738688,
+                "public_inputs": 3586
+              },
+              "wall_seconds": 0.105257207
+            },
+            "trace_seconds": {}
+          }
+        }
+      ],
+      "controls": {
+        "wrong_manifest_pin": "NO: manifest SHA-256 mismatch",
+        "changed_weight": "NO: Groth16 rejected the public round and adapter",
+        "changed_manifest_identity": "NO: Groth16 rejected the public round and adapter",
+        "changed_adapter": "NO: Groth16 rejected the public round and adapter",
+        "wrong_key_pin": "NO: verifying key SHA-256 mismatch",
+        "appended_proof_data": "NO: extra bytes after canonical encoding"
+      }
+    },
+    {
+      "seed": 90817,
+      "manifest_sha256": "95755b07cac5a522df5f94cbc721870ebf957c7a42944292fae197a6b0ade829",
+      "adapter_sha256": "1912c8bbd1ef07dad6f3604fb6bebc3bb75eda4c3d3e8dcf6a2cc6c9f61e3427",
+      "proof_sha256": "5443e75e5a6f6cbd05e2c9d89baaf40d930d9eb5f116211ec2fc3b20ef067520",
+      "manifest_bytes": 7924,
+      "adapter_bytes": 540,
+      "transparent_bundle_bytes": 203427,
+      "compact_proof_bytes": 128,
+      "trials": [
+        {
+          "replay": {
+            "process_seconds": 0.002028592018177733,
+            "max_rss_kib": 3328,
+            "reported": {
+              "metrics": {
+                "accepted": true
+              },
+              "wall_seconds": 0.000156449
+            },
+            "trace_seconds": {}
+          },
+          "transparent_build": {
+            "process_seconds": 0.30161421999218874,
+            "max_rss_kib": 21248,
+            "reported": {
+              "build_wall_seconds": 0.24743904700153507,
+              "bundle_bytes": 203427,
+              "contributions": [
+                {
+                  "phase": 0,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.1476610088720918,
+                      "min": 1.1476610088720918,
+                      "max": 1.1476610088720918,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.30423697899095714,
+                      "min": 0.30423697899095714,
+                      "max": 0.30423697899095714,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8485930156894028,
+                      "min": 0.8485930156894028,
+                      "max": 0.8485930156894028,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.3004910035524517,
+                      "min": 2.3004910035524517,
+                      "max": 2.3004910035524517,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 0,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3196840009186417,
+                      "min": 1.3196840009186417,
+                      "max": 1.3196840009186417,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.30717000481672585,
+                      "min": 0.30717000481672585,
+                      "max": 0.30717000481672585,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8529240149073303,
+                      "min": 0.8529240149073303,
+                      "max": 0.8529240149073303,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.479778020642698,
+                      "min": 2.479778020642698,
+                      "max": 2.479778020642698,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3363779871724546,
+                      "min": 1.3363779871724546,
+                      "max": 1.3363779871724546,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3110810066573322,
+                      "min": 0.3110810066573322,
+                      "max": 0.3110810066573322,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9032099915202707,
+                      "min": 0.9032099915202707,
+                      "max": 0.9032099915202707,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.5506689853500575,
+                      "min": 2.5506689853500575,
+                      "max": 2.5506689853500575,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3408479862846434,
+                      "min": 1.3408479862846434,
+                      "max": 1.3408479862846434,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.31624900293536484,
+                      "min": 0.31624900293536484,
+                      "max": 0.31624900293536484,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9070519881788641,
+                      "min": 0.9070519881788641,
+                      "max": 0.9070519881788641,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.5641489773988724,
+                      "min": 2.5641489773988724,
+                      "max": 2.5641489773988724,
+                      "n": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "trace_seconds": {}
+          },
+          "transparent_verify": {
+            "process_seconds": 0.05941424201591872,
+            "max_rss_kib": 18620,
+            "reported": {
+              "merkle_root": "4b683b59327d1de0b9921292f747c9dc4141728b01ff37ec852bea7fe940bfbe",
+              "final_adapter": "0aab544c8700f4c0b949c397aa2383818677f1930fb4f2bee0f66675e88801f0",
+              "initial_sse": 24576,
+              "final_sse": 0,
+              "heldout_rows": 16,
+              "verify_wall_seconds": 0.011791744997026399
+            },
+            "trace_seconds": {}
+          },
+          "prove": {
+            "process_seconds": 6.4971520619874354,
+            "max_rss_kib": 246456,
+            "reported": {
+              "metrics": {
+                "key_load_seconds": 5.40227011,
+                "proof_bytes": 128,
+                "prove_seconds": 1.072752246
+              },
+              "wall_seconds": 6.4783355
+            },
+            "trace_seconds": {
+              "Constraint synthesis": 0.096026,
+              "Inlining LCs": 0.172557,
+              "R1CS to QAP witness map": 0.23687100000000003,
+              "Compute C": 0.46403300000000003,
+              "Compute A": 0.031391,
+              "Compute B in G1": 0.016917,
+              "Compute B in G2": 0.035686999999999997,
+              "Finish C": 3.282e-06,
+              "Groth16::Prover": 1.054
+            }
+          },
+          "verify": {
+            "process_seconds": 0.10328393001691438,
+            "max_rss_kib": 4352,
+            "reported": {
+              "metrics": {
+                "accepted": true,
+                "key_and_proof_prepare_seconds": 0.027044633,
+                "pairing_and_public_inputs_seconds": 0.073428812,
+                "public_inputs": 3586
+              },
+              "wall_seconds": 0.10095634
+            },
+            "trace_seconds": {}
+          }
+        },
+        {
+          "replay": {
+            "process_seconds": 0.00237452398869209,
+            "max_rss_kib": 3200,
+            "reported": {
+              "metrics": {
+                "accepted": true
+              },
+              "wall_seconds": 0.00016937
+            },
+            "trace_seconds": {}
+          },
+          "transparent_build": {
+            "process_seconds": 0.30526778200874105,
+            "max_rss_kib": 21120,
+            "reported": {
+              "build_wall_seconds": 0.2522401289897971,
+              "bundle_bytes": 203427,
+              "contributions": [
+                {
+                  "phase": 0,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.2788960011675954,
+                      "min": 1.2788960011675954,
+                      "max": 1.2788960011675954,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.30730999424122274,
+                      "min": 0.30730999424122274,
+                      "max": 0.30730999424122274,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8655650017317384,
+                      "min": 0.8655650017317384,
+                      "max": 0.8655650017317384,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4517709971405566,
+                      "min": 2.4517709971405566,
+                      "max": 2.4517709971405566,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 0,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3441990013234317,
+                      "min": 1.3441990013234317,
+                      "max": 1.3441990013234317,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.321977015119046,
+                      "min": 0.321977015119046,
+                      "max": 0.321977015119046,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8474059868603945,
+                      "min": 0.8474059868603945,
+                      "max": 0.8474059868603945,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.513582003302872,
+                      "min": 2.513582003302872,
+                      "max": 2.513582003302872,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.2172950082458556,
+                      "min": 1.2172950082458556,
+                      "max": 1.2172950082458556,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.31101101194508374,
+                      "min": 0.31101101194508374,
+                      "max": 0.31101101194508374,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9185759990941733,
+                      "min": 0.9185759990941733,
+                      "max": 0.9185759990941733,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4468820192851126,
+                      "min": 2.4468820192851126,
+                      "max": 2.4468820192851126,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.6525560058653355,
+                      "min": 1.6525560058653355,
+                      "max": 1.6525560058653355,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.33112597884610295,
+                      "min": 0.33112597884610295,
+                      "max": 0.33112597884610295,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.9446980257052928,
+                      "min": 0.9446980257052928,
+                      "max": 0.9446980257052928,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.9283800104167312,
+                      "min": 2.9283800104167312,
+                      "max": 2.9283800104167312,
+                      "n": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "trace_seconds": {}
+          },
+          "transparent_verify": {
+            "process_seconds": 0.05094011299661361,
+            "max_rss_kib": 19088,
+            "reported": {
+              "merkle_root": "4b683b59327d1de0b9921292f747c9dc4141728b01ff37ec852bea7fe940bfbe",
+              "final_adapter": "0aab544c8700f4c0b949c397aa2383818677f1930fb4f2bee0f66675e88801f0",
+              "initial_sse": 24576,
+              "final_sse": 0,
+              "heldout_rows": 16,
+              "verify_wall_seconds": 0.011532906006323174
+            },
+            "trace_seconds": {}
+          },
+          "prove": {
+            "process_seconds": 6.517631518014241,
+            "max_rss_kib": 246220,
+            "reported": {
+              "metrics": {
+                "key_load_seconds": 5.427560426,
+                "proof_bytes": 128,
+                "prove_seconds": 1.071663881
+              },
+              "wall_seconds": 6.5024458880000005
+            },
+            "trace_seconds": {
+              "Constraint synthesis": 0.092862,
+              "Inlining LCs": 0.169843,
+              "R1CS to QAP witness map": 0.23673500000000003,
+              "Compute C": 0.469921,
+              "Compute A": 0.031375,
+              "Compute B in G1": 0.017367999999999998,
+              "Compute B in G2": 0.035413,
+              "Finish C": 3.422e-06,
+              "Groth16::Prover": 1.053
+            }
+          },
+          "verify": {
+            "process_seconds": 0.10341335000703111,
+            "max_rss_kib": 4224,
+            "reported": {
+              "metrics": {
+                "accepted": true,
+                "key_and_proof_prepare_seconds": 0.027061884,
+                "pairing_and_public_inputs_seconds": 0.073586937,
+                "public_inputs": 3586
+              },
+              "wall_seconds": 0.101052514
+            },
+            "trace_seconds": {}
+          }
+        },
+        {
+          "replay": {
+            "process_seconds": 0.0023724990023765713,
+            "max_rss_kib": 3456,
+            "reported": {
+              "metrics": {
+                "accepted": true
+              },
+              "wall_seconds": 0.000197865
+            },
+            "trace_seconds": {}
+          },
+          "transparent_build": {
+            "process_seconds": 0.30784541001776233,
+            "max_rss_kib": 21248,
+            "reported": {
+              "build_wall_seconds": 0.25426690600579605,
+              "bundle_bytes": 203427,
+              "contributions": [
+                {
+                  "phase": 0,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3030620175413787,
+                      "min": 1.3030620175413787,
+                      "max": 1.3030620175413787,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.30416599474847317,
+                      "min": 0.30416599474847317,
+                      "max": 0.30416599474847317,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8526449964847416,
+                      "min": 0.8526449964847416,
+                      "max": 0.8526449964847416,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.4598730087745935,
+                      "min": 2.4598730087745935,
+                      "max": 2.4598730087745935,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 0,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.1247530055698007,
+                      "min": 1.1247530055698007,
+                      "max": 1.1247530055698007,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.4467859980650246,
+                      "min": 0.4467859980650246,
+                      "max": 0.4467859980650246,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 1.528794993646443,
+                      "min": 1.528794993646443,
+                      "max": 1.528794993646443,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 3.1003339972812682,
+                      "min": 3.1003339972812682,
+                      "max": 3.1003339972812682,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-a",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.3655019865836948,
+                      "min": 1.3655019865836948,
+                      "max": 1.3655019865836948,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3244900144636631,
+                      "min": 0.3244900144636631,
+                      "max": 0.3244900144636631,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.893293006811291,
+                      "min": 0.893293006811291,
+                      "max": 0.893293006811291,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.583285007858649,
+                      "min": 2.583285007858649,
+                      "max": 2.583285007858649,
+                      "n": 1
+                    }
+                  }
+                },
+                {
+                  "phase": 1,
+                  "worker": "worker-b",
+                  "backend": "cpu",
+                  "timing": {
+                    "step_wall_ms": {
+                      "median": 1.4852829917799681,
+                      "min": 1.4852829917799681,
+                      "max": 1.4852829917799681,
+                      "n": 1
+                    },
+                    "step_kernel_ms": null,
+                    "commit_fs_ms": {
+                      "median": 0.3309860185254365,
+                      "min": 0.3309860185254365,
+                      "max": 0.3309860185254365,
+                      "n": 1
+                    },
+                    "cert_wall_ms": {
+                      "median": 0.8898710075300187,
+                      "min": 0.8898710075300187,
+                      "max": 0.8898710075300187,
+                      "n": 1
+                    },
+                    "cert_kernel_ms": null,
+                    "prover_wall_ms": {
+                      "median": 2.7061400178354234,
+                      "min": 2.7061400178354234,
+                      "max": 2.7061400178354234,
+                      "n": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "trace_seconds": {}
+          },
+          "transparent_verify": {
+            "process_seconds": 0.051992508000694215,
+            "max_rss_kib": 18908,
+            "reported": {
+              "merkle_root": "4b683b59327d1de0b9921292f747c9dc4141728b01ff37ec852bea7fe940bfbe",
+              "final_adapter": "0aab544c8700f4c0b949c397aa2383818677f1930fb4f2bee0f66675e88801f0",
+              "initial_sse": 24576,
+              "final_sse": 0,
+              "heldout_rows": 16,
+              "verify_wall_seconds": 0.011578653997275978
+            },
+            "trace_seconds": {}
+          },
+          "prove": {
+            "process_seconds": 6.474579064000864,
+            "max_rss_kib": 246508,
+            "reported": {
+              "metrics": {
+                "key_load_seconds": 5.384124813,
+                "proof_bytes": 128,
+                "prove_seconds": 1.071086698
+              },
+              "wall_seconds": 6.45869249
+            },
+            "trace_seconds": {
+              "Constraint synthesis": 0.09533799999999999,
+              "Inlining LCs": 0.17125200000000002,
+              "R1CS to QAP witness map": 0.23255099999999998,
+              "Compute C": 0.46912400000000004,
+              "Compute A": 0.028926,
+              "Compute B in G1": 0.015699,
+              "Compute B in G2": 0.039199,
+              "Finish C": 3.352e-06,
+              "Groth16::Prover": 1.052
+            }
+          },
+          "verify": {
+            "process_seconds": 0.10708758397959173,
+            "max_rss_kib": 4352,
+            "reported": {
+              "metrics": {
+                "accepted": true,
+                "key_and_proof_prepare_seconds": 0.02729537,
+                "pairing_and_public_inputs_seconds": 0.076784213,
+                "public_inputs": 3586
+              },
+              "wall_seconds": 0.104482997
+            },
+            "trace_seconds": {}
+          }
+        }
+      ],
+      "controls": {
+        "wrong_manifest_pin": "NO: manifest SHA-256 mismatch",
+        "changed_weight": "NO: Groth16 rejected the public round and adapter",
+        "changed_manifest_identity": "NO: Groth16 rejected the public round and adapter",
+        "changed_adapter": "NO: Groth16 rejected the public round and adapter",
+        "wrong_key_pin": "NO: verifying key SHA-256 mismatch",
+        "appended_proof_data": "NO: extra bytes after canonical encoding"
+      }
+    }
+  ],
+  "sources_sha256": {
+    "Cargo.toml": "1c5c707bcc595bcb00d83c715de7d95ae3d155d9a8335e1197c0ee3dda09ed65",
+    "Cargo.lock": "fd8d3843e29e48bf629e20e5ef01f9f517773e51f2761189af7218a26ac48bd4",
+    "src/circuit.rs": "fdac445f3966b4c0f1d7f8d3507803f4608b393386609cb2b8459d7f073397d8",
+    "src/main.rs": "c9735d44e4a7963ef00cac363d81b88f8afe0c5e7639a2a4bc07708fb9e0110c",
+    "src/statement.rs": "51b1ba65e6106158ef83b755e1ecf864d9734c7ce6caefac3212c34673c1b0c3",
+    "benchmark.py": "651c458ad0c7fc19f009a7b9f33ef46d1200913bdcc3d3d7384ed2c090fc2244"
+  }
+}

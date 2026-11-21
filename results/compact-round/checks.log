@@ -1,0 +1,16 @@
+20261121-0: transparent and compact proof verified
+20261121-1: transparent and compact proof verified
+20261121-2: transparent and compact proof verified
+90817-0: transparent and compact proof verified
+90817-1: transparent and compact proof verified
+90817-2: transparent and compact proof verified
+     Running unittests src/main.rs (target/release/deps/compact_lora_round-726452e9968472e2)
+
+running 2 tests
+test circuit::tests::signed_gradient_clips_on_both_boundaries ... ok
+test circuit::tests::sign_step_clips_and_preserves_zero_gradient ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.026759115,"pairing_and_public_inputs_seconds":0.077771934,"public_inputs":3586},"wall_seconds":0.104983632}
+RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.027260938,"pairing_and_public_inputs_seconds":0.073749741,"public_inputs":3586},"wall_seconds":0.101411997}

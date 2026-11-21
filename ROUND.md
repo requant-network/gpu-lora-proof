@@ -28,6 +28,9 @@ The experiment measures their execution on two hosts under one operator.
 Independent operator identity, real-model training quality and private data
 require further work.
 
+The [compact proof comparison](COMPACT_ROUND.md) uses these same manifests and
+adapters to compare direct replay, the retained round certificate and Groth16.
+
 ## Results
 
 | Seed | Held-out rows | Initial → final squared error | Manifest + bundle | Linux verification | Two-host assembly |

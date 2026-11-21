@@ -1,1 +1,4 @@
 results/round-v1/** text eol=lf
+results/compact-round/*.json text eol=lf
+results/compact-round/*.key binary
+results/compact-round/*.proof binary

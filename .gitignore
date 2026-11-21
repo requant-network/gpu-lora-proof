@@ -3,6 +3,7 @@ __pycache__/
 *.so
 *.o
 build/
+/compact-round/target/
 venv/
 *.log
 results/proofs/

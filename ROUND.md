@@ -30,6 +30,8 @@ require further work.
 
 The [compact proof comparison](COMPACT_ROUND.md) uses these same manifests and
 adapters to compare direct replay, the retained round certificate and Groth16.
+The [frozen Qwen head trial](TEXT_HEAD.md) reuses the round on real model
+features and checks whether the verified update improves held-out performance.
 
 ## Results
 

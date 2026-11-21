@@ -7,6 +7,7 @@ import hashlib
 import math
 from pathlib import Path
 import statistics
+import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -92,6 +93,49 @@ def score(manifest, adapter, records):
             for i, (identity, label, _) in enumerate(records)]
 
 
+def phase_diagnostics(manifest, pin, bundle, records, verified_adapter):
+    adapter = manifest["initial"]
+    snapshots = [("initial", adapter)]
+    for i, phase in enumerate(bundle["phases"]):
+        adapter = V.advance(manifest, pin, i, adapter, phase["contributions"])
+        snapshots.append((f"after_{V.FACTORS[i]}", adapter))
+    if adapter != verified_adapter:
+        raise RuntimeError("diagnostic replay disagrees with independent verifier")
+
+    splits = {"source": records["source"], "adapt_B": records["adapt"][:8],
+              "adapt_A": records["adapt"][8:], "heldout": records["heldout"]}
+    result = {}
+    for stage, snapshot in snapshots:
+        summary = {}
+        for split, examples in splits.items():
+            rows = score(manifest, snapshot, examples)
+            error = 0
+            for row in rows:
+                expected = TARGET if row["label"] == LABELS[0] else -TARGET
+                error += (row["scores"][0] - expected)**2 + (row["scores"][1] + expected)**2
+            summary[split] = {"correct": sum(r["label"] == r["prediction"] for r in rows),
+                              "total": len(rows), "topic_scores_sse": error}
+        result[stage] = summary
+    return result
+
+
+def check_quality_rejection(manifest, output, baseline_sse):
+    output.mkdir()
+    manifest_path, bundle_path, adapter_path = (output / name for name in ("manifest.json", "bundle.json", "adapter.json"))
+    V.save_json(manifest_path, {**manifest, "max_heldout_sse": baseline_sse})
+    pin = sha(manifest_path)
+    experiment.assemble(manifest_path, bundle_path, lib=None)
+    try:
+        experiment.verify_cli(manifest_path, pin, bundle_path, adapter_path)
+    except subprocess.CalledProcessError as error:
+        reason = error.stderr.decode("ascii").strip()
+        if error.returncode != 1 or reason != "NO: held-out quality gate failed" or adapter_path.exists():
+            raise
+        return {"manifest_sha256": pin, "bundle_sha256": sha(bundle_path), "sse_ceiling": baseline_sse,
+                "exit_code": error.returncode, "reason": reason, "adapter_written": False}
+    raise RuntimeError("regressing adapter accepted under the baseline quality ceiling")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("corpus", type=Path)
@@ -120,7 +164,13 @@ def main():
               "adapter_sha256": sha(adapter_path), "bundle_sha256": sha(bundle_path), "assembly": assembly,
               "verification": verified, "rejected_controls": control, "initial_correct": before,
               "final_correct": after, "heldout_initial": prior, "heldout_final": final,
+              "phase_diagnostics": phase_diagnostics(manifest, pin, bundle, records, adapter),
               "utility_passed": after > before and verified["final_sse"] <= verified["initial_sse"]}
+    if report["phase_diagnostics"]["after_A"]["heldout"]["topic_scores_sse"] != verified["final_sse"]:
+        raise RuntimeError("unexpected nonzero scores outside the two topic columns")
+    if verified["final_sse"] > verified["initial_sse"]:
+        report["quality_gate_control"] = check_quality_rejection(manifest, args.output / "quality-gate",
+                                                               verified["initial_sse"])
     V.save_json(args.output / "report.json", report)
 
 

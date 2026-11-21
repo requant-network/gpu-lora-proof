@@ -1,0 +1,12 @@
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Python 3.12.3
+NVIDIA GeForce RTX 5060 Ti, 610.43.03
+74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db  pinned-qwen.gguf
+8dc7056ee6548c619bded63829696b439478c357df2c4f6c41594e4f86d56324  libllama.so
+106f21a43f2c62fde65ecfbbaacb178d5de8ddf3b615e110e85fc3ce13960e5c  libggml-cuda.so
+e3d1f1f15696dda01ebc62352957958a9e405c3d44c546ae58443b0ba30b3de6  liblora.so
+c18ca4bc596d8dd0bb61d2f9e9d91a643582a7c66cec3433339bd71477ecf422  features
+ea66c49a57070580c14c3081c915bad0e163bf193d6bd4eb5e8580fffd7e47c7  corpus.tsv
+e9d669dbc596f649377310cb7631fd76d2965d766e714257a18562e7d11da80f  text_head_features.cpp
+8dc685e4d3d595a3fe3079b04629954938e64fff8b2c7dde66e2a9543bf4a56e  text_head_round.py (preregistered run)
+7a9ca6d631bf018b9c5700ad15b0a3fec364a86fe1e26f2606bcc608bbbe36d0  text_head_round.py (diagnostics and gate control)

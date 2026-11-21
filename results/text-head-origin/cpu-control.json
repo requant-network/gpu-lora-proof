@@ -1,0 +1,18 @@
+{
+  "cpu_features_sha256": "63aa0b30ece5a6438ea033df3f1a2acef64b00328379084dddda3c48acde9f1b",
+  "rtx_features_sha256": "2cd65f157f3dbed7c905e67b0f177590ec16d1d9bdc0191670129db5b0d3f2d6",
+  "same_token_counts": 48,
+  "different_raw_feature_rows": 48,
+  "max_raw_coordinate_difference": 1.09640169,
+  "changed_integer_coordinates": {
+    "source": 194,
+    "adapt": 218,
+    "heldout": 217
+  },
+  "changed_integer_rows": {
+    "source": 16,
+    "adapt": 16,
+    "heldout": 16
+  },
+  "same_integer_manifest_with_expected_id": false
+}

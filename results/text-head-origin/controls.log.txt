@@ -1,0 +1,6 @@
+NO: replay recipe SHA-256 mismatch
+NO: corpus SHA-256 mismatch
+NO: GGUF SHA-256 mismatch
+NO: cuda_v13/libggml-cuda.so SHA-256 mismatch
+NO: bundle manifest SHA-256 mismatch
+NO: captured features SHA-256 mismatch

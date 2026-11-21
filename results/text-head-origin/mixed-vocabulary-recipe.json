@@ -1,0 +1,17 @@
+{
+  "corpus_sha256": "1dec7957b73f1fd41e66e715b0d956a03162987b0987fd958a9be46d38c8a541",
+  "features_sha256": "2cd65f157f3dbed7c905e67b0f177590ec16d1d9bdc0191670129db5b0d3f2d6",
+  "manifest_sha256": "d200e82458d79b44fc577480ba33b1e7fe79b6e935328bd7812cfdd05763c34a",
+  "model_sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+  "runtime": {
+    "cuda_v13/libcublas.so.13": "25cde432108543626df85d887c730bf2cab96803ca16f9654e4abc8d2b45833e",
+    "cuda_v13/libcublasLt.so.13": "1489aeb75d55ee55782798343ac66f57771d561cc1fe1e0491568deefa0e6515",
+    "cuda_v13/libcudart.so.13": "96c42e418cec19054186b9429c321603cc190bf26a18104e19408117a2a817b0",
+    "cuda_v13/libggml-cuda.so": "106f21a43f2c62fde65ecfbbaacb178d5de8ddf3b615e110e85fc3ce13960e5c",
+    "libggml-base.so.0": "5a33ebd04a4731dc18aa83898e38bd06f0a5389214dcca1fecca0c22bd5a4e25",
+    "libggml-cpu-haswell.so": "94b8d445f2550a31298b3c77e82290237b99374b83660cb55377d2d9ff7dd3b2",
+    "libggml.so.0": "bb20559b5e23c8a4df426f53454b9e58c5c4df43ffbfddb9b7e31d381ccfc0e4",
+    "libllama.so.0": "8dc7056ee6548c619bded63829696b439478c357df2c4f6c41594e4f86d56324"
+  },
+  "schema": "qwen-head-feature-replay/v1"
+}

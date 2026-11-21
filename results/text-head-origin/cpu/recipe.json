@@ -1,0 +1,14 @@
+{
+  "corpus_sha256": "1dec7957b73f1fd41e66e715b0d956a03162987b0987fd958a9be46d38c8a541",
+  "features_sha256": "63aa0b30ece5a6438ea033df3f1a2acef64b00328379084dddda3c48acde9f1b",
+  "manifest_sha256": "ccb4d88429a4e2fce34b1f1a3d7cd88f1755f3ab6aaf9d91262ad0a52eb54263",
+  "model_sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+  "profile": "cpu",
+  "runtime": {
+    "libggml-base.so.0": "5a33ebd04a4731dc18aa83898e38bd06f0a5389214dcca1fecca0c22bd5a4e25",
+    "libggml-cpu-haswell.so": "94b8d445f2550a31298b3c77e82290237b99374b83660cb55377d2d9ff7dd3b2",
+    "libggml.so.0": "bb20559b5e23c8a4df426f53454b9e58c5c4df43ffbfddb9b7e31d381ccfc0e4",
+    "libllama.so.0": "8dc7056ee6548c619bded63829696b439478c357df2c4f6c41594e4f86d56324"
+  },
+  "schema": "qwen-head-feature-replay/v1"
+}

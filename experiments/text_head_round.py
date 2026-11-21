@@ -95,6 +95,12 @@ def score(manifest, adapter, records):
             for i, (identity, label, _) in enumerate(records)]
 
 
+def combined_limits(baseline_sse, baseline_correct):
+    if baseline_sse <= 0:
+        raise ValueError("baseline error leaves no room for improvement")
+    return {"max_heldout_sse": baseline_sse - 1, "min_heldout_correct": baseline_correct}
+
+
 def phase_diagnostics(manifest, pin, bundle, records, verified_adapter):
     adapter = manifest["initial"]
     snapshots = [("initial", adapter, 0)]
@@ -221,7 +227,7 @@ def main():
                 refusal = "held-out quality gate failed"
             elif after < before:
                 refusal = "held-out correctness gate failed"
-            limits = {"max_heldout_sse": initial_sse - 1, "min_heldout_correct": before}
+            limits = combined_limits(initial_sse, before)
             report["combined_quality_gate_control"] = check_quality_gate(
                 manifest, args.output / "combined-gate", limits, report["adapter_sha256"], refusal)
     V.save_json(args.output / "report.json", report)

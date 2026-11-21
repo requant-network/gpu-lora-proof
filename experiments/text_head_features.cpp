@@ -16,18 +16,31 @@ static void require(bool ok, const char *message) {
 }
 
 int main(int argc, char **argv) try {
-    require(argc == 4, "usage: text_head_features MODEL LIBDIR CORPUS");
+    require(argc == 4 || argc == 5, "usage: text_head_features MODEL LIBDIR CORPUS [--pinned-rtx|--cpu]");
+    const std::string profile = argc == 5 ? argv[4] : "";
+    const bool cpu = profile == "--cpu";
+    require(profile.empty() || cpu || profile == "--pinned-rtx", "unknown capture profile");
     std::ifstream corpus(argv[3]);
     require(corpus.good(), "corpus not readable");
-    ggml_backend_load_all_from_path(argv[2]);
+    if (profile.empty()) {
+        ggml_backend_load_all_from_path(argv[2]);
+    } else {
+        const std::string directory = argv[2];
+        require(ggml_backend_load((directory + "/libggml-cpu-haswell.so").c_str()), "CPU backend failed to load");
+        if (!cpu) {
+            require(ggml_backend_load((directory + "/cuda_v13/libggml-cuda.so").c_str()), "CUDA backend failed to load");
+        }
+    }
     llama_backend_init();
     auto device = ggml_backend_dev_by_name("CUDA0");
-    require(device && std::string(ggml_backend_dev_description(device)).find("RTX 5060 Ti") != std::string::npos,
-            "expected the selected RTX 5060 Ti");
+    if (!cpu) {
+        require(device && std::string(ggml_backend_dev_description(device)).find("RTX 5060 Ti") != std::string::npos,
+                "expected the selected RTX 5060 Ti");
+    }
     ggml_backend_dev_t devices[] = {device, nullptr};
     auto mp = llama_model_default_params();
-    mp.devices = devices;
-    mp.n_gpu_layers = 99;
+    mp.devices = cpu ? nullptr : devices;
+    mp.n_gpu_layers = cpu ? 0 : 99;
     mp.split_mode = LLAMA_SPLIT_MODE_NONE;
     std::unique_ptr<llama_model, decltype(&llama_model_free)> model(
         llama_model_load_from_file(argv[1], mp), llama_model_free);

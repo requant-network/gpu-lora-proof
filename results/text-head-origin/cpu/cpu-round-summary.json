@@ -1,0 +1,17 @@
+{
+  "features_sha256": "63aa0b30ece5a6438ea033df3f1a2acef64b00328379084dddda3c48acde9f1b",
+  "initial_correct": 16,
+  "final_correct": 16,
+  "utility_passed": true,
+  "combined_quality_gate_control": {
+    "adapter_sha256": "4b77286f4a81d99d5b18c2835e9fec2338f48c5e69699bd701ff77917a1bc922",
+    "adapter_written": true,
+    "bundle_sha256": "ed83a617a5158ce3a3f2a1b617a667eb76ba27bc88d32ede9f0a6237de542119",
+    "exit_code": 0,
+    "manifest_sha256": "ccb4d88429a4e2fce34b1f1a3d7cd88f1755f3ab6aaf9d91262ad0a52eb54263",
+    "min_heldout_correct": 16,
+    "sse_ceiling": 114327
+  },
+  "initial_sse": 114328,
+  "final_sse": 72888
+}

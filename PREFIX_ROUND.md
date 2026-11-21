@@ -85,6 +85,10 @@ evaluates a head trained on frozen Qwen features and short authored
 briefs. Broader held-out evaluation and transformer weight updates
 remain open.
 
+The [feature-origin replay](FEATURE_ORIGIN.md) reruns Qwen on the
+original texts before checking the manifest and adapter. The same
+procedure uses separately pinned recipes for the RTX and CPU captures.
+
 ## Reproduce
 
 From the repository root, run the verifier against both retained bundles

@@ -1,0 +1,217 @@
+{
+  "shape": {
+    "process_seconds": 0.5155144589953125,
+    "max_rss_kib": 424508,
+    "reported": {
+      "metrics": {
+        "constraints": 347690,
+        "public_inputs": 2,
+        "witnesses": 341004
+      },
+      "wall_seconds": 0.485313344
+    },
+    "trace_seconds": {}
+  },
+  "setup": {
+    "process_seconds": 11.623074792994885,
+    "max_rss_kib": 1025340,
+    "reported": {
+      "metrics": {
+        "proving_key_bytes": 71338640,
+        "verifying_key_bytes": 328,
+        "verifying_key_sha256": "e70476990cedf0a86dcebd84e585e2a7e5455430b8fa4f666e3f070ffd1d36f6"
+      },
+      "wall_seconds": 11.533428715
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.384245,
+      "Inlining LCs": 1.177,
+      "Constructing evaluation domain": 1.7670000000000002e-05,
+      "Evaluate Lagrange coefficients": 0.058296,
+      "R1CS to QAP Instance Map with Evaluation": 0.609481,
+      "Compute G2 table": 0.151173,
+      "Calculate B G2 of size 341007": 2.883,
+      "Compute G1 window table": 0.078351,
+      "Calculate A": 1.213,
+      "Calculate B G1": 1.127,
+      "Calculate H": 2.348,
+      "Calculate L": 1.421,
+      "Generate the R1CS proving key": 6.111,
+      "Generate the R1CS verification key": 0.000408023,
+      "Groth16::Generator": 11.411
+    }
+  },
+  "orders": [
+    {
+      "order_commitment_sha256": "0196ce46afb2c62967148a84016e8671fb62f2db44ba4669178483cdb2ac0ada",
+      "issue": {
+        "process_seconds": 0.007244751002872363,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "0196ce46afb2c62967148a84016e8671fb62f2db44ba4669178483cdb2ac0ada"
+          },
+          "wall_seconds": 0.004749398
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.004306522983824834,
+        "max_rss_kib": 3712,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002133705
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 41.37229875399498,
+        "max_rss_kib": 1352952,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 35.07686093,
+            "proof_bytes": 128,
+            "prove_seconds": 5.338955886
+          },
+          "wall_seconds": 41.268292804
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.358834,
+          "Inlining LCs": 1.19,
+          "R1CS to QAP witness map": 1.099,
+          "Compute C": 1.86,
+          "Compute A": 0.17472300000000002,
+          "Compute B in G1": 0.148143,
+          "Compute B in G2": 0.418835,
+          "Finish C": 3.282e-06,
+          "Groth16::Prover": 5.252
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.24561400499078445,
+        "max_rss_kib": 32128,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001790008,
+            "pairing_and_public_inputs_seconds": 0.001289303,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003355191
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.004253232007613406,
+        "max_rss_kib": 3968,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002157871
+        },
+        "trace_seconds": {}
+      }
+    },
+    {
+      "order_commitment_sha256": "bc333d2c167e0efe3aaaf8bd91f856f96f6ed0cb7043038392ce4d5da5a81123",
+      "issue": {
+        "process_seconds": 0.007043392979539931,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "bc333d2c167e0efe3aaaf8bd91f856f96f6ed0cb7043038392ce4d5da5a81123"
+          },
+          "wall_seconds": 0.004789907
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.003867979015922174,
+        "max_rss_kib": 3712,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002170722
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 41.191686453996226,
+        "max_rss_kib": 1352976,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 35.07390799,
+            "proof_bytes": 128,
+            "prove_seconds": 5.1697540889999996
+          },
+          "wall_seconds": 41.09177149
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.34651400000000004,
+          "Inlining LCs": 1.178,
+          "R1CS to QAP witness map": 1.074,
+          "Compute C": 1.756,
+          "Compute A": 0.169844,
+          "Compute B in G1": 0.146603,
+          "Compute B in G2": 0.407361,
+          "Finish C": 3.7709999999999996e-06,
+          "Groth16::Prover": 5.081
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.2538396349991672,
+        "max_rss_kib": 31232,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001809145,
+            "pairing_and_public_inputs_seconds": 0.001276243,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003328371
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.0043707780132535845,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002194958
+        },
+        "trace_seconds": {}
+      }
+    }
+  ],
+  "refusals": {
+    "route_switch": "NO: private prefix opening does not match the commitments",
+    "incompatible_order": "Constraint trace requires enabling `ConstraintLayer`\nNO: private prefix circuit rejected the release statement",
+    "cross_order_proof": "NO: Groth16 rejected the public round and adapter"
+  },
+  "prior_single_template_verification": {
+    "process_seconds": 0.004901097010588273,
+    "max_rss_kib": 4224,
+    "reported": {
+      "metrics": {
+        "accepted": true,
+        "key_and_proof_prepare_seconds": 0.001784839,
+        "pairing_and_public_inputs_seconds": 0.001310744,
+        "public_inputs": 2
+      },
+      "wall_seconds": 0.003260553
+    },
+    "trace_seconds": {}
+  },
+  "arbiter_image": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+  "distinct_templates": 2,
+  "verifying_key_sha256": "e70476990cedf0a86dcebd84e585e2a7e5455430b8fa4f666e3f070ffd1d36f6",
+  "public_bytes": 712
+}

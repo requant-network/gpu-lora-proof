@@ -19,3 +19,7 @@ results/private-prefix/**/*.json text eol=lf
 results/private-prefix/**/*.commitments binary
 results/private-prefix/**/*.key binary
 results/private-prefix/**/*.proof binary
+results/private-template-pair/**/*.json text eol=lf
+results/private-template-pair/**/*.commitments binary
+results/private-template-pair/**/*.key binary
+results/private-template-pair/**/*.proof binary

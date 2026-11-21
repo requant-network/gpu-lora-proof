@@ -49,6 +49,9 @@ witness routing and a new setup.
 [Groth16 implementation](https://docs.rs/ark-groth16/0.5.0/ark_groth16/) ·
 [Constrained Poseidon sponge](https://docs.rs/crate/ark-crypto-primitives/0.5.0/source/src/sponge/poseidon/constraints.rs).
 
+The [two-template follow-up](PRIVATE_TEMPLATE_PAIR.md) tests a private
+choice within a fixed public pair under one key.
+
 ## Observed run
 
 The two variants reused one verification key and both passed inside

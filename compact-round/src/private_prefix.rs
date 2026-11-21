@@ -1,8 +1,8 @@
 use ark_bn254::Fr;
 use ark_ff::{PrimeField, UniformRand};
-use ark_r1cs_std::alloc::AllocVar;
 use ark_r1cs_std::eq::EqGadget;
 use ark_r1cs_std::fields::fp::FpVar;
+use ark_r1cs_std::{alloc::AllocVar, boolean::Boolean};
 use ark_relations::r1cs::{
     ConstraintSynthesizer, ConstraintSystem, ConstraintSystemRef, SynthesisError, SynthesisMode,
 };
@@ -49,7 +49,85 @@ impl Template {
 }
 
 #[derive(Clone)]
+struct Branch {
+    template: Template,
+    decoy: Vec<Fr>,
+}
+
+#[derive(Clone)]
+enum Policy {
+    Single(Template),
+    Pair([Branch; 2]),
+}
+
+impl Policy {
+    fn pair(paths: &[String]) -> Result<Self> {
+        let [first_shape, first_manifest, first_pin, first_adapter, second_shape, second_manifest, second_pin, second_adapter] =
+            paths
+        else {
+            return Err("expected two pinned prefix fixtures".into());
+        };
+        let load = |shape: &str, manifest: &str, pin: &str, adapter: &str| -> Result<Branch> {
+            Ok(Branch {
+                template: Template::load(shape)?,
+                decoy: Statement::load_prefix(manifest, pin, adapter)?
+                    .prefix_inputs()
+                    .split_off(2),
+            })
+        };
+        let first = load(first_shape, first_manifest, first_pin, first_adapter)?;
+        let second = load(second_shape, second_manifest, second_pin, second_adapter)?;
+        if first.template.pin == second.template.pin {
+            return Err("pair requires two distinct prefix templates".into());
+        }
+        Ok(Self::Pair([first, second]))
+    }
+
+    fn template(&self, choice: usize) -> Result<&Template> {
+        match self {
+            Self::Single(template) => Ok(template),
+            Self::Pair(branches) => branches
+                .get(choice)
+                .map(|branch| &branch.template)
+                .ok_or_else(|| "pair choice must be 0 or 1".into()),
+        }
+    }
+
+    fn constrain(
+        &self,
+        numeric: &[Var],
+        cs: ConstraintSystemRef<Fr>,
+        choice: Option<usize>,
+    ) -> CircuitResult<[Var; 2]> {
+        match self {
+            Self::Single(template) => {
+                enforce_prefix(numeric, &template.shape)?;
+                Ok(template.pin.map(Var::Constant))
+            }
+            Self::Pair([first, second]) => {
+                let pick_second = Boolean::new_witness(cs, || {
+                    Ok(choice.ok_or(SynthesisError::AssignmentMissing)? == 1)
+                })?;
+                // Both branches are enforced. The inactive one receives its public valid fixture.
+                for (branch, active) in [(first, !&pick_second), (second, pick_second.clone())] {
+                    let routed = numeric
+                        .iter()
+                        .zip(&branch.decoy)
+                        .map(|(value, decoy)| active.select(value, &Var::Constant(*decoy)))
+                        .collect::<CircuitResult<Vec<_>>>()?;
+                    enforce_prefix(&routed, &branch.template.shape)?;
+                }
+                let [a, b] = first.template.pin.map(Var::Constant);
+                let [c, d] = second.template.pin.map(Var::Constant);
+                Ok([pick_second.select(&c, &a)?, pick_second.select(&d, &b)?])
+            }
+        }
+    }
+}
+
+#[derive(Clone)]
 struct Witness {
+    choice: usize,
     inputs: Vec<Fr>,
     public: [Fr; 2],
     order_salt: Fr,
@@ -58,7 +136,7 @@ struct Witness {
 
 #[derive(Clone)]
 struct PrivatePrefix {
-    template: Template,
+    policy: Policy,
     witness: Option<Witness>,
 }
 
@@ -80,13 +158,17 @@ impl ConstraintSynthesizer<Fr> for PrivatePrefix {
         let (ceiling, adapter) = output_and_ceiling.split_last().unwrap();
         constrain_order(order_fields)?;
         nonnegative(ceiling, 64)?;
-        enforce_prefix(&numeric, &self.template.shape)?;
+        let [first_pin, second_pin] = self.policy.constrain(
+            &numeric,
+            cs.clone(),
+            self.witness.as_ref().map(|w| w.choice),
+        )?;
 
         let config = parameters();
         let committed_order = [
             Var::Constant(Fr::from(ORDER_TAG)),
-            Var::Constant(self.template.pin[0]),
-            Var::Constant(self.template.pin[1]),
+            first_pin,
+            second_pin,
             ceiling.clone(),
             order_salt,
         ];
@@ -102,28 +184,84 @@ fn output_commitment(order: Fr, adapter: &[Fr], salt: Fr) -> Fr {
     commitment(&[Fr::from(OUTPUT_TAG), order, salt], adapter, &parameters())
 }
 
+fn shape(policy: Policy) -> Result<Value> {
+    let cs = ConstraintSystem::new_ref();
+    cs.set_mode(SynthesisMode::Setup);
+    PrivatePrefix {
+        policy,
+        witness: None,
+    }
+    .generate_constraints(cs.clone())?;
+    Ok(
+        json!({ "constraints": cs.num_constraints(), "public_inputs": cs.num_instance_variables() - 1,
+              "witnesses": cs.num_witness_variables() }),
+    )
+}
+
+fn prove_prefix(policy: Policy, choice: usize, args: &[String]) -> Result<Value> {
+    let [manifest, pin, adapter, order_salt, output_salt, commitments, key, proof] = args else {
+        return Err(
+            "expected manifest, adapter, openings, commitments, key and proof paths".into(),
+        );
+    };
+    let template = policy.template(choice)?;
+    let inputs = Statement::load_prefix(manifest, pin, adapter)?
+        .prefix_inputs()
+        .split_off(2);
+    let public: [Fr; 2] = decode(&read(commitments, 64)?)?;
+    let order_salt = decode(&read(order_salt, 32)?)?;
+    let output_salt = decode(&read(output_salt, 32)?)?;
+    let header = template.order_header(*inputs.last().unwrap(), order_salt);
+    if commitment(&header, &inputs[..ORDER_FIELDS], &parameters()) != public[0]
+        || output_commitment(
+            public[0],
+            &inputs[ORDER_FIELDS..inputs.len() - 1],
+            output_salt,
+        ) != public[1]
+    {
+        return Err("private prefix opening does not match the commitments".into());
+    }
+    let circuit = PrivatePrefix {
+        policy,
+        witness: Some(Witness {
+            inputs,
+            public,
+            order_salt,
+            output_salt,
+            choice,
+        }),
+    };
+    let cs = ConstraintSystem::new_ref();
+    circuit.clone().generate_constraints(cs.clone())?;
+    if !cs.is_satisfied()? {
+        return Err("private prefix circuit rejected the release statement".into());
+    }
+    drop(cs);
+    prove(circuit, key, proof)
+}
+
 pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
     match (command, args) {
-        ("private-prefix-shape", [template]) => {
-            let cs = ConstraintSystem::new_ref();
-            cs.set_mode(SynthesisMode::Setup);
-            PrivatePrefix {
-                template: Template::load(template)?,
-                witness: None,
-            }
-            .generate_constraints(cs.clone())?;
-            Ok(
-                json!({"constraints": cs.num_constraints(), "public_inputs": cs.num_instance_variables() - 1,
-                      "witnesses": cs.num_witness_variables()}),
-            )
-        }
+        ("private-prefix-shape", [template]) => shape(Policy::Single(Template::load(template)?)),
+        ("private-prefix-pair-shape", paths) => shape(Policy::pair(paths)?),
         ("private-prefix-setup", [template, dir]) => setup(
             dir,
             PrivatePrefix {
-                template: Template::load(template)?,
+                policy: Policy::Single(Template::load(template)?),
                 witness: None,
             },
         ),
+        ("private-prefix-pair-setup", [dir, paths @ ..]) => setup(
+            dir,
+            PrivatePrefix {
+                policy: Policy::pair(paths)?,
+                witness: None,
+            },
+        ),
+        ("private-prefix-pair-prove", [choice, paths @ ..]) if paths.len() == 16 => {
+            let (policy, proof) = paths.split_at(8);
+            prove_prefix(Policy::pair(policy)?, choice.parse()?, proof)
+        }
         ("private-prefix-order", [template, manifest, pin, dir]) => {
             let template = Template::load(template)?;
             let (manifest, _) = Manifest::load_prefix(manifest, pin)?;
@@ -146,44 +284,8 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             write(dir.join("round.commitments"), &[order, output])?;
             Ok(json!({"public_statement_bytes": 64}))
         }
-        (
-            "private-prefix-prove",
-            [template, manifest, pin, adapter, order_salt, output_salt, commitments, key, proof],
-        ) => {
-            let template = Template::load(template)?;
-            let inputs = Statement::load_prefix(manifest, pin, adapter)?
-                .prefix_inputs()
-                .split_off(2);
-            let public: [Fr; 2] = decode(&read(commitments, 64)?)?;
-            let order_salt = decode(&read(order_salt, 32)?)?;
-            let output_salt = decode(&read(output_salt, 32)?)?;
-            let header = template.order_header(*inputs.last().unwrap(), order_salt);
-            if commitment(&header, &inputs[..ORDER_FIELDS], &parameters()) != public[0]
-                || output_commitment(
-                    public[0],
-                    &inputs[ORDER_FIELDS..inputs.len() - 1],
-                    output_salt,
-                ) != public[1]
-            {
-                return Err("private prefix opening does not match the commitments".into());
-            }
-
-            let circuit = PrivatePrefix {
-                template,
-                witness: Some(Witness {
-                    inputs,
-                    public,
-                    order_salt,
-                    output_salt,
-                }),
-            };
-            let cs = ConstraintSystem::new_ref();
-            circuit.clone().generate_constraints(cs.clone())?;
-            if !cs.is_satisfied()? {
-                return Err("private prefix circuit rejected the release statement".into());
-            }
-            drop(cs);
-            prove(circuit, key, proof)
+        ("private-prefix-prove", [template, proof @ ..]) => {
+            prove_prefix(Policy::Single(Template::load(template)?), 0, proof)
         }
         ("private-prefix-verify", [commitments, order_pin, vk, pin, proof]) => {
             let public = pinned_commitments(commitments, order_pin)?;
@@ -203,7 +305,11 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-order SHAPE MANIFEST PIN DIR", "private-prefix-output ORDER ADAPTER DIR",
             "private-prefix-prove SHAPE MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
             "private-prefix-verify COMMITMENTS ORDER_PIN VK VK_PIN PROOF",
-            "private-prefix-open-output ADAPTER OUTPUT_SALT COMMITMENTS ORDER_PIN"
+            "private-prefix-open-output ADAPTER OUTPUT_SALT COMMITMENTS ORDER_PIN",
+            "private-prefix-pair-shape FIXTURES",
+            "private-prefix-pair-setup DIR FIXTURES",
+            "private-prefix-pair-prove CHOICE FIXTURES MANIFEST PIN ADAPTER ORDER_SALT OUTPUT_SALT COMMITMENTS PK PROOF",
+            "FIXTURES = FIRST_SHAPE FIRST_MANIFEST FIRST_PIN FIRST_ADAPTER SECOND_SHAPE SECOND_MANIFEST SECOND_PIN SECOND_ADAPTER"
         ]})),
         _ => Err("use private-prefix-help for private prefix command syntax".into()),
     }

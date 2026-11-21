@@ -62,6 +62,9 @@ coordinate selection and the linked optimizer inputs for this fixture.
 Gradient-based changes across layers and evaluation on a new corpus remain
 open.
 
+The [signed two-host round](SHARDED_PROJECTION.md) distributes the
+same adaptation scores and verifies both worker contributions per phase.
+
 ## Reproduce
 
 Build the updated writer and use the pinned runtime as in the

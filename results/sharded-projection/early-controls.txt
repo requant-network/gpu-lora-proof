@@ -1,0 +1,4 @@
+duplicate: NO: expected exactly one contribution from each slot
+missing: NO: expected exactly one contribution from each slot
+modified-signature: NO: contribution signature did not verify
+another-round: NO: contribution does not bind this phase input

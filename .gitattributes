@@ -37,3 +37,5 @@ results/shared-triple-proving-key/**/*.commitments binary
 results/shared-triple-proving-key/**/*.key binary
 results/shared-triple-proving-key/**/*.proof binary
 results/cuda-h-prover/**/*.proof binary
+results/sharded-projection/*.json text eol=lf
+results/sharded-projection/*.gguf binary

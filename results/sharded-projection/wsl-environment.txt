@@ -1,0 +1,10 @@
+6.18.58.1-microsoft-standard-WSL2
+model name	: AMD Ryzen 7 8745HS w/ Radeon 780M Graphics
+Python 3.12.3
+OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)
+CPU affinity: 0-3; nice 12
+62f52a953d56ec0aa8ac798cbefeade57d2db1d48bbb5ad6db273ecbe540c68f  /root/lora-shards.MmF4A4oX/src/experiments/projection_shards.py
+3edc0cc1ea33c5f183d27134d8836f486ff72e7de99b04bf9e1470fffb65c81e  /root/lora-shards.MmF4A4oX/profile/bin/features
+e723c88cde4ecdde23e49ae79764b7657daa6adb2ab55cd1649a8522d1f92d03  /root/lora-shards.MmF4A4oX/profile/bin/write-adapter
+74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db  /mnt/d/Temp/requant-lora-cross-host-3ba826b/pinned-qwen.gguf
+d5a55fe5fa2ce4250238de02b91112aeb77544eb9319bd1aa5b22c08562972ba  /mnt/d/Temp/lora-shards-5a7029006ed5454c8a7443b1fed5056f/order.json

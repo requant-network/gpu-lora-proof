@@ -1,0 +1,11 @@
+{
+  "keys": {
+    "left": "302a300506032b6570032100ebb928a32bac22ca831f9a8fd43efc12e6dacd2c8c690702b506306f262c9235",
+    "right": "302a300506032b65700321008b9a2a2b31166686cb9fb8682567e6d96333ca4755cd80a5c2efb98eeb8bdf13"
+  },
+  "recipe_sha256": "fe9ff83c6077430808d15972e41f18a168d74a5fae75b982d5e6816184398446",
+  "round": "fa2183f0a13f9ba57d665cb552eb56e43bdcdd25b95be05eb369e5be3179c7a5",
+  "schema": "qwen-projection-shards/v1",
+  "slot_policy": "contiguous-balanced-eights",
+  "target_tensor": "blk.23.attn_output.weight"
+}

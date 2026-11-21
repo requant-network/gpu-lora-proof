@@ -1,0 +1,16 @@
+Python 3.12.3
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Model name:                              AMD Ryzen 5 5500
+Base source: f58294d1c91801a8f5eb0f75b20c58f107864a0c
+5b53fa4579712a24377021a3dafbc3a7d0f103e58137072a6fe1f82257a01fc2  transformer_projection.py
+6d93e2253e40b4da367094e9577d17df23e8c68b7a138d134cbab2339bc22724  write_projection_adapter.cpp
+e723c88cde4ecdde23e49ae79764b7657daa6adb2ab55cd1649a8522d1f92d03  write-adapter
+3edc0cc1ea33c5f183d27134d8836f486ff72e7de99b04bf9e1470fffb65c81e  features
+74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db  pinned-qwen.gguf
+5a33ebd04a4731dc18aa83898e38bd06f0a5389214dcca1fecca0c22bd5a4e25  libggml-base.so.0
+94b8d445f2550a31298b3c77e82290237b99374b83660cb55377d2d9ff7dd3b2  libggml-cpu-haswell.so
+bb20559b5e23c8a4df426f53454b9e58c5c4df43ffbfddb9b7e31d381ccfc0e4  libggml.so.0
+8dc7056ee6548c619bded63829696b439478c357df2c4f6c41594e4f86d56324  libllama.so.0
+Source overlay used CRLF. Git source normalized to LF:
+4162dc7d17e63ae404db97552958add87555f0ddaf1efb3dcb5a411cb1c0ac80  transformer_projection.py (LF)
+081754fd46cca4c255fc8977276e2b6af9cac2e1ea62e0fa873dd85a9c6dade5  write_projection_adapter.cpp (LF)

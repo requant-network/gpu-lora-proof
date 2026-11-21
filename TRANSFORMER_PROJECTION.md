@@ -73,6 +73,8 @@ projection update. Generalization, selection outside the grid and
 gradient-based updates to a wider set of transformer weights need
 separate experiments.
 
+The [two-phase follow-up](PROJECTION_TWO_PHASE.md) updated A after B and kept this original adapter when the second step increased held-out error.
+
 ## Reproduce
 
 Use the exact model, CPU recipe and native headers and libraries from

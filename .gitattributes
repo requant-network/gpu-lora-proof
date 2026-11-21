@@ -27,3 +27,4 @@ results/shared-proving-key/**/*.json text eol=lf
 results/shared-proving-key/**/*.commitments binary
 results/shared-proving-key/**/*.key binary
 results/shared-proving-key/**/*.proof binary
+results/projection-two-phase/*.json text eol=lf

@@ -1,0 +1,2 @@
+NO: projection certificate differs from replay
+exit=1; output directory absent

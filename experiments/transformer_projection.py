@@ -18,6 +18,7 @@ from verify_text_head_origin import CPU_FILES, require_digest, sha256
 
 
 STEPS = (0, -1, 1, -2, 2, -4, 4, -8, 8)
+INPUT_COORDINATES = (112, 224, 336, 448, 560, 672, 784)
 TENSOR = "blk.23.attn_output.weight"
 
 
@@ -103,11 +104,9 @@ def run(args):
                                **evaluate_adapter("adapt", adapter, str(step))})
 
         chosen = min(candidates, key=lambda row: (row["squared_error"], abs(row["step"]), row["step"]))
-        before = evaluate(head, baseline_rows["heldout"])
         step = chosen["step"]
-        after = evaluate_adapter("heldout", adapters[step], "heldout") if step else before
-        released = bool(step and after["correct"] >= before["correct"]
-                        and after["squared_error"] < before["squared_error"])
+        initial_adapter = adapters.get(step)
+        adapter = initial_adapter
         certificate = {
             "schema": "qwen-projection-replay/v1",
             "cpu_recipe_sha256": recipe_pin,
@@ -115,10 +114,54 @@ def run(args):
             "baseline_features_sha256": baseline_pin,
             "candidates": candidates,
             "selected_step": step,
-            "heldout_before": before,
-            "heldout_after": after,
-            "release": released,
         }
+        if args.two_phase:
+            if initial_adapter is None:
+                raise V.Reject("input-factor search requires a nonzero output-factor update")
+            phase_two = [{"coordinate": 0, "sign": 0, **chosen}]
+            updates = {(0, 0): initial_adapter}
+            for coordinate in INPUT_COORDINATES:
+                for sign in (-1, 1):
+                    tag = f"input-{coordinate}-{sign}"
+                    candidate = root / f"{tag}.gguf"
+                    checked_run([writer, str(candidate), str(step), *coefficients, str(coordinate), str(sign)], env)
+                    updates[coordinate, sign] = candidate
+                    phase_two.append({
+                        "coordinate": coordinate, "sign": sign, "step": step,
+                        "adapter_sha256": sha256(candidate),
+                        **evaluate_adapter("adapt", candidate, tag),
+                    })
+            selected = min(phase_two, key=lambda row: (
+                row["squared_error"], abs(row["sign"]), row["coordinate"], row["sign"],
+            ))
+            transition = selected["coordinate"], selected["sign"]
+            adapter = updates[transition]
+            certificate.update({
+                "schema": "qwen-projection-replay/v2",
+                "second_phase": {
+                    "input_adapter_sha256": sha256(initial_adapter),
+                    "candidates": phase_two,
+                    "selected_coordinate": selected["coordinate"],
+                    "selected_sign": selected["sign"],
+                    "output_adapter_sha256": sha256(adapter),
+                },
+            })
+
+        before = evaluate(head, baseline_rows["heldout"])
+        after = evaluate_adapter("heldout", initial_adapter, "heldout") if initial_adapter else before
+        released = bool(step and after["correct"] >= before["correct"]
+                        and after["squared_error"] < before["squared_error"])
+        if args.two_phase:
+            certificate["heldout_after_first_phase"] = after
+            final = evaluate_adapter("heldout", adapter, "heldout-final") if transition != (0, 0) else after
+            released = (
+                transition != (0, 0)
+                and final["correct"] >= max(before["correct"], after["correct"])
+                and final["squared_error"] < min(before["squared_error"], after["squared_error"])
+            )
+            after = final
+        certificate.update({"heldout_before": before, "heldout_after": after, "release": released})
+
         if expected is not None and V.canonical(expected) != V.canonical(certificate):
             raise V.Reject("projection certificate differs from replay")
 
@@ -126,7 +169,7 @@ def run(args):
         V.save_json(args.output / "certificate.json", certificate)
         if released:
             with (args.output / "adapter.gguf").open("xb") as out:
-                out.write(adapters[step].read_bytes())
+                out.write(adapter.read_bytes())
 
     return {"certificate_sha256": sha256(args.output / "certificate.json"), "selected_step": step,
             "heldout_before": before, "heldout_after": after, "release": released,
@@ -144,6 +187,7 @@ def main():
     parser.add_argument("output", type=Path)
     parser.add_argument("--recipe-sha256", required=True)
     parser.add_argument("--certificate", type=Path)
+    parser.add_argument("--two-phase", action="store_true")
     try:
         print(json.dumps(run(parser.parse_args())))
     except (V.Reject, KeyError, TypeError, ValueError, OSError, OverflowError,

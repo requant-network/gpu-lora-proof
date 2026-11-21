@@ -10,7 +10,9 @@
 int main(int argc, char **argv) try {
     constexpr int width = 896;
     constexpr int samples = 32;
-    if (argc != 3 + samples) throw std::runtime_error("usage: write_projection_adapter OUTPUT STEP W0 ... W31");
+    if (argc != 3 + samples && argc != 5 + samples) {
+        throw std::runtime_error("usage: write_projection_adapter OUTPUT STEP W0 ... W31 [A_INDEX A_SIGN]");
+    }
 
     const int step = std::stoi(argv[2]);
     if (step == 0 || step < -8 || step > 8) throw std::runtime_error("invalid nonzero step");
@@ -26,6 +28,17 @@ int main(int argc, char **argv) try {
     std::fill_n(av, width, 0.0f);
     std::fill_n(bv, width, 0.0f);
     av[0] = 1.0f;
+    if (argc == 5 + samples) {
+        std::size_t index_chars, sign_chars;
+        const std::string index_arg(argv[3 + samples]), sign_arg(argv[4 + samples]);
+        const int index = std::stoi(index_arg, &index_chars);
+        const int sign = std::stoi(sign_arg, &sign_chars);
+        if (index_chars != index_arg.size() || sign_chars != sign_arg.size() ||
+            index <= 0 || index >= width || (sign != -1 && sign != 1)) {
+            throw std::runtime_error("invalid rank-one input coordinate");
+        }
+        av[index] = static_cast<float>(sign) / 4.0f;
+    }
     for (int i = 0; i < samples; ++i) {
         const int coefficient = std::stoi(argv[3 + i]);
         if (coefficient < -16 || coefficient > 16) throw std::runtime_error("invalid frozen head coordinate");

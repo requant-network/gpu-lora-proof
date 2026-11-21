@@ -1,6 +1,7 @@
 mod circuit;
 mod prefix;
 mod private;
+mod private_prefix;
 mod statement;
 
 use ark_bn254::{Bn254, Fr};
@@ -144,6 +145,7 @@ fn run(args: &[String]) -> Result<()> {
             let statement = Statement::load_prefix(manifest, pin, adapter)?;
             verify(&statement.prefix_inputs(), verifying_key, key_pin, proof)?
         }
+        [command, rest @ ..] if command.starts_with("private-prefix-") => private_prefix::run(command, rest)?,
         [command, rest @ ..] if command.starts_with("private-") => private::run(command, rest)?,
         _ => return Err("use shape | setup DIR | replay MANIFEST PIN ADAPTER | prove MANIFEST PIN ADAPTER PK PROOF | verify MANIFEST PIN ADAPTER VK VK_PIN PROOF | prefix-shape / prefix-setup / prefix-check / prefix-prove / prefix-verify | private-help".into()),
     };

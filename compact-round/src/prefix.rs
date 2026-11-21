@@ -27,7 +27,11 @@ pub struct Shape {
 
 impl Shape {
     pub fn load(path: &str) -> crate::statement::Result<Self> {
-        let shape: Self = serde_json::from_slice(&read(path, 8 << 10)?)?;
+        Self::from_bytes(&read(path, 8 << 10)?)
+    }
+
+    pub(crate) fn from_bytes(bytes: &[u8]) -> crate::statement::Result<Self> {
+        let shape: Self = serde_json::from_slice(bytes)?;
         for order in &shape.orders {
             if order.iter().any(|&index| index >= ADAPTER)
                 || order.iter().collect::<HashSet<_>>().len() != order.len()
@@ -49,7 +53,7 @@ pub struct PrefixCircuit {
 
 // The full range is far below the BN254 scalar modulus. Negative field residues
 // therefore cannot satisfy the reconstruction with this number of bits.
-fn nonnegative(value: &Var, width: usize) -> Synthesis<()> {
+pub(crate) fn nonnegative(value: &Var, width: usize) -> Synthesis<()> {
     let assigned = value.value().ok().map(|field| field.into_bigint());
     let bits = (0..width)
         .map(|i| {
@@ -207,58 +211,62 @@ impl ConstraintSynthesizer<Fr> for PrefixCircuit {
         for pin in &public[..2] {
             pin.enforce_equal(&Var::new_witness(cs.clone(), || pin.value())?)?;
         }
-        let mut remaining = public[2..].iter();
-        let mut take = |count| remaining.by_ref().take(count).cloned().collect::<Vec<_>>();
-        let w = take(D * D);
-        let mut a = take(ADAPTER);
-        let mut b = take(ADAPTER);
-        for (phase, order) in self.shape.orders.iter().enumerate() {
-            let mut rows = Vec::new();
-            for _ in 0..2 {
-                let x = take(BATCH * D);
-                let targets = take(BATCH * D);
-                rows.extend(
-                    x.chunks_exact(D)
-                        .zip(targets.chunks_exact(D))
-                        .map(|(x, t)| (x.to_vec(), t.to_vec())),
-                );
-            }
-            let result = prefix_transition(phase, &a, &b, &w, rows, order)?;
-            if phase == 0 {
-                b = result;
-            } else {
-                a = result;
-            }
-        }
-
-        let heldout = take(HELDOUT * D);
-        let targets = take(HELDOUT * D);
-        let mut squared_error = constant(0);
-        for ((x, target), &label) in heldout
-            .chunks_exact(D)
-            .zip(targets.chunks_exact(D))
-            .zip(&self.shape.labels)
-        {
-            let (_, predicted) = forward(x, &w, &a, &b);
-            for j in 0..D {
-                if j != label {
-                    nonnegative(&(&target[label] - &target[j] - constant(1)), 9)?;
-                    nonnegative(
-                        &(&predicted[label] - &predicted[j] - constant(i64::from(j < label))),
-                        32,
-                    )?;
-                }
-                let error = &predicted[j] - &target[j];
-                squared_error += &error * &error;
-            }
-        }
-        for (value, expected) in a.iter().chain(&b).zip(take(2 * ADAPTER)) {
-            value.enforce_equal(&expected)?;
-        }
-        nonnegative(&(&take(1)[0] - squared_error), LOSS_BITS)?;
-        debug_assert!(remaining.next().is_none());
-        Ok(())
+        enforce_prefix(&public[2..], &self.shape)
     }
+}
+
+pub(crate) fn enforce_prefix(numeric: &[Var], shape: &Shape) -> Synthesis<()> {
+    let mut remaining = numeric.iter();
+    let mut take = |count| remaining.by_ref().take(count).cloned().collect::<Vec<_>>();
+    let w = take(D * D);
+    let mut a = take(ADAPTER);
+    let mut b = take(ADAPTER);
+    for (phase, order) in shape.orders.iter().enumerate() {
+        let mut rows = Vec::new();
+        for _ in 0..2 {
+            let x = take(BATCH * D);
+            let targets = take(BATCH * D);
+            rows.extend(
+                x.chunks_exact(D)
+                    .zip(targets.chunks_exact(D))
+                    .map(|(x, t)| (x.to_vec(), t.to_vec())),
+            );
+        }
+        let result = prefix_transition(phase, &a, &b, &w, rows, order)?;
+        if phase == 0 {
+            b = result;
+        } else {
+            a = result;
+        }
+    }
+
+    let heldout = take(HELDOUT * D);
+    let targets = take(HELDOUT * D);
+    let mut squared_error = constant(0);
+    for ((x, target), &label) in heldout
+        .chunks_exact(D)
+        .zip(targets.chunks_exact(D))
+        .zip(&shape.labels)
+    {
+        let (_, predicted) = forward(x, &w, &a, &b);
+        for j in 0..D {
+            if j != label {
+                nonnegative(&(&target[label] - &target[j] - constant(1)), 9)?;
+                nonnegative(
+                    &(&predicted[label] - &predicted[j] - constant(i64::from(j < label))),
+                    32,
+                )?;
+            }
+            let error = &predicted[j] - &target[j];
+            squared_error += &error * &error;
+        }
+    }
+    for (value, expected) in a.iter().chain(&b).zip(take(2 * ADAPTER)) {
+        value.enforce_equal(&expected)?;
+    }
+    nonnegative(&(&take(1)[0] - squared_error), LOSS_BITS)?;
+    debug_assert!(remaining.next().is_none());
+    Ok(())
 }
 
 #[cfg(test)]

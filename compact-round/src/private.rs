@@ -22,7 +22,7 @@ use crate::statement::{
 };
 use crate::{decode, setup, write, KEY_LIMIT};
 
-const ORDER_FIELDS: usize = PUBLIC - 2 - 2 * ADAPTER;
+pub(crate) const ORDER_FIELDS: usize = PUBLIC - 2 - 2 * ADAPTER;
 const PACKED_WIDTH: usize = 20;
 const ORDER_TAG: u64 = u64::from_be_bytes(*b"lora-in1");
 const OUTPUT_TAG: u64 = u64::from_be_bytes(*b"loraout1");
@@ -30,7 +30,7 @@ type Var = FpVar<Fr>;
 type Bit = Boolean<Fr>;
 type CircuitResult<T> = std::result::Result<T, SynthesisError>;
 
-fn parameters() -> PoseidonConfig<Fr> {
+pub(crate) fn parameters() -> PoseidonConfig<Fr> {
     // The generated width-3 permutation matches the pinned circomlibjs table.
     let (ark, mds) = find_poseidon_ark_and_mds::<Fr>(254, 2, 8, 57, 0);
     PoseidonConfig::new(8, 57, 5, mds, ark, 2, 1)
@@ -61,14 +61,14 @@ fn pack_vars(fields: &[Var]) -> Vec<Var> {
         .collect()
 }
 
-fn commitment(prefix: &[Fr], fields: &[Fr], config: &PoseidonConfig<Fr>) -> Fr {
+pub(crate) fn commitment(prefix: &[Fr], fields: &[Fr], config: &PoseidonConfig<Fr>) -> Fr {
     let mut sponge = PoseidonSponge::new(config);
     let data: Vec<_> = prefix.iter().copied().chain(pack(fields)).collect();
     sponge.absorb(&data);
     sponge.squeeze_native_field_elements(1)[0]
 }
 
-fn commitment_var(
+pub(crate) fn commitment_var(
     cs: ConstraintSystemRef<Fr>,
     prefix: &[Var],
     fields: &[Var],
@@ -80,7 +80,7 @@ fn commitment_var(
     Ok(sponge.squeeze_field_elements(1)?.remove(0))
 }
 
-fn constrain_order(fields: &[Var]) -> CircuitResult<()> {
+pub(crate) fn constrain_order(fields: &[Var]) -> CircuitResult<()> {
     for (index, value) in fields.iter().enumerate() {
         let base = index < D * D;
         let adapter = index >= D * D && index < D * D + 2 * ADAPTER;
@@ -142,7 +142,7 @@ impl ConstraintSynthesizer<Fr> for PrivateRound {
     }
 }
 
-fn owner_directory(path: &str) -> Result<&Path> {
+pub(crate) fn owner_directory(path: &str) -> Result<&Path> {
     let dir = Path::new(path);
     let mut builder = DirBuilder::new();
     #[cfg(unix)]
@@ -154,7 +154,7 @@ fn owner_directory(path: &str) -> Result<&Path> {
     Ok(dir)
 }
 
-fn pinned_commitments(path: &str, order_pin: &str) -> Result<[Fr; 2]> {
+pub(crate) fn pinned_commitments(path: &str, order_pin: &str) -> Result<[Fr; 2]> {
     let bytes = read(path, 64)?;
     let public = decode(&bytes)?;
     if sha256(&bytes[..32]) != order_pin {

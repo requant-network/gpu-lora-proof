@@ -15,3 +15,7 @@ results/cross-host-replay/** text eol=lf
 results/compact-prefix/**/*.json text eol=lf
 results/compact-prefix/**/*.key binary
 results/compact-prefix/**/*.proof binary
+results/private-prefix/**/*.json text eol=lf
+results/private-prefix/**/*.commitments binary
+results/private-prefix/**/*.key binary
+results/private-prefix/**/*.proof binary

@@ -124,6 +124,14 @@ impl Manifest {
         Self::load_schema(path, pin, SCHEMA)
     }
 
+    pub(crate) fn load_prefix(path: &str, pin: &str) -> Result<(Self, [u8; 32])> {
+        Self::load_schema(path, pin, PREFIX_SCHEMA)
+    }
+
+    pub(crate) fn heldout_ceiling(&self) -> Fr {
+        Fr::from(self.max_heldout_sse)
+    }
+
     fn load_schema(path: &str, pin: &str, schema: &str) -> Result<(Self, [u8; 32])> {
         let bytes = read(path, 64 << 10)?;
         if sha256(&bytes) != pin {
@@ -198,7 +206,7 @@ impl Statement {
     }
 
     pub fn load_prefix(manifest_path: &str, pin: &str, output_path: &str) -> Result<Self> {
-        let (manifest, pin) = Manifest::load_schema(manifest_path, pin, PREFIX_SCHEMA)?;
+        let (manifest, pin) = Manifest::load_prefix(manifest_path, pin)?;
         let output = Adapter::load(output_path)?;
         Ok(Self {
             manifest,

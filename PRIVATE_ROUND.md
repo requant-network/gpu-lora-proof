@@ -6,6 +6,10 @@ An offline Ubuntu 24.04 container accepted a 128-byte Groth16 proof using two
 public commitments. The customer separately opened the committed adapter.
 [Public evidence](results/private-round/report.json).
 
+The [Qwen v2 private-prefix follow-up](PRIVATE_PREFIX.md) keeps numeric
+inputs and the adapter behind commitments for two orders using one
+public template and retains both release gates.
+
 ## Disclosure and trust
 
 | Role | Information available in this trial |

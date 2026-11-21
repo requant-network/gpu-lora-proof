@@ -1,0 +1,231 @@
+{
+  "scope": "private numeric Qwen v2 order under a disclosed circuit template",
+  "template_sha256": "6d71776af756c8cc517a185bc76e68efe3144e0a130473c430cc33397098992d",
+  "container_image_id": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+  "verifier_sha256": "18270f9aa1393c403324386741b9a10cc74ec2cb5117fb332a534f86c294206a",
+  "shape": {
+    "process_seconds": 0.2953713210008573,
+    "max_rss_kib": 247808,
+    "reported": {
+      "metrics": {
+        "constraints": 193153,
+        "public_inputs": 2,
+        "witnesses": 189142
+      },
+      "wall_seconds": 0.280323418
+    },
+    "trace_seconds": {}
+  },
+  "setup": {
+    "process_seconds": 6.292185372993117,
+    "max_rss_kib": 504276,
+    "reported": {
+      "metrics": {
+        "proving_key_bytes": 38652112,
+        "verifying_key_bytes": 328,
+        "verifying_key_sha256": "ee8df7762657b45a02ab9956a4359cf5052f5310bd47f43b68d49af1ec4838c3"
+      },
+      "wall_seconds": 6.254322665
+    },
+    "trace_seconds": {
+      "Constraint synthesis": 0.229433,
+      "Inlining LCs": 0.6386799999999999,
+      "Constructing evaluation domain": 1.6832e-05,
+      "Evaluate Lagrange coefficients": 0.024401,
+      "R1CS to QAP Instance Map with Evaluation": 0.28196699999999997,
+      "Compute G2 table": 0.08364300000000001,
+      "Calculate B G2 of size 189145": 1.691,
+      "Compute G1 window table": 0.04205,
+      "Calculate A": 0.692899,
+      "Calculate B G1": 0.631771,
+      "Calculate H": 1.122,
+      "Calculate L": 0.7623920000000001,
+      "Generate the R1CS proving key": 3.21,
+      "Generate the R1CS verification key": 0.000388956,
+      "Groth16::Generator": 6.187
+    }
+  },
+  "orders": [
+    {
+      "issue": {
+        "process_seconds": 0.0072333000134676695,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "34b31a6a624ea8f0f49711492819debd9697c23871c95ebf1816ec28c45108e7"
+          },
+          "wall_seconds": 0.004821688
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.004381257022032514,
+        "max_rss_kib": 3456,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.002091032
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 23.04113107197918,
+        "max_rss_kib": 638028,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 19.550248316,
+            "proof_bytes": 128,
+            "prove_seconds": 2.943691403
+          },
+          "wall_seconds": 22.995064805
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.206033,
+          "Inlining LCs": 0.628889,
+          "R1CS to QAP witness map": 0.531506,
+          "Compute C": 0.980165,
+          "Compute A": 0.132636,
+          "Compute B in G1": 0.11163500000000001,
+          "Compute B in G2": 0.31006,
+          "Finish C": 3.9109999999999995e-06,
+          "Groth16::Prover": 2.901
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.2611040640040301,
+        "max_rss_kib": 31744,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001788193,
+            "pairing_and_public_inputs_seconds": 0.001279735,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003305464
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.003996351995738223,
+        "max_rss_kib": 3712,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002148862
+        },
+        "trace_seconds": {}
+      },
+      "order_commitment_sha256": "34b31a6a624ea8f0f49711492819debd9697c23871c95ebf1816ec28c45108e7"
+    },
+    {
+      "issue": {
+        "process_seconds": 0.006656256009591743,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "commitment_bytes": 32,
+            "order_commitment_sha256": "9a08ac79859687c1f9d03c141ab43ea35d8b3f2f4b3f37f73f29d2bba88e3a59"
+          },
+          "wall_seconds": 0.004892928
+        },
+        "trace_seconds": {}
+      },
+      "seal": {
+        "process_seconds": 0.003891796979587525,
+        "max_rss_kib": 3456,
+        "reported": {
+          "metrics": {
+            "public_statement_bytes": 64
+          },
+          "wall_seconds": 0.00225656
+        },
+        "trace_seconds": {}
+      },
+      "prove": {
+        "process_seconds": 23.024976904009236,
+        "max_rss_kib": 638132,
+        "reported": {
+          "metrics": {
+            "key_load_seconds": 19.54028248,
+            "proof_bytes": 128,
+            "prove_seconds": 2.9353422
+          },
+          "wall_seconds": 22.972945268
+        },
+        "trace_seconds": {
+          "Constraint synthesis": 0.205877,
+          "Inlining LCs": 0.63217,
+          "R1CS to QAP witness map": 0.532023,
+          "Compute C": 0.975977,
+          "Compute A": 0.13290700000000003,
+          "Compute B in G1": 0.11131300000000001,
+          "Compute B in G2": 0.30157900000000004,
+          "Finish C": 3.353e-06,
+          "Groth16::Prover": 2.892
+        }
+      },
+      "arbiter": {
+        "process_seconds": 0.24730802600970492,
+        "max_rss_kib": 31616,
+        "reported": {
+          "metrics": {
+            "accepted": true,
+            "key_and_proof_prepare_seconds": 0.001840225,
+            "pairing_and_public_inputs_seconds": 0.001270935,
+            "public_inputs": 2
+          },
+          "wall_seconds": 0.003336823
+        },
+        "trace_seconds": {}
+      },
+      "open": {
+        "process_seconds": 0.004144628997892141,
+        "max_rss_kib": 3840,
+        "reported": {
+          "metrics": {
+            "accepted": true
+          },
+          "wall_seconds": 0.002169815
+        },
+        "trace_seconds": {}
+      },
+      "order_commitment_sha256": "9a08ac79859687c1f9d03c141ab43ea35d8b3f2f4b3f37f73f29d2bba88e3a59"
+    }
+  ],
+  "controls": {
+    "cross_order_proof": "NO: Groth16 rejected the public round and adapter",
+    "cross_order_output": "NO: Groth16 rejected the public round and adapter",
+    "changed_adapter_opening": "NO: private prefix adapter opening mismatch",
+    "changed_ceiling_opening": "NO: private prefix opening does not match the commitments",
+    "fresh_order_failing_error_gate": "Constraint trace requires enabling `ConstraintLayer`\nNO: private prefix circuit rejected the release statement",
+    "fresh_order_failing_accuracy_gate": "Constraint trace requires enabling `ConstraintLayer`\nNO: private prefix circuit rejected the release statement",
+    "changed_template": "NO: private prefix opening does not match the commitments"
+  },
+  "reuse_one_verification_key": true,
+  "same_order_fresh_salt_differed": true,
+  "public_files": {
+    "order-1/round.commitments": {
+      "bytes": 64,
+      "sha256": "60f894b65a21879df3886845a8d7df72eac94ecb957169b65d20fc38e771033b"
+    },
+    "order-1/round.proof": {
+      "bytes": 128,
+      "sha256": "4445278f62f8f86f9b66876ee6cb24944b258407c3faf37bb5b876b1363b2b3d"
+    },
+    "order-2/round.commitments": {
+      "bytes": 64,
+      "sha256": "14f12a63253350810f22a7c9be191060eea92bac9d56abe97f47671f2d8fe7ca"
+    },
+    "order-2/round.proof": {
+      "bytes": 128,
+      "sha256": "e165234dbf7535ab24367d441abcc32170a5499b38b352f76d44ae39e0022e61"
+    },
+    "verifying.key": {
+      "bytes": 328,
+      "sha256": "ee8df7762657b45a02ab9956a4359cf5052f5310bd47f43b68d49af1ec4838c3"
+    }
+  }
+}

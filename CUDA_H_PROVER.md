@@ -86,6 +86,9 @@ Rust and fourteen Python tests passed.
 Qualification covers two public statements on one lab RTX 5060 Ti.
 Private-witness deployment, G2 acceleration and measurements on
 other device classes remain open.
+The [trusted private-order benchmark](TRUSTED_CUDA_PRIVATE_PROVER.md)
+uses the same H implementation with one checked key across three
+synthetic private orders.
 
 ## Reproduce
 

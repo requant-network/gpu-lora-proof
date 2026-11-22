@@ -288,12 +288,16 @@ fn prove_prefix(policy: Policy, choice: usize, args: &[String]) -> Result<Value>
     prove(checked_order(policy, choice, order)?, key, proof, ark_serialize::Compress::Yes)
 }
 
+fn checked_batch(policy: &Policy, orders: &[String]) -> Result<Vec<PrivatePrefix>> {
+    orders.chunks_exact(7).map(|order| {
+        checked_order(policy.clone(), order[0].parse()?, &order[1..])
+    }).collect()
+}
+
 fn prove_batch<const N: usize>(
     key: &str, output: &str, policy: Policy, orders: &[String],
 ) -> Result<Value> {
-    let circuits = orders.chunks_exact(7).map(|order| {
-        checked_order(policy.clone(), order[0].parse()?, &order[1..])
-    }).collect::<Result<Vec<_>>>()?;
+    let circuits = checked_batch(&policy, orders)?;
     let (key, key_load_seconds) = load_proving_key(key, ark_serialize::Compress::Yes)?;
     let mut proofs = Vec::with_capacity(N);
     let mut proof_seconds = Vec::with_capacity(N);
@@ -363,6 +367,17 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
         ("private-prefix-triple-prove-three", [key, output, paths @ ..]) if paths.len() == 33 => {
             let (policy, orders) = paths.split_at(12);
             prove_batch::<3>(key, output, Policy::triple(policy)?, orders)
+        }
+        #[cfg(all(feature = "cuda-h", target_os = "linux"))]
+        ("private-prefix-triple-bench-trusted-cuda-h", [key, vk_pin, output, paths @ ..]) if paths.len() == 33 => {
+            let (policy, orders) = paths.split_at(12);
+            let circuits = checked_batch(&Policy::triple(policy)?, orders)?;
+            let orders = circuits.into_iter().map(|circuit| {
+                let public = circuit.witness.as_ref().ok_or("missing private openings")?.public;
+                Ok((circuit, public))
+            }).collect::<Result<Vec<_>>>()?;
+            let orders = orders.try_into().map_err(|_| "expected three checked private orders")?;
+            crate::cuda_h::bench_trusted_private(orders, key, vk_pin, output)
         }
         ("private-prefix-order", [template, manifest, pin, dir]) => {
             let template = Template::load(template)?;

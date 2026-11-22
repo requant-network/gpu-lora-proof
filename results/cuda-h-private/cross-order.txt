@@ -1,0 +1,1 @@
+NO: Groth16 rejected the public round and adapter

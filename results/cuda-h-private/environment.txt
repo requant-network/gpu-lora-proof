@@ -1,0 +1,14 @@
+rustc 1.98.1 (48a229cea 2026-09-01)
+Python 3.12.3
+x86_64
+Model name:                              AMD Ryzen 5 5500
+NVIDIA GeForce RTX 5060 Ti, 610.43.03
+NVIDIA CMP 50HX, 610.43.03
+sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+80ac0f8b68e3c764e8f495d2cf9e7a0e4769134830f7b246f41501d2067805ef  /data2/worknet-ci/research/lora-private-cuda-h.j56LnnWu/compact-cuda
+7f8b70bd9c9e42878c2db55d3a8ec545c5a4aad5d3ad609a0b9cba236dbd1619  /data2/worknet-ci/research/lora-cuda-prover.rXP8CPjh/standard
+e5f6a270aaf131f24de1ebb35c08d15ccf3c8e5dcee600d6b48a39dd06ef1bc5  /data2/worknet-ci/research/bn254-full-msm.IZkxkVWv/libfullmsm.so
+fb3a4df1ca65790f3b64412b7f7e64c3726a76d0308db6b7bef777a22ccd5437  compact-round/Cargo.lock
+0b731620686751d6dff9e36ae2346b03727821c1bd41f0901dfae94c2bddaaab  compact-round/src/cuda_h.rs
+3a3ce5541fbe3a0931894ead19efbdbc5f145896ddccc3a5545f42311d364c5b  compact-round/src/private_prefix.rs
+ac200eae82fdd4200325bb89d23037e2e9bb1d04f3dc6d00b099aec72c91561b  compact-round/private_pair_trial.py

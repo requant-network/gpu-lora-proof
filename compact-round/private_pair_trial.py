@@ -15,7 +15,7 @@ from benchmark import ROOT, sha, timed
 from private_prefix_trial import COMMAND, SOURCE_PIN, V, private_fixture
 
 
-def run(executable, out, image, compare_key_reuse=False, three_templates=False):
+def run(executable, out, image, compare_key_reuse=False, three_templates=False, cuda_verifier=None, wrong_h_library=None):
     os.umask(0o077)
     os.environ["RAYON_NUM_THREADS"] = "2"
     out.mkdir()
@@ -49,6 +49,7 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
     policy = "triple" if three_templates else "pair"
     captures = []
     controls = {}
+    cuda_benchmark = None
     with TemporaryDirectory(prefix="prefix-witness-", dir=out) as scratch:
         work = Path(scratch)
         if three_templates:
@@ -97,7 +98,7 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
                 "--mount", f"type=bind,src={commitments},dst=/round.commitments,readonly",
                 "--mount", f"type=bind,src={proof},dst=/round.proof,readonly",
                 "--mount", f"type=bind,src={vk},dst=/verifying.key,readonly",
-                "--mount", f"type=bind,src={executable},dst=/verify-round,readonly",
+                "--mount", f"type=bind,src={cuda_verifier or executable},dst=/verify-round,readonly",
                 image_id, "/verify-round", COMMAND + "verify", "/round.commitments", order_pin,
                 "/verifying.key", vk_pin, "/round.proof",
             ]
@@ -126,14 +127,13 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
             commitments, proof = published / packet.name, published / "round.proof"
             shutil.copyfile(packet, commitments)
             order_args = [manifest, sha(manifest), adapter_path, order_salt, output_salt, commitments]
-            produced = call(tag + "-prove", f"{policy}-prove", choice, *fixtures, *order_args, keys / "proving.key", proof)
             batch_orders.append(([choice, *order_args], commitments, order_pin, published))
-            arbiter = verify_proof(tag + "-arbiter", commitments, proof, order_pin)
-            opened = call(tag + "-open", "open-output", adapter_path, output_salt, commitments, order_pin)
-            captures.append({
-                "order_commitment_sha256": order_pin, "issue": issue, "seal": seal,
-                "prove": produced, "arbiter": arbiter, "open": opened,
-            })
+            capture = {"order_commitment_sha256": order_pin, "issue": issue, "seal": seal}
+            if cuda_verifier is None:
+                capture["prove"] = call(tag + "-prove", f"{policy}-prove", choice, *fixtures, *order_args, keys / "proving.key", proof)
+                capture["arbiter"] = verify_proof(tag + "-arbiter", commitments, proof, order_pin)
+            capture["open"] = call(tag + "-open", "open-output", adapter_path, output_salt, commitments, order_pin)
+            captures.append(capture)
             if ordinal == 1:
                 refused = work / "refused.proof"
                 other = 0 if choice == len(profiles) - 1 else len(profiles) - 1
@@ -159,6 +159,31 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
                 )
                 assert not refused.exists()
                 invalid_order = [other, manifest, sha(manifest), adapter_path, wrong_order, wrong_output, wrong_packet]
+
+        if cuda_verifier is not None:
+            packed = work / "cuda-batch.proofs"
+            command = COMMAND + "triple-bench-trusted-cuda-h"
+            orders = [argument for item in batch_orders for argument in item[0]]
+            args = [command, keys / "proving.key", vk_pin, packed, *fixtures, *orders]
+            cuda_benchmark = timed(out, "cuda-h-private-batch", [executable, *args], timeout=180)
+            raw = packed.read_bytes()
+            assert len(raw) == 3 * 128
+            for index, (_, commitments, pin, folder) in enumerate(batch_orders):
+                proof = folder / "round.proof"
+                proof.write_bytes(raw[index * 128:(index + 1) * 128])
+                captures[index]["arbiter"] = verify_proof(f"cuda-h-order-{index + 1}-arbiter", commitments, proof, pin)
+            refused = work / "refused-cuda.proofs"
+            controls["invalid_third_cuda_order"] = timed(out, "invalid-third-cuda-order", [
+                executable, command, work / "deliberately-absent.key", vk_pin, refused,
+                *fixtures, *orders[:-7], *invalid_order,
+            ], reject="private prefix circuit rejected the release statement")
+            assert not refused.exists()
+            if wrong_h_library is not None:
+                args[3] = refused
+                controls["wrong_cuda_h_point"] = timed(out, "wrong-private-cuda-h", [
+                    "env", f"LD_LIBRARY_PATH={wrong_h_library}", executable, *args,
+                ], reject="Groth16 rejected", timeout=180)
+                assert not refused.exists()
 
         if compare_key_reuse:
             packed = work / "batch.proofs"
@@ -235,6 +260,8 @@ def run(executable, out, image, compare_key_reuse=False, three_templates=False):
         report["public_bytes"] -= report["third_shape_reproducible_public_bytes"]
     if shared is not None:
         report["shared_proving_key"] = shared
+    if cuda_benchmark is not None:
+        report["cuda_h_private_batch"] = cuda_benchmark
     (public / "report.json").write_text(json.dumps(report, indent=2) + "\n")
 
 
@@ -245,5 +272,12 @@ if __name__ == "__main__":
     parser.add_argument("--image", default="ubuntu:24.04")
     parser.add_argument("--compare-key-reuse", action="store_true")
     parser.add_argument("--three-templates", action="store_true")
+    parser.add_argument("--cuda-h-cpu-verifier", type=lambda p: Path(p).resolve(),
+                        help="benchmark trusted CUDA H on three private fixtures using this CPU-only arbiter")
+    parser.add_argument("--cuda-h-wrong-library", type=lambda p: Path(p).resolve(),
+                        help="directory with a test library that returns a wrong H point")
     args = parser.parse_args()
-    run(args.executable, args.output, args.image, args.compare_key_reuse, args.three_templates)
+    if args.cuda_h_wrong_library and not args.cuda_h_cpu_verifier:
+        parser.error("--cuda-h-wrong-library requires the trusted CUDA benchmark")
+    run(args.executable, args.output, args.image, args.compare_key_reuse,
+        args.three_templates or args.cuda_h_cpu_verifier is not None, args.cuda_h_cpu_verifier, args.cuda_h_wrong_library)

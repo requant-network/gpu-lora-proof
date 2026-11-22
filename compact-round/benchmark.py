@@ -27,11 +27,11 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def timed(out, label, args, *, reject=None):
+def timed(out, label, args, *, reject=None, timeout=90):
     rss = out / (label + ".rss")
     start = time.perf_counter()
     proc = subprocess.run(["/usr/bin/time", "-f", "%M", "-o", str(rss), *map(str, args)],
-                          cwd=ROOT, capture_output=True, text=True, timeout=90)
+                          cwd=ROOT, capture_output=True, text=True, timeout=timeout)
     wall = time.perf_counter() - start
     (out / (label + ".log")).write_text(proc.stdout + proc.stderr, encoding="utf-8")
     if reject is not None:

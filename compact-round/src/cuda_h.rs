@@ -2,7 +2,7 @@ use ark_bn254::{Bn254, Fq, Fr, G1Affine};
 use ark_ec::CurveGroup;
 use ark_ff::{BigInt, PrimeField, UniformRand};
 use ark_groth16::r1cs_to_qap::{LibsnarkReduction, R1CSToQAP};
-use ark_groth16::{prepare_verifying_key, Groth16, Proof, ProvingKey};
+use ark_groth16::{prepare_verifying_key, Groth16, PreparedVerifyingKey, Proof, ProvingKey};
 use ark_poly::{EvaluationDomain, GeneralEvaluationDomain};
 use ark_relations::r1cs::{
     ConstraintMatrices, ConstraintSynthesizer, ConstraintSystem, ConstraintSystemRef,
@@ -80,7 +80,7 @@ impl R1CSToQAP for AssemblerWithoutH {
 }
 
 fn prove(
-    circuit: PrefixCircuit,
+    circuit: impl ConstraintSynthesizer<Fr>,
     key: &ProvingKey<Bn254>,
     bases: &[u8],
     r: Fr,
@@ -160,6 +160,91 @@ fn prove(
     ))
 }
 
+fn trial<C: ConstraintSynthesizer<Fr>>(
+    circuit: impl Fn() -> C,
+    public: &[Fr],
+    key: &ProvingKey<Bn254>,
+    bases: &[u8],
+    pvk: &PreparedVerifyingKey<Bn254>,
+    cpu_first: Option<bool>,
+) -> Result<(Proof<Bn254>, Value)> {
+    let r = Fr::rand(&mut OsRng);
+    let s = Fr::rand(&mut OsRng);
+    let cpu = || -> Result<_> {
+        let start = Instant::now();
+        let proof = Groth16::<Bn254>::create_proof_with_reduction(circuit(), key, r, s)?;
+        Ok((proof, start.elapsed().as_secs_f64()))
+    };
+    let gpu = || prove(circuit(), key, bases, r, s);
+    let (cpu_result, (gpu_proof, metrics)) = match cpu_first {
+        None => (None, gpu()?),
+        Some(true) => (Some(cpu()?), gpu()?),
+        Some(false) => {
+            let first = gpu()?;
+            (Some(cpu()?), first)
+        }
+    };
+    let verify_start = Instant::now();
+    check_proof(public, pvk, &gpu_proof)?;
+    let verify_seconds = verify_start.elapsed().as_secs_f64();
+    let cpu_seconds = if let Some((cpu_proof, seconds)) = cpu_result {
+        let mut stock = Vec::new();
+        let mut cuda = Vec::new();
+        cpu_proof.serialize_compressed(&mut stock)?;
+        gpu_proof.serialize_compressed(&mut cuda)?;
+        if stock != cuda {
+            return Err("CUDA proof bytes differ from the stock prover".into());
+        }
+        Some(seconds)
+    } else {
+        None
+    };
+    Ok((
+        gpu_proof,
+        json!({"cpu_prove_seconds": cpu_seconds,
+                         "cuda_verify_seconds": verify_seconds, "cuda": metrics}),
+    ))
+}
+
+pub(crate) fn bench_trusted_private<C: ConstraintSynthesizer<Fr> + Clone>(
+    orders: [(C, [Fr; 2]); 3],
+    proving_key: &str,
+    vk_pin: &str,
+    output: &str,
+) -> Result<Value> {
+    let (key, load_seconds) = load_proving_key(proving_key, Compress::Yes)?;
+    check_key_pin(&key, vk_pin)?;
+    let pvk = prepare_verifying_key(&key.vk);
+    let encode_start = Instant::now();
+    let bases: Vec<u8> = key.h_query.iter().flat_map(point_bytes).collect();
+    let encode_seconds = encode_start.elapsed().as_secs_f64();
+    let (circuit, public) = &orders[0];
+    let (_, warmup) = trial(|| circuit.clone(), public, &key, &bases, &pvk, Some(true))?;
+    let mut output_proofs = Vec::with_capacity(3);
+    let mut rows = Vec::with_capacity(3);
+    for (i, (circuit, public)) in orders.iter().enumerate() {
+        let (proof, metrics) = trial(
+            || circuit.clone(),
+            public,
+            &key,
+            &bases,
+            &pvk,
+            Some(i % 2 == 1),
+        )?;
+        output_proofs.push(proof);
+        rows.push(metrics);
+    }
+    let proofs: [Proof<Bn254>; 3] = output_proofs
+        .try_into()
+        .map_err(|_| "triple proof count mismatch")?;
+    write(output, &proofs)?;
+    Ok(
+        json!({"pairs": key.h_query.len(), "key_load_seconds": load_seconds,
+              "encode_h_bases_seconds": encode_seconds, "warmup": warmup,
+              "proof_count": 3, "proof_bytes": fs::metadata(output)?.len(), "trials": rows}),
+    )
+}
+
 pub fn run(
     circuit: PrefixCircuit,
     proving_key: &str,
@@ -182,44 +267,20 @@ pub fn run(
         public: circuit.public.clone(),
     };
     let path = Path::new(output);
-    let mut rng = OsRng;
     let mut rows = Vec::new();
     let mut proofs = Vec::new();
     for round in 0..if benchmark { 7 } else { 1 } {
-        let r = Fr::rand(&mut rng);
-        let s = Fr::rand(&mut rng);
-        let cpu = || -> Result<_> {
-            let start = Instant::now();
-            let proof = Groth16::<Bn254>::create_proof_with_reduction(new_circuit(), &key, r, s)?;
-            Ok((proof, start.elapsed().as_secs_f64()))
-        };
-        let gpu = || prove(new_circuit(), &key, &bases, r, s);
-        let (cpu_result, (gpu_proof, metrics)) = if !benchmark {
-            (None, gpu()?)
-        } else if round % 2 == 0 {
-            (Some(cpu()?), gpu()?)
-        } else {
-            let first = gpu()?;
-            (Some(cpu()?), first)
-        };
-        let verify_start = Instant::now();
-        check_proof(public, &pvk, &gpu_proof)?;
-        let verify_seconds = verify_start.elapsed().as_secs_f64();
-        let cpu_seconds = if let Some((cpu_proof, seconds)) = cpu_result {
-            let mut stock = Vec::new();
-            let mut cuda = Vec::new();
-            cpu_proof.serialize_compressed(&mut stock)?;
-            gpu_proof.serialize_compressed(&mut cuda)?;
-            if stock != cuda {
-                return Err("CUDA proof bytes differ from the stock prover".into());
-            }
-            Some(seconds)
-        } else {
-            None
-        };
-        rows.push(json!({"round": round, "cpu_prove_seconds": cpu_seconds,
-                         "cuda_verify_seconds": verify_seconds, "cuda": metrics}));
-        proofs.push(gpu_proof);
+        let (proof, mut metrics) = trial(
+            new_circuit,
+            public,
+            &key,
+            &bases,
+            &pvk,
+            benchmark.then_some(round % 2 == 0),
+        )?;
+        metrics["round"] = json!(round);
+        rows.push(metrics);
+        proofs.push(proof);
     }
     if benchmark {
         fs::create_dir(path)?;

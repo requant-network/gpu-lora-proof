@@ -1,0 +1,8 @@
+{
+  "device": "RTX 5060 Ti",
+  "interval_ms": 200,
+  "samples": 1039,
+  "first_mib": 279,
+  "peak_mib": 1996,
+  "last_mib": 279
+}

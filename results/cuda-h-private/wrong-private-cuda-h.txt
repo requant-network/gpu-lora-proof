@@ -1,0 +1,33 @@
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+····End:     Constraint synthesis ..................................................470.370ms
+··Start:   Inlining LCs
+····End:     Inlining LCs ..........................................................1.610s
+··Start:   R1CS to QAP witness map
+····End:     R1CS to QAP witness map ...............................................1.341s
+··Start:   Compute C
+····End:     Compute C .............................................................2.000s
+··Start:   Compute A
+····End:     Compute A .............................................................227.256ms
+··Start:   Compute B in G1
+····End:     Compute B in G1 .......................................................178.634ms
+··Start:   Compute B in G2
+····End:     Compute B in G2 .......................................................496.602ms
+··Start:   Finish C
+····End:     Finish C ..............................................................3.213µs
+··End:     Groth16::Prover .........................................................6.327s
+Start:   Groth16::Prover
+··Start:   R1CS to QAP witness map
+····End:     R1CS to QAP witness map ...............................................1.397µs
+··Start:   Compute C
+····End:     Compute C .............................................................280.176ms
+··Start:   Compute A
+····End:     Compute A .............................................................259.410ms
+··Start:   Compute B in G1
+····End:     Compute B in G1 .......................................................221.328ms
+··Start:   Compute B in G2
+····End:     Compute B in G2 .......................................................543.206ms
+··Start:   Finish C
+····End:     Finish C ..............................................................3.283µs
+··End:     Groth16::Prover .........................................................1.317s
+NO: Groth16 rejected the public round and adapter

@@ -1,0 +1,1 @@
+RESULT {"metrics":{"accepted":true,"key_and_proof_prepare_seconds":0.026870115,"pairing_and_public_inputs_seconds":0.048212343,"public_inputs":3587},"wall_seconds":0.075486782}

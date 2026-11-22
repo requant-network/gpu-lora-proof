@@ -6,6 +6,10 @@ floor. This comparison proves the same final adapter on the two
 mixed-vocabulary feature profiles using Groth16 over BN254.
 [Arkworks 0.5.0 implementation](https://docs.rs/ark-groth16/0.5.0/ark_groth16/).
 
+The [public delivery follow-up](PUBLIC_HANDOFF.md) compares direct replay,
+transparent records and Groth16 on the same accepted adapters, including
+compressed packages and first key delivery.
+
 ## Statement
 
 For each of the two phases, the circuit recomputes the eight forward

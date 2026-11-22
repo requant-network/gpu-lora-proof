@@ -1,0 +1,45 @@
+{
+  "platform": "Linux",
+  "python": "3.12.3",
+  "binary_sha256": "c440e09c25dc6d417c5b58849e95c895426eb4088e190f048dd2b849ba7aa18e",
+  "profiles": {
+    "rtx-features": {
+      "package_sha256": "1363f16e677e4bea991ef1f5533d09aebe05469dfa810f437688ed61d4e81d77",
+      "manifest_sha256": "d200e82458d79b44fc577480ba33b1e7fe79b6e935328bd7812cfdd05763c34a",
+      "verification_key_sha256": "dda8d069edb24204fc0510459ef8e8fe2041a3c1ac27cd12a770ef2dbd295828",
+      "proof": {
+        "metrics": {
+          "accepted": true,
+          "key_and_proof_prepare_seconds": 0.027749295,
+          "pairing_and_public_inputs_seconds": 0.04805988,
+          "public_inputs": 3587
+        },
+        "wall_seconds": 0.076167121
+      },
+      "direct": {
+        "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+        "final_sse": 80010,
+        "heldout_correct": 16
+      }
+    },
+    "cpu-features": {
+      "package_sha256": "697f2f1943c68369323fabb6e1e8c228312a31af2d00a6ce21151241f1b0af46",
+      "manifest_sha256": "ccb4d88429a4e2fce34b1f1a3d7cd88f1755f3ab6aaf9d91262ad0a52eb54263",
+      "verification_key_sha256": "60fe8459cb44197f465c7eb2f86a7b566aa613bf5b08cd0f501abb6cf9dfd027",
+      "proof": {
+        "metrics": {
+          "accepted": true,
+          "key_and_proof_prepare_seconds": 0.027915172,
+          "pairing_and_public_inputs_seconds": 0.048935224,
+          "public_inputs": 3587
+        },
+        "wall_seconds": 0.077216863
+      },
+      "direct": {
+        "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+        "final_sse": 72888,
+        "heldout_correct": 16
+      }
+    }
+  }
+}

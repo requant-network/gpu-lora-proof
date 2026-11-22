@@ -1,0 +1,936 @@
+{
+  "rtx-features": {
+    "manifest_sha256": "d200e82458d79b44fc577480ba33b1e7fe79b6e935328bd7812cfdd05763c34a",
+    "adapter_sha256": "febd137ed1602d960622a0da15203117f48f01b7d025e14c275c11d419d8de3b",
+    "verification_key_sha256": "dda8d069edb24204fc0510459ef8e8fe2041a3c1ac27cd12a770ef2dbd295828",
+    "setup": {
+      "process_seconds": 7.620469157991465,
+      "max_rss_kib": 521228,
+      "reported": {
+        "metrics": {
+          "proving_key_bytes": 32074992,
+          "verifying_key_bytes": 115048,
+          "verifying_key_sha256": "dda8d069edb24204fc0510459ef8e8fe2041a3c1ac27cd12a770ef2dbd295828"
+        },
+        "wall_seconds": 7.583712788
+      },
+      "trace_seconds": {
+        "Constraint synthesis": 0.188613,
+        "Inlining LCs": 0.742131,
+        "Constructing evaluation domain": 2.1503e-05,
+        "Evaluate Lagrange coefficients": 0.045918,
+        "R1CS to QAP Instance Map with Evaluation": 0.409503,
+        "Compute G2 table": 0.066983,
+        "Calculate B G2 of size 148038": 2.072,
+        "Compute G1 window table": 0.07137,
+        "Calculate A": 0.7755650000000001,
+        "Calculate B G1": 0.6618630000000001,
+        "Calculate H": 1.643,
+        "Calculate L": 0.8399840000000001,
+        "Generate the R1CS proving key": 3.921,
+        "Generate the R1CS verification key": 0.023489000000000003,
+        "Groth16::Generator": 7.506
+      }
+    },
+    "prover": {
+      "process_seconds": 29.893180400016718,
+      "max_rss_kib": 647868,
+      "reported": {
+        "metrics": {
+          "key_load_seconds": 25.692731542,
+          "proof_bytes": 128,
+          "prove_seconds": 3.742841773
+        },
+        "wall_seconds": 29.859313141
+      },
+      "trace_seconds": {
+        "Constraint synthesis": 0.182627,
+        "Inlining LCs": 0.7577200000000001,
+        "R1CS to QAP witness map": 0.8198110000000001,
+        "Compute C": 1.579,
+        "Compute A": 0.079364,
+        "Compute B in G1": 0.081702,
+        "Compute B in G2": 0.200747,
+        "Finish C": 2.92e-06,
+        "Groth16::Prover": 3.702
+      }
+    },
+    "transparent_assembly": {
+      "process_seconds": 0.49396211199928075,
+      "max_rss_kib": 21440,
+      "reported": {
+        "build_wall_seconds": 0.42185970101854764,
+        "bundle_bytes": 203421,
+        "contributions": [
+          {
+            "phase": 0,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1425699922256172,
+                "min": 1.1425699922256172,
+                "max": 1.1425699922256172,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.7563400140497833,
+                "min": 0.7563400140497833,
+                "max": 0.7563400140497833,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 2.004726993618533,
+                "min": 2.004726993618533,
+                "max": 2.004726993618533,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.9036369998939335,
+                "min": 3.9036369998939335,
+                "max": 3.9036369998939335,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 0,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.138742984039709,
+                "min": 1.138742984039709,
+                "max": 1.138742984039709,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.7046190148685127,
+                "min": 0.7046190148685127,
+                "max": 0.7046190148685127,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 1.9541310030035675,
+                "min": 1.9541310030035675,
+                "max": 1.9541310030035675,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.797493001911789,
+                "min": 3.797493001911789,
+                "max": 3.797493001911789,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1424619879107922,
+                "min": 1.1424619879107922,
+                "max": 1.1424619879107922,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.7178570085670799,
+                "min": 0.7178570085670799,
+                "max": 0.7178570085670799,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 2.05641399952583,
+                "min": 2.05641399952583,
+                "max": 2.05641399952583,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.9167329960037023,
+                "min": 3.9167329960037023,
+                "max": 3.9167329960037023,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1391439766157418,
+                "min": 1.1391439766157418,
+                "max": 1.1391439766157418,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.7293550006579608,
+                "min": 0.7293550006579608,
+                "max": 0.7293550006579608,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 2.006515016546473,
+                "min": 2.006515016546473,
+                "max": 2.006515016546473,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.8750139938201755,
+                "min": 3.8750139938201755,
+                "max": 3.8750139938201755,
+                "n": 1
+              }
+            }
+          }
+        ]
+      },
+      "trace_seconds": {}
+    },
+    "packets": {
+      "direct": {
+        "raw_bytes": 8197,
+        "gzip_bytes": 1393,
+        "sha256": "5496a7cc518182488bea292d31959cd2de35715c3f5742738332a2cb28da1a88"
+      },
+      "transparent": {
+        "raw_bytes": 211618,
+        "gzip_bytes": 22862,
+        "sha256": "098f1c5576c174a3352244ce121c1494c739f59e0f72df78a02e86b29607ba8a"
+      },
+      "cached_proof": {
+        "raw_bytes": 8325,
+        "gzip_bytes": 1637,
+        "sha256": "b213682b9cf33a940386053a0e822666a2d0f294ede4d79180a9bf14d5b98dfd"
+      },
+      "first_proof": {
+        "raw_bytes": 123373,
+        "gzip_bytes": 117150,
+        "sha256": "1363f16e677e4bea991ef1f5533d09aebe05469dfa810f437688ed61d4e81d77"
+      }
+    },
+    "receiver_trials": {
+      "direct": [
+        {
+          "unpack_seconds": 0.000573858997086063,
+          "process_seconds": 0.1768786699976772,
+          "max_rss_kib": 21600,
+          "reported": {
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "final_sse": 80010,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0005285929946694523,
+          "process_seconds": 0.17449613299686462,
+          "max_rss_kib": 21600,
+          "reported": {
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "final_sse": 80010,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0005391300073824823,
+          "process_seconds": 0.17377303200191818,
+          "max_rss_kib": 21440,
+          "reported": {
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "final_sse": 80010,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0005214239936321974,
+          "process_seconds": 0.17796720698243007,
+          "max_rss_kib": 21600,
+          "reported": {
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "final_sse": 80010,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        }
+      ],
+      "transparent": [
+        {
+          "unpack_seconds": 0.001271016983082518,
+          "process_seconds": 0.16073598401271738,
+          "max_rss_kib": 19076,
+          "reported": {
+            "merkle_root": "30dbb31e8382c0f10f6dccc8874913750ff6ad87e2129c4a6b48cb59544b2007",
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "initial_sse": 130474,
+            "final_sse": 80010,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.1098191500059329
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0011340900091454387,
+          "process_seconds": 0.162336740992032,
+          "max_rss_kib": 19080,
+          "reported": {
+            "merkle_root": "30dbb31e8382c0f10f6dccc8874913750ff6ad87e2129c4a6b48cb59544b2007",
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "initial_sse": 130474,
+            "final_sse": 80010,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.11111662400071509
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0011208689829800278,
+          "process_seconds": 0.16089462299714796,
+          "max_rss_kib": 19080,
+          "reported": {
+            "merkle_root": "30dbb31e8382c0f10f6dccc8874913750ff6ad87e2129c4a6b48cb59544b2007",
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "initial_sse": 130474,
+            "final_sse": 80010,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.10887402400840074
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0011687889927998185,
+          "process_seconds": 0.16164559498429298,
+          "max_rss_kib": 19080,
+          "reported": {
+            "merkle_root": "30dbb31e8382c0f10f6dccc8874913750ff6ad87e2129c4a6b48cb59544b2007",
+            "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+            "initial_sse": 130474,
+            "final_sse": 80010,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.10930263699265197
+          },
+          "trace_seconds": {}
+        }
+      ],
+      "cached_proof": [
+        {
+          "unpack_seconds": 0.0006036819831933826,
+          "process_seconds": 0.12355644299532287,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045575126,
+              "pairing_and_public_inputs_seconds": 0.075574415,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121634474
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0006057719874661416,
+          "process_seconds": 0.12308016599854454,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045271465,
+              "pairing_and_public_inputs_seconds": 0.075546749,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121296161
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0006079440063331276,
+          "process_seconds": 0.12364939801045693,
+          "max_rss_kib": 4800,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045338747,
+              "pairing_and_public_inputs_seconds": 0.075993055,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121805666
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.000610957999015227,
+          "process_seconds": 0.12350100799812935,
+          "max_rss_kib": 4800,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045321329,
+              "pairing_and_public_inputs_seconds": 0.075887635,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121698622
+          },
+          "trace_seconds": {}
+        }
+      ],
+      "first_proof": [
+        {
+          "unpack_seconds": 0.0010456129966769367,
+          "process_seconds": 0.12323268598993309,
+          "max_rss_kib": 4800,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045356561,
+              "pairing_and_public_inputs_seconds": 0.075620794,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121455743
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0010785630147438496,
+          "process_seconds": 0.12375692802015692,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045665736,
+              "pairing_and_public_inputs_seconds": 0.075790224,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121928693
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0010197719966527075,
+          "process_seconds": 0.12343782398966141,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045251258,
+              "pairing_and_public_inputs_seconds": 0.075987412,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121718317
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0010108269925694913,
+          "process_seconds": 0.12382023900863715,
+          "max_rss_kib": 4800,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045767568,
+              "pairing_and_public_inputs_seconds": 0.075694154,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.121930595
+          },
+          "trace_seconds": {}
+        }
+      ]
+    },
+    "direct_result": {
+      "final_adapter": "2ad629cfd8e88572210b76a92cf8fd44b664baa39905c330ff607a30c77336a2",
+      "final_sse": 80010,
+      "heldout_correct": 16
+    },
+    "receiver_median_seconds": {
+      "direct": 0.17623862749314867,
+      "transparent": 0.1624149379786104,
+      "cached_proof": 0.12413604548783042,
+      "first_proof": 0.12464433099376038
+    },
+    "controls": {
+      "direct": "NO: claimed adapter differs from direct replay",
+      "proof": "NO: Groth16 rejected the public round and adapter"
+    }
+  },
+  "cpu-features": {
+    "manifest_sha256": "ccb4d88429a4e2fce34b1f1a3d7cd88f1755f3ab6aaf9d91262ad0a52eb54263",
+    "adapter_sha256": "4b77286f4a81d99d5b18c2835e9fec2338f48c5e69699bd701ff77917a1bc922",
+    "verification_key_sha256": "60fe8459cb44197f465c7eb2f86a7b566aa613bf5b08cd0f501abb6cf9dfd027",
+    "setup": {
+      "process_seconds": 5.788595370016992,
+      "max_rss_kib": 341152,
+      "reported": {
+        "metrics": {
+          "proving_key_bytes": 24470768,
+          "verifying_key_bytes": 115048,
+          "verifying_key_sha256": "60fe8459cb44197f465c7eb2f86a7b566aa613bf5b08cd0f501abb6cf9dfd027"
+        },
+        "wall_seconds": 5.766738706
+      },
+      "trace_seconds": {
+        "Constraint synthesis": 0.161403,
+        "Inlining LCs": 0.516885,
+        "Constructing evaluation domain": 2.1202e-05,
+        "Evaluate Lagrange coefficients": 0.022697,
+        "R1CS to QAP Instance Map with Evaluation": 0.246959,
+        "Compute G2 table": 0.068413,
+        "Calculate B G2 of size 126726": 1.841,
+        "Compute G1 window table": 0.071404,
+        "Calculate A": 0.6600900000000001,
+        "Calculate B G1": 0.583724,
+        "Calculate H": 0.815038,
+        "Calculate L": 0.707766,
+        "Generate the R1CS proving key": 2.767,
+        "Generate the R1CS verification key": 0.023253,
+        "Groth16::Generator": 5.706
+      }
+    },
+    "prover": {
+      "process_seconds": 23.869925342994975,
+      "max_rss_kib": 441040,
+      "reported": {
+        "metrics": {
+          "key_load_seconds": 21.316092655,
+          "proof_bytes": 128,
+          "prove_seconds": 2.184628384
+        },
+        "wall_seconds": 23.842258011
+      },
+      "trace_seconds": {
+        "Constraint synthesis": 0.153438,
+        "Inlining LCs": 0.523438,
+        "R1CS to QAP witness map": 0.43808300000000006,
+        "Compute C": 0.818568,
+        "Compute A": 0.043501,
+        "Compute B in G1": 0.04975,
+        "Compute B in G2": 0.117898,
+        "Finish C": 2.6169999999999997e-06,
+        "Groth16::Prover": 2.145
+      }
+    },
+    "transparent_assembly": {
+      "process_seconds": 0.4543274549941998,
+      "max_rss_kib": 21440,
+      "reported": {
+        "build_wall_seconds": 0.3821103099908214,
+        "bundle_bytes": 203427,
+        "contributions": [
+          {
+            "phase": 0,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.149770978372544,
+                "min": 1.149770978372544,
+                "max": 1.149770978372544,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.739203009288758,
+                "min": 0.739203009288758,
+                "max": 0.739203009288758,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 1.9621989922598004,
+                "min": 1.9621989922598004,
+                "max": 1.9621989922598004,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.8511729799211025,
+                "min": 3.8511729799211025,
+                "max": 3.8511729799211025,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 0,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1385850084479898,
+                "min": 1.1385850084479898,
+                "max": 1.1385850084479898,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.7295399846043438,
+                "min": 0.7295399846043438,
+                "max": 0.7295399846043438,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 1.9585929985623807,
+                "min": 1.9585929985623807,
+                "max": 1.9585929985623807,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.8267179916147143,
+                "min": 3.8267179916147143,
+                "max": 3.8267179916147143,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-a",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.149465999333188,
+                "min": 1.149465999333188,
+                "max": 1.149465999333188,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.7459479966200888,
+                "min": 0.7459479966200888,
+                "max": 0.7459479966200888,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 1.9948850094806403,
+                "min": 1.9948850094806403,
+                "max": 1.9948850094806403,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.890299005433917,
+                "min": 3.890299005433917,
+                "max": 3.890299005433917,
+                "n": 1
+              }
+            }
+          },
+          {
+            "phase": 1,
+            "worker": "worker-b",
+            "backend": "cpu",
+            "timing": {
+              "step_wall_ms": {
+                "median": 1.1442699760664254,
+                "min": 1.1442699760664254,
+                "max": 1.1442699760664254,
+                "n": 1
+              },
+              "step_kernel_ms": null,
+              "commit_fs_ms": {
+                "median": 0.7323370082303882,
+                "min": 0.7323370082303882,
+                "max": 0.7323370082303882,
+                "n": 1
+              },
+              "cert_wall_ms": {
+                "median": 2.0023210090585053,
+                "min": 2.0023210090585053,
+                "max": 2.0023210090585053,
+                "n": 1
+              },
+              "cert_kernel_ms": null,
+              "prover_wall_ms": {
+                "median": 3.878927993355319,
+                "min": 3.878927993355319,
+                "max": 3.878927993355319,
+                "n": 1
+              }
+            }
+          }
+        ]
+      },
+      "trace_seconds": {}
+    },
+    "packets": {
+      "direct": {
+        "raw_bytes": 8206,
+        "gzip_bytes": 1393,
+        "sha256": "d73005583a4653d9020ef3cb91966ef00d50b5fe74825d2105d5ef4dab3f2754"
+      },
+      "transparent": {
+        "raw_bytes": 211633,
+        "gzip_bytes": 23201,
+        "sha256": "190321e1d222ebd8526c4b05f2ff99028abd6c4e0863a39dbadf423cccd6becc"
+      },
+      "cached_proof": {
+        "raw_bytes": 8334,
+        "gzip_bytes": 1631,
+        "sha256": "a0735f414f9f9eb612fc759bb3fb58212d875e74ed8466917f9924ce12fb6e01"
+      },
+      "first_proof": {
+        "raw_bytes": 123382,
+        "gzip_bytes": 117153,
+        "sha256": "697f2f1943c68369323fabb6e1e8c228312a31af2d00a6ce21151241f1b0af46"
+      }
+    },
+    "receiver_trials": {
+      "direct": [
+        {
+          "unpack_seconds": 0.0005205290217418224,
+          "process_seconds": 0.13592451001750305,
+          "max_rss_kib": 21600,
+          "reported": {
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "final_sse": 72888,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.000530515011632815,
+          "process_seconds": 0.13618104098713957,
+          "max_rss_kib": 21600,
+          "reported": {
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "final_sse": 72888,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0004660359991248697,
+          "process_seconds": 0.1360817179956939,
+          "max_rss_kib": 21440,
+          "reported": {
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "final_sse": 72888,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0005886449944227934,
+          "process_seconds": 0.136079943011282,
+          "max_rss_kib": 21600,
+          "reported": {
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "final_sse": 72888,
+            "heldout_correct": 16
+          },
+          "trace_seconds": {}
+        }
+      ],
+      "transparent": [
+        {
+          "unpack_seconds": 0.0011930829787161201,
+          "process_seconds": 0.12175158999161795,
+          "max_rss_kib": 19080,
+          "reported": {
+            "merkle_root": "dffd3026c2c409f989d44093a934d4b4bc8be6f99683412f6aebf1c319fd08fa",
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "initial_sse": 114328,
+            "final_sse": 72888,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.07070833400939591
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0011361899960320443,
+          "process_seconds": 0.12260720299673267,
+          "max_rss_kib": 19080,
+          "reported": {
+            "merkle_root": "dffd3026c2c409f989d44093a934d4b4bc8be6f99683412f6aebf1c319fd08fa",
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "initial_sse": 114328,
+            "final_sse": 72888,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.07136360299773514
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.001110611978219822,
+          "process_seconds": 0.12119636900024489,
+          "max_rss_kib": 19080,
+          "reported": {
+            "merkle_root": "dffd3026c2c409f989d44093a934d4b4bc8be6f99683412f6aebf1c319fd08fa",
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "initial_sse": 114328,
+            "final_sse": 72888,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.07033355301246047
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.001150180003605783,
+          "process_seconds": 0.12144202200579457,
+          "max_rss_kib": 19076,
+          "reported": {
+            "merkle_root": "dffd3026c2c409f989d44093a934d4b4bc8be6f99683412f6aebf1c319fd08fa",
+            "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+            "initial_sse": 114328,
+            "final_sse": 72888,
+            "heldout_rows": 16,
+            "verify_wall_seconds": 0.07078917499165982
+          },
+          "trace_seconds": {}
+        }
+      ],
+      "cached_proof": [
+        {
+          "unpack_seconds": 0.0005757169856224209,
+          "process_seconds": 0.12491765001323074,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045575224,
+              "pairing_and_public_inputs_seconds": 0.077086361,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.123148671
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.000578976992983371,
+          "process_seconds": 0.12485011600074358,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045583659,
+              "pairing_and_public_inputs_seconds": 0.076950098,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.123007744
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0006051880191080272,
+          "process_seconds": 0.12435738599742763,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045426964,
+              "pairing_and_public_inputs_seconds": 0.076566596,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.122483432
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0005961789865978062,
+          "process_seconds": 0.1243877969973255,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045241059,
+              "pairing_and_public_inputs_seconds": 0.076895638,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.122616761
+          },
+          "trace_seconds": {}
+        }
+      ],
+      "first_proof": [
+        {
+          "unpack_seconds": 0.0010347070056013763,
+          "process_seconds": 0.12373527800082229,
+          "max_rss_kib": 4960,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045073657,
+              "pairing_and_public_inputs_seconds": 0.076458261,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.122010878
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0010849309910554439,
+          "process_seconds": 0.12397023200173862,
+          "max_rss_kib": 4800,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045193297,
+              "pairing_and_public_inputs_seconds": 0.076525998,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.122187039
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.0009502460015937686,
+          "process_seconds": 0.12408646600670181,
+          "max_rss_kib": 4800,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045111543,
+              "pairing_and_public_inputs_seconds": 0.07673706,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.122324968
+          },
+          "trace_seconds": {}
+        },
+        {
+          "unpack_seconds": 0.001003967016004026,
+          "process_seconds": 0.12416240098536946,
+          "max_rss_kib": 4800,
+          "reported": {
+            "metrics": {
+              "accepted": true,
+              "key_and_proof_prepare_seconds": 0.045324308,
+              "pairing_and_public_inputs_seconds": 0.076552045,
+              "public_inputs": 3587
+            },
+            "wall_seconds": 0.122361023
+          },
+          "trace_seconds": {}
+        }
+      ]
+    },
+    "direct_result": {
+      "final_adapter": "251accd24b1279f80a8017c53a4ee905f9036637c149da719a9f1a558ed7a73b",
+      "final_sse": 72888,
+      "heldout_correct": 16
+    },
+    "receiver_median_seconds": {
+      "direct": 0.1366081710002618,
+      "transparent": 0.12276843748986721,
+      "cached_proof": 0.12520653448882513,
+      "first_proof": 0.12504593750054482
+    },
+    "controls": {
+      "direct": "NO: claimed adapter differs from direct replay",
+      "proof": "NO: Groth16 rejected the public round and adapter"
+    }
+  }
+}

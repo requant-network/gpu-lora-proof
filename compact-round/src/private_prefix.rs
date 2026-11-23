@@ -1,5 +1,5 @@
 use ark_bn254::{Bn254, Fr};
-use ark_groth16::Proof;
+use ark_groth16::{Groth16, Proof};
 use ark_ff::{PrimeField, UniformRand};
 use ark_r1cs_std::eq::EqGadget;
 use ark_r1cs_std::fields::fp::FpVar;
@@ -314,16 +314,31 @@ fn prove_batch<const N: usize>(
     }))
 }
 
-fn verify_batch(vk: &str, pin: &str, orders: &[String]) -> Result<Value> {
+enum BatchDecision {
+    All,
+    PerOrder,
+}
+
+fn verify_batch(vk: &str, pin: &str, orders: &[String], decision: BatchDecision) -> Result<Value> {
     let commitments = orders.chunks_exact(3)
         .map(|order| pinned_commitments(&order[0], &order[1]))
         .collect::<Result<Vec<_>>>()?;
     let prepared = prepare_key(vk, pin)?;
+    let mut decisions = Vec::new();
     for (public, order) in commitments.iter().zip(orders.chunks_exact(3)) {
         let proof = decode(&read(&order[2], 1024)?)?;
-        check_proof(public, &prepared, &proof)?;
+        match decision {
+            BatchDecision::All => check_proof(public, &prepared, &proof)?,
+            BatchDecision::PerOrder => decisions.push(json!({
+                "order_commitment_sha256": order[1],
+                "accepted": Groth16::<Bn254>::verify_proof(&prepared, &proof, public)?,
+            })),
+        }
     }
-    Ok(json!({"accepted": true, "proof_count": commitments.len()}))
+    Ok(match decision {
+        BatchDecision::All => json!({"accepted": true, "proof_count": commitments.len()}),
+        BatchDecision::PerOrder => json!({"proof_count": decisions.len(), "decisions": decisions}),
+    })
 }
 
 pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
@@ -409,10 +424,13 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             verify(&public, vk, pin, proof)
         }
         ("private-prefix-verify-two", [vk, pin, orders @ ..]) if orders.len() == 6 => {
-            verify_batch(vk, pin, orders)
+            verify_batch(vk, pin, orders, BatchDecision::All)
         }
         ("private-prefix-verify-three", [vk, pin, orders @ ..]) if orders.len() == 9 => {
-            verify_batch(vk, pin, orders)
+            verify_batch(vk, pin, orders, BatchDecision::All)
+        }
+        ("private-prefix-review-three", [vk, pin, orders @ ..]) if orders.len() == 9 => {
+            verify_batch(vk, pin, orders, BatchDecision::PerOrder)
         }
         ("private-prefix-open-output", [adapter, output_salt, commitments, order_pin]) => {
             let public = pinned_commitments(commitments, order_pin)?;
@@ -430,6 +448,7 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-verify COMMITMENTS ORDER_PIN VK VK_PIN PROOF",
             "private-prefix-verify-two VK VK_PIN FIRST_COMMITMENTS FIRST_ORDER_PIN FIRST_PROOF SECOND_COMMITMENTS SECOND_ORDER_PIN SECOND_PROOF",
             "private-prefix-verify-three VK VK_PIN ORDER_PROOF ORDER_PROOF ORDER_PROOF",
+            "private-prefix-review-three VK VK_PIN ORDER_PROOF ORDER_PROOF ORDER_PROOF",
             "ORDER_PROOF = COMMITMENTS ORDER_PIN PROOF",
             "private-prefix-open-output ADAPTER OUTPUT_SALT COMMITMENTS ORDER_PIN",
             "private-prefix-pair-shape FIXTURES",

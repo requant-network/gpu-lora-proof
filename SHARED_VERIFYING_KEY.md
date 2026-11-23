@@ -37,6 +37,27 @@ proof also passed through the refactored key loader.
 The comparison covers two ready proofs for one key on this LAN CPU.
 Arrival schedules and verification on a phone remain unmeasured.
 
+## Independent decisions for three ready proofs
+
+`private-prefix-review-three VK VK_PIN ORDER_PROOF ORDER_PROOF ORDER_PROOF`
+uses the same prepared key for three separate proof checks. Each
+`ORDER_PROOF` contains the public commitments, the separately issued
+order pin and the proof path. The result has one decision per input,
+in input order, with its order commitment digest and a Boolean
+`accepted` field. Applications use each order's decision.
+
+An equation that evaluates to false produces a false decision for
+that order. A missing file, wrong pin, malformed canonical encoding
+or verifier error stops the command with exit code 1 and no decision
+document. The original `private-prefix-verify-two` and
+`private-prefix-verify-three` commands still require every proof
+equation to pass before producing their success record.
+
+Seven Rust tests and the retained two-proof CLI run passed on the
+LAN Ryzen. The paired Worknet trial used 288 ready trios and checked
+four input-error controls. This is a local public-artifact verifier
+interface for the fixed shared-key workload.
+
 ## Reproduce
 
 Build the locked binary and verify the published pair. The pins below are

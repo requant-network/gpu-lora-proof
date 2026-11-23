@@ -429,6 +429,9 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
         ("private-prefix-verify-three", [vk, pin, orders @ ..]) if orders.len() == 9 => {
             verify_batch(vk, pin, orders, BatchDecision::All)
         }
+        ("private-prefix-review-one", [vk, pin, order @ ..]) if order.len() == 3 => {
+            verify_batch(vk, pin, order, BatchDecision::PerOrder)
+        }
         ("private-prefix-review-three", [vk, pin, orders @ ..]) if orders.len() == 9 => {
             verify_batch(vk, pin, orders, BatchDecision::PerOrder)
         }
@@ -448,6 +451,7 @@ pub(crate) fn run(command: &str, args: &[String]) -> Result<Value> {
             "private-prefix-verify COMMITMENTS ORDER_PIN VK VK_PIN PROOF",
             "private-prefix-verify-two VK VK_PIN FIRST_COMMITMENTS FIRST_ORDER_PIN FIRST_PROOF SECOND_COMMITMENTS SECOND_ORDER_PIN SECOND_PROOF",
             "private-prefix-verify-three VK VK_PIN ORDER_PROOF ORDER_PROOF ORDER_PROOF",
+            "private-prefix-review-one VK VK_PIN ORDER_PROOF",
             "private-prefix-review-three VK VK_PIN ORDER_PROOF ORDER_PROOF ORDER_PROOF",
             "ORDER_PROOF = COMMITMENTS ORDER_PIN PROOF",
             "private-prefix-open-output ADAPTER OUTPUT_SALT COMMITMENTS ORDER_PIN",

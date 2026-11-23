@@ -58,6 +58,20 @@ LAN Ryzen. The paired Worknet trial used 288 ready trios and checked
 four input-error controls. This is a local public-artifact verifier
 interface for the fixed shared-key workload.
 
+## Independent decision for one ready proof
+
+`private-prefix-review-one VK VK_PIN COMMITMENTS ORDER_PIN PROOF`
+returns the same decision format with `proof_count` equal to one.
+A well-formed proof that fails verification returns a false
+decision. Input and verifier errors stop with no decision. This
+allows a recipient to check a ready order when no trio is ready.
+
+On LAN Ryzen, three single reviews of retained Worknet downloads
+matched the trio's two accepts and one refusal. Wrong key and order
+pins and an extra proof byte each stopped without a decision. All
+seven Rust unit tests passed. The tested Linux binary SHA-256 was
+`f679261a5121e1a24b7f37bec093442175b5633cf8828d8aad06f6afd31715b7`.
+
 ## Reproduce
 
 Build the locked binary and verify the published pair. The pins below are

@@ -53,12 +53,18 @@ def hex_string(value, length=64):
 
 
 class Order:
+    schema = SCHEMA
+    extra_fields = frozenset()
+    examples_per_step = 16
+    rate_denominator = RATE_DENOMINATOR
+
     def __init__(self, args):
         self.order, self.pin = V.read_json(args.order, V.MANIFEST_BYTES)
         require_digest(self.pin, args.order_sha256, "round order")
         keys = self.order["keys"]
-        if (set(self.order) != {"schema", "round", "keys", "model_files", "corpus_sha256"}
-                or self.order["schema"] != SCHEMA or not hex_string(self.order["round"])
+        fields = {"schema", "round", "keys", "model_files", "corpus_sha256"} | self.extra_fields
+        if (set(self.order) != fields
+                or self.order["schema"] != self.schema or not hex_string(self.order["round"])
                 or set(keys) != set(SLOTS) or len(set(keys.values())) != len(SLOTS)
                 or not all(hex_string(key) for key in keys.values())
                 or set(self.order["model_files"]) != set(MODEL_FILES)
@@ -66,7 +72,10 @@ class Order:
             raise V.Reject("invalid gradient order")
         self.keys = {slot: Ed25519PublicKey.from_public_bytes(bytes.fromhex(key)) for slot, key in keys.items()}
         require_digest(sha256(args.corpus), self.order["corpus_sha256"], "corpus")
-        texts = [line.split("\t", 3) for line in args.corpus.read_text(encoding="ascii").splitlines()]
+        self.load_corpus(args.corpus)
+
+    def load_corpus(self, path):
+        texts = [line.split("\t", 3) for line in path.read_text(encoding="ascii").splitlines()]
         adapt = [row for row in texts if row[0] == "adapt"]
         self.heldout = [row for row in texts if row[0] == "heldout"]
         self.shards = dict(zip(SLOTS, (adapt[:8], adapt[8:]), strict=True))
@@ -84,7 +93,7 @@ class Order:
             require_digest(sha256(model / name), digest, name)
 
     def header(self, slot, previous, prior):
-        return {"schema": SCHEMA, "order_sha256": self.pin, "slot": slot,
+        return {"schema": self.schema, "order_sha256": self.pin, "slot": slot,
                 "document_ids": [r[1] for r in self.shards[slot]], "step": 2 if prior else 1,
                 "input_sha256": V.digest(previous), "prior_phase_sha256": V.digest(prior) if prior else None}
 
@@ -105,7 +114,7 @@ class Order:
             g, loss = body["gradient"], body["loss"]
             if not V.bounded_ints(g, SIZE, SCALE * 4096) or type(loss) is not int or not 0 <= loss <= SCALE * 4096:
                 raise V.Reject("invalid quantized gradient")
-        update = [round(Fraction(left + right, 16 * RATE_DENOMINATOR))
+        update = [round(Fraction(left + right, self.examples_per_step * self.rate_denominator))
                   for left, right in zip(*(r["body"]["gradient"] for r in records), strict=True)]
         candidate = [p - delta for p, delta in zip(previous, update, strict=True)]
         if not any(update) or any(abs(p) > SCALE * 4 for p in candidate):
@@ -142,12 +151,20 @@ class Runtime:
                                                use_safetensors=True, local_files_only=True).to(self.device).eval().requires_grad_(False)
         if self.model.config.hidden_size != WIDTH or len(self.model.layers) != 24:
             raise V.Reject("expected the pinned transformer shape")
+        if not self.model.config.tie_word_embeddings:
+            raise V.Reject("expected tied token projection")
+        self.load_inputs(tok, order)
+        self.params = []
+        for i in LAYERS:
+            attn = self.model.layers[i].self_attn
+            attn.o_proj = LowRank(attn.o_proj)
+            self.params.extend([attn.o_proj.a, attn.o_proj.b])
+
+    def load_inputs(self, tok, order):
         tags = [tok.encode(label, add_special_tokens=False) for label in LABELS]
         if any(len(ids) != 1 for ids in tags) or tags[0] == tags[1]:
             raise V.Reject("expected distinct single-token labels")
         weights = self.model.get_input_embeddings().weight
-        if not self.model.config.tie_word_embeddings:
-            raise V.Reject("expected tied token projection")
         self.direction = weights[tags[0][0]] - weights[tags[1][0]]
         self.inputs = {}
         for _, doc, label, text in (*order.shards["left"], *order.shards["right"], *order.heldout):
@@ -155,11 +172,6 @@ class Runtime:
             if not 1 <= len(tokens) <= 256:
                 raise V.Reject("text exceeds prompt bounds")
             self.inputs[doc] = (torch.tensor([tokens], device=self.device), 1 if label == LABELS[0] else -1)
-        self.params = []
-        for i in LAYERS:
-            attn = self.model.layers[i].self_attn
-            attn.o_proj = LowRank(attn.o_proj)
-            self.params.extend([attn.o_proj.a, attn.o_proj.b])
 
     @torch.no_grad()
     def load_state(self, state):
@@ -173,11 +185,14 @@ class Runtime:
         margin = torch.dot(hidden, self.direction) * target
         return margin
 
+    def objective(self, row):
+        return torch.nn.functional.softplus(-self.margin(row))
+
     def gradient(self, rows):
         total = torch.zeros(SIZE, dtype=torch.float64)
         loss_sum = 0.0
         for row in rows:
-            loss = torch.nn.functional.softplus(-self.margin(row))
+            loss = self.objective(row)
             grads = torch.autograd.grad(loss, self.params)
             total += torch.cat([g.flatten() for g in grads]).detach().to(device="cpu", dtype=torch.float64)
             loss_sum += loss.item()
@@ -208,9 +223,9 @@ def review_gradient(body, reference, loss):
             "reference_squared_norm_ticks": ref_norm, "loss_delta_ticks": loss_delta}
 
 
-def run(args):
+def run(args, *, order_type=Order, runtime_type=Runtime):
     started = time.perf_counter()
-    order = Order(args)
+    order = order_type(args)
     genesis = initial()
     first, mid = order.merge(args.first, genesis) if args.first else (None, genesis)
     if args.mode == "worker":
@@ -219,7 +234,7 @@ def run(args):
         key = serialization.load_pem_private_key(args.key.read_bytes(), password=None)
         if not isinstance(key, Ed25519PrivateKey) or key.public_key().public_bytes_raw() != order.keys[args.slot].public_bytes_raw():
             raise V.Reject("private key does not match the pinned slot")
-        runtime = Runtime(args, order)
+        runtime = runtime_type(args, order)
         runtime.load_state(mid)
         gradient, loss = runtime.gradient(order.shards[args.slot])
         header = order.header(args.slot, mid, first)
@@ -231,7 +246,7 @@ def run(args):
     if args.second is None or first is None or args.key is not None or args.slot is not None or args.device != "cpu":
         raise V.Reject("verification requires both phases on a public CPU profile")
     second, end = order.merge(args.second, mid, first)
-    runtime = Runtime(args, order)
+    runtime = runtime_type(args, order)
     comparisons = []
     for phase, state in ((first, genesis), (second, mid)):
         runtime.load_state(state)
@@ -254,8 +269,8 @@ def run(args):
         "target_modules": ["o_proj"], "layers_to_transform": list(LAYERS), "layers_pattern": "layers",
         "bias": "none", "lora_dropout": 0.0,
     }) + b"\n" if release else None
-    certificate = {"schema": SCHEMA, "order_sha256": order.pin, "phases": phases,
-                   "merkle_root": V.merkle_root(phases, SCHEMA), "heldout": metrics,
+    certificate = {"schema": order.schema, "order_sha256": order.pin, "phases": phases,
+                   "merkle_root": V.merkle_root(phases, order.schema), "heldout": metrics,
                    "release": release, "adapter_sha256": hash_bytes(adapter).hexdigest() if adapter else None,
                    "adapter_config_sha256": hash_bytes(config).hexdigest() if config else None}
     args.output.mkdir()
@@ -268,19 +283,19 @@ def run(args):
             "certificate_sha256": sha256(args.output / "certificate.json")}
 
 
-def main():
+def main(*, order_type=Order, runtime_type=Runtime, devices=("cpu", "cuda")):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("worker", "verify"))
     for field in ("order", "corpus", "model", "output"):
         parser.add_argument(field, type=Path)
     parser.add_argument("--order-sha256", required=True)
-    parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
+    parser.add_argument("--device", choices=devices, default="cpu")
     parser.add_argument("--slot", choices=SLOTS)
     parser.add_argument("--key", type=Path)
     parser.add_argument("--first", nargs=2, type=Path)
     parser.add_argument("--second", nargs=2, type=Path)
     try:
-        summary = run(parser.parse_args())
+        summary = run(parser.parse_args(), order_type=order_type, runtime_type=runtime_type)
     except InvalidSignature:
         print("NO: invalid contribution signature", file=sys.stderr)
         return 1
